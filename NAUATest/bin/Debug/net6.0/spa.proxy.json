@@ -1,0 +1,8 @@
+{
+"SpaProxyServer": {
+"ServerUrl": "https://localhost:44417",
+"LaunchCommand": "npm start",
+"WorkingDirectory": "C:\\Users\\zakme\\OneDrive - North Dakota University System\\Documents\\project-implementation\\NAUCountryA\\ClientApp\\",
+"MaxTimeoutInSeconds": "120"
+}
+}
