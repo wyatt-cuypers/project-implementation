@@ -1,4 +1,5 @@
-var builder = WebApplication.CreateBuilder(args);
+using NAUCountryA;
+/*var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
@@ -25,3 +26,9 @@ app.MapControllerRoute(
 app.MapFallbackToFile("index.html"); ;
 
 app.Run();
+*/
+ICollection<string> csvTest = Service.ToCollection("..\\NAUCountryA\\Resources\\A22_INSURANCE_OFFER.csv");
+foreach (string line in csvTest)
+{
+    Console.WriteLine(line);
+}

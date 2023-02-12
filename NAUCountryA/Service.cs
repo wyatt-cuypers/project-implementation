@@ -1,4 +1,6 @@
-﻿using Npgsql;
+﻿using Microsoft.VisualBasic.FileIO;
+using Npgsql;
+using System.Collections.Generic;
 namespace NAUCountryA
 {
     public class Service
@@ -14,6 +16,19 @@ namespace NAUCountryA
                 connection.Close();
                 return connection;
             }
+        }
+
+        public static ICollection<string> ToCollection(string csvFileName)
+        {
+            ICollection<string> lines = new List<string>();
+            TextFieldParser csvParcer = new TextFieldParser(csvFileName);
+            csvParcer.TextFieldType = FieldType.Delimited;
+            while (!csvParcer.EndOfData)
+            {
+                lines.Add(csvParcer.ReadLine());
+            }
+            csvParcer.Close();
+            return lines;
         }
     }
 }
