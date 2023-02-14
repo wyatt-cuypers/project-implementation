@@ -44,5 +44,33 @@ namespace NAUCountryATest
             }
             Assert.That(actualFirstEntry, Is.EqualTo(expectedFirstEntry));
         }
+
+        [Test]
+        public void TestToCollectionOfA23_CountyCount()
+        {
+            int expected = 3192;
+            Assert.That(Service.ToCollection("A23_County"), Has.Count.EqualTo(expected));
+        }
+
+        [Test]
+        public void TestToCollectionOfA23_CountyHeaders()
+        {
+            string expectedHeaders = "\"RECORD_TYPE_CODE\",\"RECORD_CATEGORY_CODE\",\"REINSURANCE_YEAR\",\"STATE_CODE\",\"COUNTY_CODE\",\"COUNTY_NAME\",\"LAST_RELEASED_DATE\",\"RELEASED_DATE\",\"DELETED_DATE\"";
+            Assert.That(Service.ToCollection("A23_County").First(), Is.EqualTo(expectedHeaders));
+        }
+
+        [Test]
+        public void TestToCollectionOfA23_CountyFirstEntry()
+        {
+            string expectedFirstEntry = "\"A00440\",\"01\",\"2023\",\"01\",\"001\",\"Autauga\",\"\",\"4/28/2022\",\"\"";
+            IEnumerable<string> lines = Service.ToCollection("A23_County");
+            IEnumerator<string> lineEnumerator = lines.GetEnumerator();
+            string actualFirstEntry = "";
+            if (lineEnumerator.MoveNext() && lineEnumerator.MoveNext()) 
+            {
+                actualFirstEntry = lineEnumerator.Current;
+            }
+            Assert.That(actualFirstEntry, Is.EqualTo(expectedFirstEntry));
+        }
     }
 }
