@@ -27,8 +27,4 @@ app.MapFallbackToFile("index.html"); ;
 
 app.Run();
 */
-ICollection<string> csvTest = Service.ToCollection("..\\NAUCountryA\\Resources\\A22_INSURANCE_OFFER.csv");
-foreach (string line in csvTest)
-{
-    Console.WriteLine(line);
-}
+ICollection<string> testLines = Service.ToCollection("A22_INSURANCE_OFFER");

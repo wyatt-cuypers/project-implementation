@@ -18,10 +18,19 @@ namespace NAUCountryA
             }
         }
 
+        public static string InitialPathLocation
+        {
+            get
+            {
+                return GetInitialPathLocation(Path.GetFullPath("."));
+            }
+        }
+
         public static ICollection<string> ToCollection(string csvFileName)
         {
             ICollection<string> lines = new List<string>();
-            TextFieldParser csvParcer = new TextFieldParser(csvFileName);
+            string filePath = InitialPathLocation + "\\NAUCountryA\\Resources\\" + csvFileName + ".csv";
+            TextFieldParser csvParcer = new TextFieldParser(filePath);
             csvParcer.TextFieldType = FieldType.Delimited;
             while (!csvParcer.EndOfData)
             {
@@ -29,6 +38,16 @@ namespace NAUCountryA
             }
             csvParcer.Close();
             return lines;
+        }
+
+        private static string GetInitialPathLocation(string currentLocation)
+        {
+            DirectoryInfo temp = Directory.GetParent(currentLocation); 
+            if (temp.Name.Equals("project-implementation"))
+            {
+                return temp.FullName;
+            }
+            return GetInitialPathLocation(temp.FullName);
         }
     }
 }
