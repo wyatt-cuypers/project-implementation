@@ -38,7 +38,7 @@ namespace NAUCountryATest
             IEnumerable<string> lines = Service.ToCollection("A22_INSURANCE_OFFER");
             IEnumerator<string> lineEnumerator = lines.GetEnumerator();
             string actualFirstEntry = "";
-            if (lineEnumerator.MoveNext() && lineEnumerator.MoveNext()) 
+            if (lineEnumerator.MoveNext() && lineEnumerator.MoveNext())
             {
                 actualFirstEntry = lineEnumerator.Current;
             }
@@ -66,7 +66,35 @@ namespace NAUCountryATest
             IEnumerable<string> lines = Service.ToCollection("A23_County");
             IEnumerator<string> lineEnumerator = lines.GetEnumerator();
             string actualFirstEntry = "";
-            if (lineEnumerator.MoveNext() && lineEnumerator.MoveNext()) 
+            if (lineEnumerator.MoveNext() && lineEnumerator.MoveNext())
+            {
+                actualFirstEntry = lineEnumerator.Current;
+            }
+            Assert.That(actualFirstEntry, Is.EqualTo(expectedFirstEntry));
+        }
+
+        [Test]
+        public void TestToCollectionOfA23_CommodityCount()
+        {
+            int expected = 141;
+            Assert.That(Service.ToCollection("A23_Commodity"), Has.Count.EqualTo(expected));
+        }
+
+        [Test]
+        public void TestToCollectionOfA23_CommodityHeaders()
+        {
+            string expectedHeaders = "\"RECORD_TYPE_CODE\",\"RECORD_CATEGORY_CODE\",\"REINSURANCE_YEAR\",\"COMMODITY_YEAR\",\"COMMODITY_CODE\",\"COMMODITY_NAME\",\"COMMODITY_ABBREVIATION\",\"ANNUAL_PLANTING_CODE\",\"LAST_RELEASED_DATE\",\"RELEASED_DATE\",\"DELETED_DATE\"";
+            Assert.That(Service.ToCollection("A23_Commodity").First(), Is.EqualTo(expectedHeaders));
+        }
+
+        [Test]
+        public void TestToCollectionOfA23_CommodityFirstEntry()
+        {
+            string expectedFirstEntry = "\"A00420\",\"01\",\"2023\",\"2022\",\"0037\",\"Raisins\",\"RAISINS\",\"P\",\"\",\"4/7/2022\",\"\"";
+            IEnumerable<string> lines = Service.ToCollection("A23_Commodity");
+            IEnumerator<string> lineEnumerator = lines.GetEnumerator();
+            string actualFirstEntry = "";
+            if (lineEnumerator.MoveNext() && lineEnumerator.MoveNext())
             {
                 actualFirstEntry = lineEnumerator.Current;
             }
