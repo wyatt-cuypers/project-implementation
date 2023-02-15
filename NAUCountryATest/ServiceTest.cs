@@ -100,5 +100,35 @@ namespace NAUCountryATest
             }
             Assert.That(actualFirstEntry, Is.EqualTo(expectedFirstEntry));
         }
+
+        [Test]
+        public void TestToCollectionOfA23_PRICECount()
+        {
+            int expected = 4089930;
+            Assert.That(Service.ToCollection("A23_PRICE"), Has.Count.EqualTo(expected));
+
+        }
+
+        [Test]
+        public void TestToCollectionOfA23_PRICEHeaders()
+        {
+            string expectedHeaders = "\"ADM_INSURANCE_OFFER_ID\",\"EXPECTED_INDEX_VALUE\"";
+            Assert.That(Service.ToCollection("A23_PRICE").First(), Is.EqualTo(expectedHeaders));
+        }
+
+        [Test]
+        public void TestToCollectionOfA23_PRICEFirstEntry()
+        {
+            string expectedFirstEntry = "\"25360764\",\"\"";
+            IEnumerable<string> lines = Service.ToCollection("A23_PRICE");
+            IEnumerator<string> lineEnumerator = lines.GetEnumerator();
+            string actualFirstEntry = "";
+            if (lineEnumerator.MoveNext() && lineEnumerator.MoveNext())
+            {
+                actualFirstEntry = lineEnumerator.Current;
+            }
+            Assert.That(actualFirstEntry, Is.EqualTo(expectedFirstEntry));
+        }
+
     }
 }
