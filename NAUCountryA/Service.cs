@@ -5,16 +5,18 @@ namespace NAUCountryA
 {
     public class Service
     {
-        public static NpgsqlConnection Connection
+        public static string CreateDatabaseSQLCommand
         {
             get
             {
-                string connectionString = "Server=localhost;Port=2023;User Id=postgres;" 
-                    + "Password=naucountrydev;Database=NAUCountryData";
-                NpgsqlConnection connection = new NpgsqlConnection(connectionString);
-                connection.Open();
-                connection.Close();
-                return connection;
+                string sqlCommand = "";
+                string filePath = Service.InitialPathLocation + "\\NAUCountryA\\Resources\\database_construction.sql";
+                TextFieldParser sqlParcer = new TextFieldParser(filePath);
+                while (!sqlParcer.EndOfData)
+                {
+                    sqlCommand += sqlParcer.ReadLine();
+                }
+                return sqlCommand;
             }
         }
 

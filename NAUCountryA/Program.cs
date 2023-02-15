@@ -1,4 +1,8 @@
+using System.Data;
+using Microsoft.VisualBasic.FileIO;
 using NAUCountryA;
+using NAUCountryA.Models;
+using Npgsql;
 /*var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -27,4 +31,5 @@ app.MapFallbackToFile("index.html"); ;
 
 app.Run();
 */
-ICollection<string> testLines = Service.ToCollection("A22_INSURANCE_OFFER");
+User testUser = new User("localhost", 2023, "postgres", "naucountrydev");
+Console.WriteLine(testUser.Connection.ConnectionString);

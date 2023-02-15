@@ -1,4 +1,4 @@
-CREATE IF NOT EXISTS DATABASE "NAUCountryData"
+CREATE DATABASE "NAUCountryData"
     WITH
     OWNER = postgres
     TEMPLATE = template0
