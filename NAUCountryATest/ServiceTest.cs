@@ -100,5 +100,33 @@ namespace NAUCountryATest
             }
             Assert.That(actualFirstEntry, Is.EqualTo(expectedFirstEntry));
         }
+
+        [Test]
+        public void TestToCollectionOfA23_STATECount()
+        {
+            int expected = 51;
+            Assert.That(Service.ToCollection("A23_STATE"), Has.Count.EqualTo(expected));
+        }
+
+        [Test]
+        public void TestToCollectionOfA23_STATEHeaders()
+        {
+            string expectedHeaders = "\"RECORD_TYPE_CODE\",\"RECORD_CATEGORY_CODE\",\"REINSURANCE_YEAR\",\"STATE_CODE\",\"STATE_NAME\",\"STATE_ABBREVIATION\",\"REGIONAL_OFFICE_CODE\",\"REGIONAL_OFFICE_NAME\",\"LAST_RELEASED_DATE\",\"RELEASED_DATE\",\"DELETED_DATE\"";
+            Assert.That(Service.ToCollection("A23_STATE").First(), Is.EqualTo(expectedHeaders));
+        }
+
+        [Test]
+        public void TestToCollectionOfA23_STATEFirstEntry()
+        {
+            string expectedFirstEntry = "\"A00520\",\"01\",\"2023\",\"01\",\"Alabama\",\"AL\",\"02\",\"Valdosta\",\"\",\"4/28/2022\",\"\"";
+            IEnumerable<string> lines = Service.ToCollection("A23_STATE");
+            IEnumerator<string> lineEnumerator = lines.GetEnumerator();
+            string actualFirstEntry = "";
+            if (lineEnumerator.MoveNext() && lineEnumerator.MoveNext())
+            {
+                actualFirstEntry = lineEnumerator.Current;
+            }
+            Assert.That(actualFirstEntry, Is.EqualTo(expectedFirstEntry));
+        }
     }
 }
