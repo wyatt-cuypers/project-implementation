@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NAUCountryA.Models
 {
-    public class RecordType
+    public class RecordType : IEquatable<RecordType>
     {
         public RecordType(string recordTypeCode, int recordCategoryCode, int reinsuranceYear)
         {
@@ -46,6 +46,41 @@ namespace NAUCountryA.Models
             {
                 return new KeyValuePair<string, RecordType>(RecordTypeCode, this);
             }
+        }
+
+        public bool Equals(RecordType other)
+        {
+            return RecordTypeCode == other.RecordTypeCode && RecordCategoryCode == other.RecordCategoryCode
+                && ReinsuranceYear == other.ReinsuranceYear;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is RecordType))
+            {
+                return false;
+            }
+            return Equals((RecordType)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
+
+        public static bool operator== (RecordType a, RecordType b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator!= (RecordType a, RecordType b)
+        {
+            return !a.Equals(b);
         }
     }
 }
