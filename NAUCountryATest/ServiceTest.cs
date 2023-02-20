@@ -129,5 +129,21 @@ namespace NAUCountryATest
             }
             Assert.That(actualFirstEntry, Is.EqualTo(expectedFirstEntry));
         }
+
+        [Test]
+        public void TestExpressValue1()
+        {
+            string expected = "A00420";
+            string actual = (string)Service.ExpressValue("\"A00420\"");
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void TestExpressValue2()
+        {
+            int expected = 1;
+            int actual = (int)Service.ExpressValue("\"01\"");
+            Assert.That(actual, Is.EqualTo(expected));
+        }
     }
 }

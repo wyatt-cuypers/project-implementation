@@ -1,11 +1,7 @@
-using System.Collections.Specialized;
 using NAUCountryA.Models;
 using Npgsql;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Collections;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 
 namespace NAUCountryA.Tables
@@ -18,21 +14,30 @@ namespace NAUCountryA.Tables
         {
             connection = user.Connection;
             ConstructTable();
+            TrimEntries();
+            AddEntries();
         }
 
         public int Count
         {
             get
             {
-                return 0;
+                return Table.Rows.Count;
             }
         }
 
-        public RecordType this[string key]
+        public RecordType this[string recordTypeCode]
         {
             get
             {
-                return null;
+                string sqlCommand = "SELECT * FROM public.\"RecordType\" WHERE \"RECORD_TYPE_CODE\" = '" 
+                + recordTypeCode + "';";
+                DataTable table = Service.GetDataTable(sqlCommand, connection);
+                if (table.Rows.Count == 0)
+                {
+                    throw new KeyNotFoundException("The RECORD_TYPE_CODE: " + recordTypeCode + " doesn't exist.");
+                }
+                return new RecordType(table.Rows[0]);
             }
         }
 
@@ -40,7 +45,12 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                return null;
+                ICollection<string> keys = new HashSet<string>();
+                foreach (KeyValuePair<string,RecordType> pair in this)
+                {
+                    keys.Add(pair.Key);
+                }
+                return keys;
             }
         }
 
@@ -48,18 +58,33 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                return null;
+                ICollection<RecordType> values = new List<RecordType>();
+                foreach (KeyValuePair<string,RecordType> pair in this)
+                {
+                    values.Add(pair.Value);
+                }
+                return values;
             }
         }
 
-        public bool ContainsKey(string key)
+        public bool ContainsKey(string recordTypeCode)
         {
-            return false;
+            string sqlCommand = "SELECT * FROM public.\"RecordType\" WHERE \"RECORD_TYPE_CODE\" = '" 
+                + recordTypeCode + "';";
+            DataTable table = Service.GetDataTable(sqlCommand, connection);
+            return table.Rows.Count >= 1;
         }
 
         public IEnumerator<KeyValuePair<string,RecordType>> GetEnumerator()
         {
-            return null;
+            ICollection<KeyValuePair<string,RecordType>> pairs = new HashSet<KeyValuePair<string,RecordType>>();
+            DataTable table = Table;
+            foreach (DataRow row in table.Rows)
+            {
+                RecordType recordType = new RecordType(row);
+                pairs.Add(recordType.Pair);
+            }
+            return pairs.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -67,9 +92,10 @@ namespace NAUCountryA.Tables
             return GetEnumerator();
         }
 
-        public bool TryGetValue(string key, [MaybeNullWhen(false)] out RecordType value)
+        public bool TryGetValue(string recordTypeCode, [MaybeNullWhen(false)] out RecordType value)
         {
-            throw new NotImplementedException();
+            value = null;
+            return ContainsKey(recordTypeCode);
         }
 
         private ICollection<ICollection<string>> CsvContents
@@ -86,9 +112,43 @@ namespace NAUCountryA.Tables
             }
         }
 
+        private DataTable Table
+        {
+            get
+            {
+                string sqlCommand = "SELECT * FROM public.\"RecordType\";";
+                return Service.GetDataTable(sqlCommand, connection);
+            }
+        }
+
         private void AddEntries()
         {
-
+            ICollection<ICollection<string>> csvContents = CsvContents;
+            foreach (ICollection<string> contents in csvContents)
+            {
+                IEnumerator<string> lines = contents.GetEnumerator();
+                if (lines.MoveNext())
+                {
+                    string headerLine = lines.Current;
+                    string[] headers = headerLine.Split(',');
+                    while (lines.MoveNext())
+                    {
+                        string line = lines.Current;
+                        string[] values = line.Split(',');
+                        string recordTypeCode = (string)Service.ExpressValue(values[0]);
+                        int recordCategoryCode = (int)Service.ExpressValue(values[1]);
+                        int reinsuranceYear = (int)Service.ExpressValue(values[2]);
+                        if (!ContainsKey(recordTypeCode))
+                        {
+                            string sqlCommand = "INSERT INTO public.\"RecordType\" (" +
+                                headers[0] + "," + headers[1] + "," + headers[2] + ") VALUES " + 
+                                "('" + recordTypeCode + "', " + recordCategoryCode + "," +
+                                reinsuranceYear + ");";
+                            Service.GetDataTable(sqlCommand, connection);
+                        }
+                    }
+                }
+            }
         }
 
         private void ConstructTable()
@@ -98,6 +158,40 @@ namespace NAUCountryA.Tables
             cmd.Connection.Open();
             cmd.ExecuteNonQuery();
             cmd.Connection.Close();
+        }
+
+        private void TrimEntries()
+        {
+            ICollection<string> contents = new HashSet<string>();
+            foreach (ICollection<string> contents1 in CsvContents)
+            {
+                foreach(string line in contents1)
+                {
+                    string[] values = line.Split(',');
+                    contents.Add(values[0] + "," + values[1] + "," + values[2]);
+                }
+            }
+            int position = 0;
+            while (position < Count)
+            {
+                RecordType recordType = new RecordType(Table.Rows[position]);
+                string lineFromTable = "\"" + recordType.RecordTypeCode + "\",\"";
+                if (recordType.RecordCategoryCode < 10)
+                {
+                    lineFromTable += "0";
+                }
+                lineFromTable += recordType.RecordCategoryCode + "\",\"" + recordType.ReinsuranceYear + "\"";
+                if (!contents.Contains(lineFromTable))
+                {
+                    string sqlCommand = "DELETE FROM public.\"RecordType\" WHERE \"RECORD_CATEGORY_CODE\" = '" + 
+                        recordType.RecordTypeCode + "';";
+                    Service.GetDataTable(sqlCommand, connection);
+                }
+                else
+                {
+                    position++;
+                }
+            }
         }
     }
 }

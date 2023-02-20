@@ -1,9 +1,9 @@
-CREATE TABLE public."RecordType"
+CREATE TABLE IF NOT EXISTS public."RecordType"
 (
-    "RecordTypeCode" character varying(10) NOT NULL,
-    "RecordCategoryCode" integer NOT NULL,
-    "ReinsuranceYear" integer NOT NULL,
-    CONSTRAINT "PK_RecordType" PRIMARY KEY ("RecordTypeCode")
+    "RECORD_TYPE_CODE" character varying(10) NOT NULL,
+    "RECORD_CATEGORY_CODE" integer NOT NULL,
+    "REINSURANCE_YEAR" integer NOT NULL,
+    CONSTRAINT "PK_RecordType" PRIMARY KEY ("RECORD_TYPE_CODE")
 )
 
 TABLESPACE pg_default;

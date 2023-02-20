@@ -1,3 +1,4 @@
+using System.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,13 @@ namespace NAUCountryA.Models
             RecordTypeCode = recordTypeCode;
             RecordCategoryCode = recordCategoryCode;
             ReinsuranceYear = reinsuranceYear;
+        }
+
+        public RecordType (DataRow row)
+        {
+            RecordTypeCode = (string)row["RECORD_TYPE_CODE"];
+            RecordCategoryCode = (int)row["RECORD_CATEGORY_CODE"];
+            ReinsuranceYear = (int)row["REINSURANCE_YEAR"];
         }
 
         public string RecordTypeCode
@@ -32,7 +40,7 @@ namespace NAUCountryA.Models
             private set;
         }
 
-        public KeyValuePair<string,RecordType> KeyValue
+        public KeyValuePair<string,RecordType> Pair
         {
             get
             {
