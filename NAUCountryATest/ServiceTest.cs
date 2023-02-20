@@ -102,25 +102,24 @@ namespace NAUCountryATest
         }
 
         [Test]
-        public void TestToCollectionOfA23_PRICECount()
+        public void TestToCollectionOfA23_STATECount()
         {
-            int expected = 4089930;
-            Assert.That(Service.ToCollection("A23_PRICE"), Has.Count.EqualTo(expected));
-
+            int expected = 51;
+            Assert.That(Service.ToCollection("A23_STATE"), Has.Count.EqualTo(expected));
         }
 
         [Test]
-        public void TestToCollectionOfA23_PRICEHeaders()
+        public void TestToCollectionOfA23_STATEHeaders()
         {
-            string expectedHeaders = "\"ADM_INSURANCE_OFFER_ID\",\"EXPECTED_INDEX_VALUE\"";
-            Assert.That(Service.ToCollection("A23_PRICE").First(), Is.EqualTo(expectedHeaders));
+            string expectedHeaders = "\"RECORD_TYPE_CODE\",\"RECORD_CATEGORY_CODE\",\"REINSURANCE_YEAR\",\"STATE_CODE\",\"STATE_NAME\",\"STATE_ABBREVIATION\",\"REGIONAL_OFFICE_CODE\",\"REGIONAL_OFFICE_NAME\",\"LAST_RELEASED_DATE\",\"RELEASED_DATE\",\"DELETED_DATE\"";
+            Assert.That(Service.ToCollection("A23_STATE").First(), Is.EqualTo(expectedHeaders));
         }
 
         [Test]
-        public void TestToCollectionOfA23_PRICEFirstEntry()
+        public void TestToCollectionOfA23_STATEFirstEntry()
         {
-            string expectedFirstEntry = "\"25360764\",\"\"";
-            IEnumerable<string> lines = Service.ToCollection("A23_PRICE");
+            string expectedFirstEntry = "\"A00520\",\"01\",\"2023\",\"01\",\"Alabama\",\"AL\",\"02\",\"Valdosta\",\"\",\"4/28/2022\",\"\"";
+            IEnumerable<string> lines = Service.ToCollection("A23_STATE");
             IEnumerator<string> lineEnumerator = lines.GetEnumerator();
             string actualFirstEntry = "";
             if (lineEnumerator.MoveNext() && lineEnumerator.MoveNext())
@@ -129,6 +128,5 @@ namespace NAUCountryATest
             }
             Assert.That(actualFirstEntry, Is.EqualTo(expectedFirstEntry));
         }
-
     }
 }
