@@ -1,29 +1,81 @@
 ﻿using Microsoft.VisualBasic.FileIO;
+using NAUCountryA.Exceptions;
+using NAUCountryA.Models;
 using Npgsql;
-using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 namespace NAUCountryA
 {
     public class Service
     {
-        public static NpgsqlConnection Connection
+        public static string CreateDatabaseSQLCommand
         {
             get
             {
-                string connectionString = "Server=localhost;Port=2023;User Id=postgres;" 
-                    + "Password=naucountrydev;Database=NAUCountryData";
-                NpgsqlConnection connection = new NpgsqlConnection(connectionString);
-                connection.Open();
-                connection.Close();
-                return connection;
+                string sqlCommand = "";
+                string filePath = InitialPathLocation + "\\NAUCountryA\\Resources\\database_construction.sql";
+                TextFieldParser sqlParcer = new TextFieldParser(filePath);
+                while (!sqlParcer.EndOfData)
+                {
+                    sqlCommand += sqlParcer.ReadLine();
+                }
+                return sqlCommand;
             }
         }
-
         public static string InitialPathLocation
         {
             get
             {
                 return GetInitialPathLocation(Path.GetFullPath("."));
             }
+        }
+
+        public static string GetCreateTableSQLCommand(string tableName)
+        {
+            string sqlCommand = "";
+            string filePath = InitialPathLocation + "\\NAUCountryA\\Resources\\" + tableName.ToLower() + "_construction.sql";
+            TextFieldParser sqlParcer = new TextFieldParser(filePath);
+            while (!sqlParcer.EndOfData)
+            {
+                sqlCommand += sqlParcer.ReadLine();
+            }
+            return sqlCommand;
+        }
+        public static DataTable GetDataTable(string sqlCommand, User user)
+        {
+            DataTable table = new DataTable();
+            NpgsqlCommand cmd = new NpgsqlCommand(sqlCommand, user.Connection);
+            DbDataAdapter adapter = new NpgsqlDataAdapter(cmd);
+            string command = sqlCommand.Substring(0, sqlCommand.IndexOf(' ')).ToUpper();
+            switch (command)
+            {
+                case "DELETE":
+                    adapter.DeleteCommand = cmd;
+                    adapter.DeleteCommand.Connection.Open();
+                    adapter.Update(table);
+                    adapter.DeleteCommand.Connection.Close();
+                    break;
+                case "INSERT":
+                    adapter.InsertCommand = cmd;
+                    adapter.InsertCommand.Connection.Open();
+                    adapter.Update(table);
+                    adapter.InsertCommand.Connection.Close();
+                    break;
+                case "SELECT":
+                    adapter.SelectCommand = cmd;
+                    adapter.SelectCommand.Connection.Open();
+                    adapter.Fill(table);
+                    adapter.SelectCommand.Connection.Close();
+                    break;
+                case "UPDATE":
+                    adapter.UpdateCommand = cmd;
+                    adapter.UpdateCommand.Connection.Open();
+                    adapter.Update(table);
+                    adapter.UpdateCommand.Connection.Close();
+                    break;
+                default: throw new UnrecognizedSQLCommandException("The command isn't recognized in PostgreSQL.");
+            }
+            return table;
         }
 
         public static ICollection<string> ToCollection(string csvFileName)
