@@ -31,5 +31,13 @@ namespace NAUCountryA.Models
             get;
             private set;
         }
+
+        public KeyValuePair<string,RecordType> KeyValue
+        {
+            get
+            {
+                return new KeyValuePair<string, RecordType>(RecordTypeCode, this);
+            }
+        }
     }
 }

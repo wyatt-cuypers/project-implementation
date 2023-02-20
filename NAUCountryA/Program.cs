@@ -2,6 +2,7 @@ using System.Data;
 using Microsoft.VisualBasic.FileIO;
 using NAUCountryA;
 using NAUCountryA.Models;
+using NAUCountryA.Tables;
 using Npgsql;
 /*var builder = WebApplication.CreateBuilder(args);
 
@@ -32,4 +33,4 @@ app.MapFallbackToFile("index.html"); ;
 app.Run();
 */
 User testUser = new User("localhost", 2023, "postgres", "naucountrydev");
-Console.WriteLine(testUser.Connection.ConnectionString);
+RecordTypeTable table = new RecordTypeTable(testUser);
