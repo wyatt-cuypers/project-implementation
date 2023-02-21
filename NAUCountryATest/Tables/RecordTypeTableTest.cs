@@ -1,4 +1,5 @@
 using System.IO.Pipes;
+using NAUCountryA;
 using NAUCountryA.Models;
 using NAUCountryA.Tables;
 using System;
@@ -15,8 +16,18 @@ namespace NAUCountryATest.Tables
         [SetUp]
         public void Setup()
         {
-            User testUser = new User("localhost", 2023, "postgres", "naucountrydev");
-            tableMockup = new RecordTypeTable(testUser);
+            while (true)
+            {
+                try
+                {
+                    tableMockup = new RecordTypeTable();
+                    break;
+                }
+                catch (NullReferenceException)
+                {
+                    Service.InitializeUserTo(new User("localhost", 2023, "postgres", "naucountrydev"));
+                }
+            }
         }
 
         [Test]

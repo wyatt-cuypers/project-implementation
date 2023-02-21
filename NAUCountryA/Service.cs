@@ -131,6 +131,11 @@ namespace NAUCountryA
             return table;
         }
 
+        public static void InitializeUserTo(User user)
+        {
+            User = user;
+        }
+
         public static ICollection<string> ToCollection(string csvFileName)
         {
             ICollection<string> lines = new List<string>();
