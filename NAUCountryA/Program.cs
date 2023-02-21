@@ -4,6 +4,7 @@ using NAUCountryA;
 using NAUCountryA.Models;
 using NAUCountryA.Tables;
 using Npgsql;
+Service.ConstructUser();
 /*var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -32,5 +33,3 @@ app.MapFallbackToFile("index.html"); ;
 
 app.Run();
 */
-User testUser = new User("localhost", 2023, "postgres", "naucountrydev");
-RecordTypeTable table = new RecordTypeTable(testUser);

@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using NAUCountryA.Exceptions;
+using NAUCountryA.Models;
 using Npgsql;
 using System.Data;
 using System.Data.Common;
@@ -29,6 +30,42 @@ namespace NAUCountryA
             }
         }
 
+        public static User User
+        {
+            get;
+            private set;
+        }
+
+        public static void ConstructUser()
+        {
+            Console.WriteLine("Enter your server name: ");
+            string serverName = Console.ReadLine();
+            int portNumber;
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("Enter your port number");
+                    portNumber = Convert.ToInt32(Console.ReadLine());
+                    break;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("The port number must be an integer. Try Again.");
+                }
+            }
+            Console.WriteLine("Enter your User ID: ");
+            string userID = Console.ReadLine();
+            Console.WriteLine("Enter your password: ");
+            string password = Console.ReadLine();
+            User = new User(serverName, portNumber, userID, password);
+        }
+
+        public static bool DateTimeEquals(DateTime a, DateTime b)
+        {
+            return a.Month == b.Month && a.Day == b.Day && a.Year == b.Year;
+        }
+
         public static object ExpressValue(string value)
         {
             string temp = value.Substring(1, value.Length - 2);
@@ -53,10 +90,10 @@ namespace NAUCountryA
             }
             return sqlCommand;
         }
-        public static DataTable GetDataTable(string sqlCommand, NpgsqlConnection connection)
+        public static DataTable GetDataTable(string sqlCommand)
         {
             DataTable table = new DataTable();
-            NpgsqlCommand cmd = new NpgsqlCommand(sqlCommand, connection);
+            NpgsqlCommand cmd = new NpgsqlCommand(sqlCommand, User.Connection);
             DbDataAdapter adapter = new NpgsqlDataAdapter(cmd);
             string command = sqlCommand.Substring(0, sqlCommand.IndexOf(' ')).ToUpper();
             switch (command)

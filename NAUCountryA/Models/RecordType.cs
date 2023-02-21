@@ -8,6 +8,12 @@ namespace NAUCountryA.Models
 {
     public class RecordType : IEquatable<RecordType>
     {
+        public RecordType(IReadOnlyDictionary<string,RecordType> recordTypeEntries, string recordTypeCode)
+        {
+            RecordTypeCode = recordTypeEntries[recordTypeCode].RecordTypeCode;
+            RecordCategoryCode = recordTypeEntries[recordTypeCode].RecordCategoryCode;
+            ReinsuranceYear = recordTypeEntries[recordTypeCode].ReinsuranceYear;
+        }
         public RecordType(string recordTypeCode, int recordCategoryCode, int reinsuranceYear)
         {
             RecordTypeCode = recordTypeCode;

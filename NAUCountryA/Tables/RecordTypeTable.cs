@@ -8,11 +8,8 @@ namespace NAUCountryA.Tables
 {
     public class RecordTypeTable : IReadOnlyDictionary<string, RecordType>
     {
-        private readonly NpgsqlConnection connection;
-
-        public RecordTypeTable(User user)
+        public RecordTypeTable()
         {
-            connection = user.Connection;
             ConstructTable();
             TrimEntries();
             AddEntries();
@@ -32,7 +29,7 @@ namespace NAUCountryA.Tables
             {
                 string sqlCommand = "SELECT * FROM public.\"RecordType\" WHERE \"RECORD_TYPE_CODE\" = '" 
                 + recordTypeCode + "';";
-                DataTable table = Service.GetDataTable(sqlCommand, connection);
+                DataTable table = Service.GetDataTable(sqlCommand);
                 if (table.Rows.Count == 0)
                 {
                     throw new KeyNotFoundException("The RECORD_TYPE_CODE: " + recordTypeCode + " doesn't exist.");
@@ -71,7 +68,7 @@ namespace NAUCountryA.Tables
         {
             string sqlCommand = "SELECT * FROM public.\"RecordType\" WHERE \"RECORD_TYPE_CODE\" = '" 
                 + recordTypeCode + "';";
-            DataTable table = Service.GetDataTable(sqlCommand, connection);
+            DataTable table = Service.GetDataTable(sqlCommand);
             return table.Rows.Count >= 1;
         }
 
@@ -117,7 +114,7 @@ namespace NAUCountryA.Tables
             get
             {
                 string sqlCommand = "SELECT * FROM public.\"RecordType\";";
-                return Service.GetDataTable(sqlCommand, connection);
+                return Service.GetDataTable(sqlCommand);
             }
         }
 
@@ -144,7 +141,7 @@ namespace NAUCountryA.Tables
                                 headers[0] + "," + headers[1] + "," + headers[2] + ") VALUES " + 
                                 "('" + recordTypeCode + "', " + recordCategoryCode + "," +
                                 reinsuranceYear + ");";
-                            Service.GetDataTable(sqlCommand, connection);
+                            Service.GetDataTable(sqlCommand);
                         }
                     }
                 }
@@ -154,7 +151,7 @@ namespace NAUCountryA.Tables
         private void ConstructTable()
         {
             string sqlCommand = Service.GetCreateTableSQLCommand("record_type");
-            NpgsqlCommand cmd = new NpgsqlCommand(sqlCommand, connection);
+            NpgsqlCommand cmd = new NpgsqlCommand(sqlCommand, Service.User.Connection);
             cmd.Connection.Open();
             cmd.ExecuteNonQuery();
             cmd.Connection.Close();
@@ -185,7 +182,7 @@ namespace NAUCountryA.Tables
                 {
                     string sqlCommand = "DELETE FROM public.\"RecordType\" WHERE \"RECORD_CATEGORY_CODE\" = '" + 
                         recordType.RecordTypeCode + "';";
-                    Service.GetDataTable(sqlCommand, connection);
+                    Service.GetDataTable(sqlCommand);
                 }
                 else
                 {
