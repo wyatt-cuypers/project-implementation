@@ -10,17 +10,6 @@ namespace NAUCountryA.Models
 {
     public class State : IEquatable<State>
     {
-<<<<<<< HEAD
-        //is this part needed?
-        public State(IReadOnlyDictionary<string, State> stateEntries, string stateCode)
-        {
-            StateCode = stateEntries[stateCode].StateCode;
-            StateName = stateEntries[stateCode].StateName;
-            StateAbbreviation = stateEntries[stateCode].StateAbbreviation;
-        }
-=======
->>>>>>> 288574a849aa5f2f00ad8013daefce9f582fb904
-
         public State(int stateCode, string stateName, string stateAbbreviation, string recordTypeCode) 
         {
             StateCode = stateCode;
