@@ -30,7 +30,7 @@ namespace NAUCountryA
             }
         }
 
-        public static User User
+        public static NAUUser User
         {
             get;
             private set;
@@ -58,7 +58,7 @@ namespace NAUCountryA
             string userID = Console.ReadLine();
             Console.WriteLine("Enter your password: ");
             string password = Console.ReadLine();
-            User = new User(serverName, portNumber, userID, password);
+            User = new NAUUser(serverName, portNumber, userID, password);
         }
 
         public static bool DateTimeEquals(DateTime a, DateTime b)
@@ -132,7 +132,7 @@ namespace NAUCountryA
             return table;
         }
 
-        public static void InitializeUserTo(User user)
+        public static void InitializeUserTo(NAUUser user)
         {
             User = user;
         }

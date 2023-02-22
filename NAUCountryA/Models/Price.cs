@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
 using NAUCountryA.Tables;
 using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace NAUCountryA.Models
 {

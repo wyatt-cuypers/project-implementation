@@ -1,13 +1,11 @@
 using NAUCountryA.Tables;
 using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace NAUCountryA.Models
 {
-    public class Type : IEquatable<Type>
+    public class NAUType : IEquatable<NAUType>
     {
-        public Type(int typeCode, string typeName, string typeAbbreviation, 
+        public NAUType(int typeCode, string typeName, string typeAbbreviation, 
             int commodityCode, DateTime releasedDate, string recordTypeCode)
         {
             TypeCode = typeCode;
@@ -20,7 +18,7 @@ namespace NAUCountryA.Models
             RecordType = recordTypeEntries[recordTypeCode];
         }
 
-        public Type(DataRow row)
+        public NAUType(DataRow row)
         :this((int)row["TYPE_CODE"], (string)row["TYPE_NAME"], (string)row["TYPE_ABBREVIATION"], (int)row["COMMODITY_CODE"], (DateTime)row["RELEASED_DATE"], (string)row["RECORD_TYPE_CODE"])
         {
         }
@@ -62,7 +60,7 @@ namespace NAUCountryA.Models
             private set;
         }
 
-        public bool Equals(Type other)
+        public bool Equals(NAUType other)
         {
             return TypeCode == other.TypeCode &&
                 TypeName == other.TypeName &&
@@ -75,11 +73,11 @@ namespace NAUCountryA.Models
 
         public override bool Equals(object obj)
         {
-            if (!(obj is Type))
+            if (!(obj is NAUType))
             {
                 return false;
             }
-            return Equals((Type)obj);
+            return Equals((NAUType)obj);
         }
 
         public override int GetHashCode()
@@ -92,12 +90,12 @@ namespace NAUCountryA.Models
             return base.ToString();
         }
 
-        public static bool operator ==(Type a, Type b)
+        public static bool operator ==(NAUType a, NAUType b)
         {
             return a.Equals(b);
         }
 
-        public static bool operator !=(Type a, Type b)
+        public static bool operator !=(NAUType a, NAUType b)
         {
             return !a.Equals(b);
         }

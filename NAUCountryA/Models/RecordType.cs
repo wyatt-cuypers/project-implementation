@@ -16,10 +16,8 @@ namespace NAUCountryA.Models
         }
 
         public RecordType (DataRow row)
+        :this((string)row["RECORD_TYPE_CODE"],(int)row["RECORD_CATEGORY_CODE"],(int)row["REINSURANCE_YEAR"])
         {
-            RecordTypeCode = (string)row["RECORD_TYPE_CODE"];
-            RecordCategoryCode = (int)row["RECORD_CATEGORY_CODE"];
-            ReinsuranceYear = (int)row["REINSURANCE_YEAR"];
         }
 
         public string RecordTypeCode

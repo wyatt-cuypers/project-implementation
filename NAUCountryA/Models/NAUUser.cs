@@ -4,10 +4,10 @@ using System.Data;
 
 namespace NAUCountryA.Models
 {
-    public class User
+    public class NAUUser
     {
         private string connectionString;
-        public User(string serverName, int portNumber, string userId, string password)
+        public NAUUser(string serverName, int portNumber, string userId, string password)
         {
             connectionString = "Server=" + serverName + ";Port=" + 
                 portNumber + ";User Id=" + userId +";Password=" + password;

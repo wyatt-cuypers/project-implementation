@@ -12,14 +12,14 @@ namespace NAUCountryA.Models
             this.Practice = practiceEntries[practiceCode];
             IReadOnlyDictionary<int, County> countyEntries = new CountyTable();
             County = countyEntries[countyCode];
-            IReadOnlyDictionary<int, Type> typeEntries = new TypeTable();
+            IReadOnlyDictionary<int, NAUType> typeEntries = new TypeTable();
             Type = typeEntries[typeCode];
             IrrigationPracticeCode = irrigationPracticeCode;
-
+            Year = year;
         }
 
         public Offer(DataRow row)
-        : this((int)row["ADM_INSURANCE_OFFER_ID"], (int)row["PRACTICE_CODE"], (int)row["COUNTY_CODE"], int)row["TYPE_CODE"], (int) row["IRRIGATION_PRACTICE_CODE"])
+        : this((int)row["ADM_INSURANCE_OFFER_ID"], (int)row["PRACTICE_CODE"], (int)row["COUNTY_CODE"], (int)row["TYPE_CODE"], (int)row["IRRIGATION_PRACTICE_CODE"],(int)row["YEAR"])
         {
         }
 
@@ -41,13 +41,19 @@ namespace NAUCountryA.Models
             private set;
         }
 
-        public Type Type
+        public NAUType Type
         {
             get;
             private set;
         }
 
         public int IrrigationPracticeCode
+        {
+            get;
+            private set;
+        }
+
+        public int Year
         {
             get;
             private set;
@@ -65,7 +71,8 @@ namespace NAUCountryA.Models
         public bool Equals(Offer other)
         {
             return OfferID == other.OfferID && Practice == other.Practice &&
-            County == other.County && Type == other.Type && IrrigationPracticeCode == other.IrrigationPracticeCode;
+            County == other.County && Type == other.Type && IrrigationPracticeCode == other.IrrigationPracticeCode
+            && Year == other.Year;
         }
 
         public override bool Equals(object obj)
