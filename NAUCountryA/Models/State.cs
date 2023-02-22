@@ -1,3 +1,4 @@
+using NAUCountryA.Tables;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ namespace NAUCountryA.Models
 {
     public class State : IEquatable<State>
     {
+<<<<<<< HEAD
         //is this part needed?
         public State(IReadOnlyDictionary<string, State> stateEntries, string stateCode)
         {
@@ -15,13 +17,14 @@ namespace NAUCountryA.Models
             StateName = stateEntries[stateCode].StateName;
             StateAbbreviation = stateEntries[stateCode].StateAbbreviation;
         }
+=======
+>>>>>>> 288574a849aa5f2f00ad8013daefce9f582fb904
 
         public State(int stateCode, string stateName, string stateAbbreviation, string recordTypeCode) 
         {
             StateCode = stateCode;
             StateName = stateName;
             StateAbbreviation = stateAbbreviation;
-            RecordTypeCode = recordTypeCode;
             IReadOnlyDictionary<string, RecordType> recordTypeEntries = new RecordTypeTable();
             RecordType = recordTypeEntries[recordTypeCode];
 

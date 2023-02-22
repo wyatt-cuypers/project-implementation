@@ -1,8 +1,0 @@
-{
-"SpaProxyServer": {
-"ServerUrl": "https://localhost:44417",
-"LaunchCommand": "npm start",
-"WorkingDirectory": "C:\\Users\\Katie\\OneDrive\\Desktop\\NAU\\project-implementation\\NAUCountryA\\ClientApp\\",
-"MaxTimeoutInSeconds": "120"
-}
-}
