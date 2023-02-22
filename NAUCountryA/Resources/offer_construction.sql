@@ -1,0 +1,29 @@
+CREATE TABLE IF NOT EXISTS public."Offer"
+(
+    "ADM_INSURANCE_OFFER_ID" integer NOT NULL,
+    "PRACTICE_CODE" integer NOT NULL,
+    "COUNTY_CODE" integer NOT NULL,
+    "TYPE_CODE" integer NOT NULL,
+    "IRRIGATION_PRACTICE_CODE" integer NOT NULL,
+    CONSTRAINT "Pk_Offer" PRIMARY KEY ("ADM_INSURANCE_OFFER_ID"),
+    CONSTRAINT "FK_Practice" PRIMARY KEY ("PRACTICE_CODE")
+        REFERENCES public."Practice" ("PRACTICE_CODE") MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
+            NOT VALID
+    CONSTRAINT "FK_County" PRIMARY KEY ("COUNTY_CODE")
+        REFERENCES public."County" ("COUNTY_CODE") MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
+            NOT VALID
+    CONSTRAINT "FK_Type" PRIMARY KEY ("TYPE_CODE")
+        REFERENCES public."Type" ("TYPE_CODE") MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
+            NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public."Offer"
+    OWNER to postgres;

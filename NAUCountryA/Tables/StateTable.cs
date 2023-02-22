@@ -128,14 +128,14 @@ namespace NAUCountryA.Tables
                     {
                         string line = lines.Current;
                         string[] values = line.Split(',');
-                        int stateCode = (string)Service.ExpressValue(values[0]);
-                        string stateName = (int)Service.ExpressValue(values[1]);
-                        string stateAbbreviation = (int)Service.ExpressValue(values[2]);
-                        string recordTypeCode = (int)Service.ExpressValue(values[3]);
+                        int stateCode = (int)Service.ExpressValue(values[3]);
+                        string stateName = (string)Service.ExpressValue(values[4]);
+                        string stateAbbreviation = (string)Service.ExpressValue(values[5]);
+                        string recordTypeCode = (string)Service.ExpressValue(values[0]);
                         if (!ContainsKey(stateCode))
                         {
                             string sqlCommand = "INSERT INTO public.\"State\" (" +
-                                headers[0] + "," + headers[1] + "," + headers[2] + "," + headers[3] ") VALUES " +
+                                headers[3] + "," + headers[4] + "," + headers[5] + "," + headers[0] ") VALUES " +
                                 "('" + stateCode + "', " + stateName + "," +
                                 stateAbbreviation + "," +
                                 recordTypeCode ");";
@@ -163,24 +163,23 @@ namespace NAUCountryA.Tables
                 foreach (string line in contents1)
                 {
                     string[] values = line.Split(',');
-                    contents.Add(values[0] + "," + values[1] + "," + values[2] + "," + values[3]);
+                    contents.Add(values[3] + "," + values[4] + "," + values[5] + "," + values[0]);
                 }
             }
             int position = 0;
             while (position < Count)
             {
                 State state = new State(Table.Rows[position]);
-                string lineFromTable = "\"" + state.StateCode + "\",\"";
-                //not sure about this
-                if (state.StateName < 10)
+                string lineFromTable = "\"";
+                if (state.StateCode < 10)
                 {
                     lineFromTable += "0";
                 }
-                lineFromTable += state.StateName + "\",\"" + state.StateAbbreviation + "\",\"" + state.RecordTypeCode "\"";
+                lineFromTable += state.StateCode + "\",\"" + state.StateName + "\",\"" + state.StateAbbreviation + "\",\"" + state.RecordTypeCode "\"";
                 if (!contents.Contains(lineFromTable))
                 {
-                    string sqlCommand = "DELETE FROM public.\"State\" WHERE \"STATE_NAME\" = '" +
-                        state.StateName + "';";
+                    string sqlCommand = "DELETE FROM public.\"State\" WHERE \"STATE_CODE\" = '" +
+                        state.StateCode + "';";
                     Service.GetDataTable(sqlCommand);
                 }
                 else
