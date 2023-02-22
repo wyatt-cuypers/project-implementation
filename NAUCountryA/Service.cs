@@ -69,14 +69,15 @@ namespace NAUCountryA
         public static object ExpressValue(string value)
         {
             string temp = value.Substring(1, value.Length - 2);
-            try
+            if (IsInt(temp))
             {
                 return Convert.ToInt32(temp);
             }
-            catch (FormatException)
+            else if (IsDate(temp))
             {
-                return temp;
+                return Convert.ToDateTime(temp);
             }
+            return temp;
         }
 
         public static string GetCreateTableSQLCommand(string tableName)
@@ -150,6 +151,21 @@ namespace NAUCountryA
             return lines;
         }
 
+        public static DateTime ToDateTime(string value)
+        {
+            string[] parts = value.Split("/");
+            if (parts.Length != 3)
+            {
+                throw new FormatException("This is not a date.");
+            }
+            return new DateTime(Convert.ToInt32(parts[2]), Convert.ToInt32(parts[0]), Convert.ToInt32(parts[1]));
+        }
+
+        public static string ToString(DateTime date)
+        {
+            return date.Month + "/" + date.Day + "/" + date.Year;
+        }
+
         private static string GetInitialPathLocation(string currentLocation)
         {
             DirectoryInfo temp = Directory.GetParent(currentLocation); 
@@ -158,6 +174,32 @@ namespace NAUCountryA
                 return temp.FullName;
             }
             return GetInitialPathLocation(temp.FullName);
+        }
+
+        private static bool IsDate(string value)
+        {
+            try
+            {
+                ToDateTime(value);
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        }
+
+        private static bool IsInt(string value)
+        {
+            try
+            {
+                Convert.ToInt32(value);
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
         }
     }
 }
