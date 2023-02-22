@@ -3,18 +3,19 @@ using System.Data;
 
 namespace NAUCountryA.Models
 {
-    public class County : IEquatable<Commodity>
+    public class County : IEquatable<County>
     {
         public County(int countyCode, int stateCode, string countyName, string recordTypeCode)
         {
             CountyCode = countyCode;
-            StateCode = stateCode;
+            IReadOnlyDictionary<int,State> stateEntries = new StateTable();
+            State = stateEntries[stateCode];
             CountyName = countyName;
             IReadOnlyDictionary<string,RecordType> recordTypeEntries = new RecordTypeTable();
             RecordType = recordTypeEntries[recordTypeCode];
         }
 
-        public Commodity(DataRow row)
+        public County(DataRow row)
         :this((int)row["COUNTY_CODE"], (int)row["STATE_CODE"], (string)row["COUNTY_NAME"], (string)row["RECORD_TYPE_CODE"])
         {
         }
@@ -25,7 +26,7 @@ namespace NAUCountryA.Models
             private set;
         }
 
-        public int StateCode
+        public State State
         {
             get;
             private set;
@@ -53,13 +54,17 @@ namespace NAUCountryA.Models
 
         public bool Equals(County other)
         {
-            return CountyCode == other.CountyCode && StateCode == other.StateCode &&
+            return CountyCode == other.CountyCode && State == other.State &&
             CountyName == other.CountyName && RecordType == other.RecordType;
         }
 
         public override bool Equals(object obj)
         {
-            return base.Equals(obj);
+            if (!(obj is County))
+            {
+                return false;
+            }
+            return Equals((County)obj);
         }
 
         public override int GetHashCode()

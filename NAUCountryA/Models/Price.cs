@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using NAUCountryA.Tables;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,16 +9,16 @@ namespace NAUCountryA.Models
 {
     public class Price : IEquatable<Price> 
     {
-        public Price(Offer offer, double expectedIndexValue = 0.0)
+        public Price(int offerID, double expectedIndexValue)
         {
-            Offer = offer;
+            IReadOnlyDictionary<int,Offer> offerEntries = new OfferTable();
+            Offer = offerEntries[offerID];
             ExpectedIndexValue = expectedIndexValue;
         }
         
         public Price(DataRow row)
+        :this((int)row["OFFER_ID"], (double)row["EXPECTED_INDEX_VALUE"])
         {
-            Offer = (Offer)row["OFFER_ID"];
-            ExpectedIndexValue = (double)row["EXPECTED_INDEX_VALUE"]
         }
 
         public Offer Offer

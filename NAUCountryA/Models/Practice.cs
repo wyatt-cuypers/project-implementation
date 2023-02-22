@@ -6,7 +6,7 @@ namespace NAUCountryA.Models
 {
     public class Practice : IEquatable<Practice>
     {
-        public Practice(int practiceCode, string practiceName, string practiceAbbreviation, int commodityCode, string releasedDate, string recordTypeCode)
+        public Practice(int practiceCode, string practiceName, string practiceAbbreviation, int commodityCode, DateTime releasedDate, string recordTypeCode)
         {
             PracticeCode = practiceCode;
             PracticeName = practiceName;
@@ -46,7 +46,7 @@ namespace NAUCountryA.Models
             private set;
         }
 
-        public string ReleasedDate
+        public DateTime ReleasedDate
         {
             get;
             private set;
@@ -70,12 +70,16 @@ namespace NAUCountryA.Models
         {
             return PracticeCode == other.PracticeCode && PracticeName == other.PracticeName &&
             PracticeAbbreviation == other.PracticeAbbreviation && CommodityCode == other.CommodityCode &&
-            ReleasedDate == other.ReleasedDate && RecordType == other.RecordType;
+            Service.DateTimeEquals(ReleasedDate, other.ReleasedDate) && RecordType == other.RecordType;
         }
 
         public override bool Equals(object obj)
         {
-            return base.Equals(obj);
+            if (!(obj is Practice))
+            {
+                return false;
+            }
+            return Equals((Practice)obj);
         }
 
         public override int GetHashCode()
