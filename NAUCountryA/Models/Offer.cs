@@ -8,11 +8,11 @@ namespace NAUCountryA.Models
         public Offer(int offerID, int practiceCode, int countyCode, int typeCode, int irrigationPracticeCode, int year)
         {
             OfferID = offerID;
-            IReadOnlyDictionary<string, Practice> practiceEntries = new PracticeTable();
-            Practice = practiceEntries[practiceCode];
-            IReadOnlyDictionary<string, County> countyEntries = new CountyTable();
+            IReadOnlyDictionary<int, Practice> practiceEntries = new PracticeTable();
+            this.Practice = practiceEntries[practiceCode];
+            IReadOnlyDictionary<int, County> countyEntries = new CountyTable();
             County = countyEntries[countyCode];
-            IReadOnlyDictionary<string, Type> typeEntries = new TypeTable();
+            IReadOnlyDictionary<int, Type> typeEntries = new TypeTable();
             Type = typeEntries[typeCode];
             IrrigationPracticeCode = irrigationPracticeCode;
 
