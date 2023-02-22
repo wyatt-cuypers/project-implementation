@@ -1,4 +1,4 @@
-CREATE TABLE public."Commodity"
+CREATE TABLE IF NOT EXISTS public."Commodity"
 (
     "COMMODITY_CODE" integer NOT NULL,
     "COMMODITY_NAME" character varying(30) NOT NULL,

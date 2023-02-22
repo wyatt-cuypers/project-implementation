@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+using NAUCountryA.Tables;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,24 +8,21 @@ namespace NAUCountryA.Models
     public class Type : IEquatable<Type>
     {
         public Type(int typeCode, string typeName, string typeAbbreviation, 
-            Commodity commodity, DateTime releasedDate, RecordType recordType)
+            int commodityCode, DateTime releasedDate, string recordTypeCode)
         {
             TypeCode = typeCode;
             TypeName = typeName;
             TypeAbbreviation = typeAbbreviation;
-            this.Commodity = commodity;
+            IReadOnlyDictionary<int,Commodity> commodityEntries = new CommodityTable();
+            Commodity = commodityEntries[commodityCode];
             ReleasedDate = releasedDate;
-            this.RecordType = recordType;
+            IReadOnlyDictionary<string,RecordType> recordTypeEntries = new RecordTypeTable();
+            RecordType = recordTypeEntries[recordTypeCode];
         }
 
         public Type(DataRow row)
+        :this((int)row["TYPE_CODE"], (string)row["TYPE_NAME"], (string)row["TYPE_ABBREVIATION"], (int)row["COMMODITY_CODE"], (DateTime)row["RELEASED_DATE"], (string)row["RECORD_TYPE_CODE"])
         {
-            TypeCode = (int)row["TYPE_CODE"];
-            TypeName = (string)row["TYPE_NAME"];
-            TypeAbbreviation = (string)row["TYPE_ABBR"];
-            Commodity = (Commodity)row["COMMODITY_CODE"];
-            ReleasedDate = (DateTime)row["RELEASED_DATE"];
-            RecordType = (RecordType)row["RECORD_TYPE_CODE"];
         }
 
 
@@ -79,7 +75,11 @@ namespace NAUCountryA.Models
 
         public override bool Equals(object obj)
         {
-            return base.Equals(obj);
+            if (!(obj is Type))
+            {
+                return false;
+            }
+            return Equals((Type)obj);
         }
 
         public override int GetHashCode()

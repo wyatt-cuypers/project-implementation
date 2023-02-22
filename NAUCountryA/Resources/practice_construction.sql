@@ -1,4 +1,4 @@
-CREATE TABLE public."Practice"
+CREATE TABLE IF NOT EXISTS public."Practice"
 (
     "PRACTICE_CODE" integer NOT NULL,
     "PRACTICE_NAME" character varying(50) NOT NULL,
@@ -7,7 +7,11 @@ CREATE TABLE public."Practice"
     "RELEASED_DATE" character varying(10) NOT NULL,
     "RECORD_TYPE_CODE" character varying(10) NOT NULL,
     CONSTRAINT "Pk_Practice" PRIMARY KEY ("PRACTICE_CODE"),
-    CONSTRAINT "Fk_Commodity" FOREIGN KEY ("COMMODITY_CODE"),
+    CONSTRAINT "Fk_Commodity" FOREIGN KEY ("COMMODITY_CODE")
+        REFERENCES public."Commodity" ("COMMODITY_CODE") MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
     CONSTRAINT "Fk_RecordType" FOREIGN KEY ("RECORD_TYPE_CODE")
         REFERENCES public."RecordType" ("RECORD_TYPE_CODE") MATCH SIMPLE
         ON UPDATE NO ACTION

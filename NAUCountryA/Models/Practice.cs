@@ -6,12 +6,13 @@ namespace NAUCountryA.Models
 {
     public class Practice : IEquatable<Practice>
     {
-        public Practice(int practiceCode, string practiceName, string practiceAbbreviation, int commodityCode, string releasedDate, string recordTypeCode)
+        public Practice(int practiceCode, string practiceName, string practiceAbbreviation, int commodityCode, DateTime releasedDate, string recordTypeCode)
         {
             PracticeCode = practiceCode;
             PracticeName = practiceName;
             PracticeAbbreviation = practiceAbbreviation;
-            CommodityCode = commodityCode;
+            IReadOnlyDictionary<int,Commodity> commodityEntries = new CommodityTable();
+            Commodity = commodityEntries[commodityCode];
             ReleasedDate = releasedDate;
             IReadOnlyDictionary<string,RecordType> recordTypeEntries = new RecordTypeTable();
             RecordType = recordTypeEntries[recordTypeCode];
@@ -40,13 +41,13 @@ namespace NAUCountryA.Models
             private set;
         }
 
-        public int CommodityCode
+        public Commodity Commodity
         {
             get;
             private set;
         }
 
-        public string ReleasedDate
+        public DateTime ReleasedDate
         {
             get;
             private set;
@@ -69,13 +70,17 @@ namespace NAUCountryA.Models
         public bool Equals(Practice other)
         {
             return PracticeCode == other.PracticeCode && PracticeName == other.PracticeName &&
-            PracticeAbbreviation == other.PracticeAbbreviation && CommodityCode == other.CommodityCode &&
-            ReleasedDate == other.ReleasedDate && RecordType == other.RecordType;
+            PracticeAbbreviation == other.PracticeAbbreviation && Commodity == other.Commodity &&
+            Service.DateTimeEquals(ReleasedDate, other.ReleasedDate) && RecordType == other.RecordType;
         }
 
         public override bool Equals(object obj)
         {
-            return base.Equals(obj);
+            if (!(obj is Practice))
+            {
+                return false;
+            }
+            return Equals((Practice)obj);
         }
 
         public override int GetHashCode()
