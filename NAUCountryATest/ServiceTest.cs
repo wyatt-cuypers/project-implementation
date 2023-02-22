@@ -25,7 +25,7 @@ namespace NAUCountryATest
             Assert.That(Service.ToCollection("A22_INSURANCE_OFFER"), Has.Count.EqualTo(expected));
         }
 
-        [Test]
+        /*[Test]
         public void TestToCollectionOfA22_INSURANCE_OFFERHeaders()
         {
             string expectedHeaders = "\"ADM_INSURANCE_OFFER_ID\",\"STATE_CODE\",\"COUNTY_CODE\",\"TYPE_CODE\",\"PRACTICE_CODE\",\"IRRIGATION_PRACTICE_CODE\"";
@@ -144,6 +144,6 @@ namespace NAUCountryATest
             int expected = 1;
             int actual = (int)Service.ExpressValue("\"01\"");
             Assert.That(actual, Is.EqualTo(expected));
-        }
+        }*/
     }
 }

@@ -16,17 +16,13 @@ namespace NAUCountryATest.Tables
         [SetUp]
         public void Setup()
         {
-            while (true)
+            try
             {
-                try
-                {
-                    tableMockup = new RecordTypeTable();
-                    break;
-                }
-                catch (NullReferenceException)
-                {
-                    Service.InitializeUserTo(new User("localhost", 2023, "postgres", "naucountrydev"));
-                }
+                tableMockup = new RecordTypeTable();
+            }
+            catch (NullReferenceException)
+            {
+                Service.InitializeUserTo(new User("localhost", 2023, "postgres", "naucountrydev"));
             }
         }
 
