@@ -134,8 +134,8 @@ namespace NAUCountryA.Tables
                             headers[4] + "," + headers[5] + "," + headers[6] + "," + headers[3] + "," +
                             headers[8] + "," + headers[0] + ") VALUES " + 
                             "(" + practiceCode + ", '" + practiceName + "', '" +
-                            practiceAbbreviation + "', '" + commodityCode + "', " + 
-                            releasedDate + ", '" + recordTypeCode + "');";
+                            practiceAbbreviation + "', '" + commodityCode + "', '" + 
+                            Service.ToString(releasedDate) + "', '" + recordTypeCode + "');";
                         Service.GetDataTable(sqlCommand);
                     }
                 }
@@ -167,18 +167,27 @@ namespace NAUCountryA.Tables
                 string lineFromTable = "\"";
                 if (practice.PracticeCode < 10)
                 {
-                    lineFromTable += "000";
-                }
-                else if (practice.PracticeCode < 100)
-                {
                     lineFromTable += "00";
                 }
-                else if (practice.PracticeCode < 1000)
+                else if (practice.PracticeCode < 100)
                 {
                     lineFromTable += "0";
                 }
                 lineFromTable += practice.PracticeCode + "\",\"" + practice.PracticeName + "\",\"" +
-                    practice.PracticeAbbreviation + "\",\"" + practice.CommodityCode + "\",\"" +
+                    practice.PracticeAbbreviation + "\",\"";
+                if (practice.Commodity.CommodityCode < 10)
+                {
+                    lineFromTable += "000";
+                }
+                else if (practice.Commodity.CommodityCode < 100)
+                {
+                    lineFromTable += "00";
+                }
+                else if (practice.Commodity.CommodityCode < 1000)
+                {
+                    lineFromTable += "0";
+                } 
+                lineFromTable += practice.Commodity.CommodityCode + "\",\"" +
                     Service.ToString(practice.ReleasedDate) + "\",\"" +
                     practice.RecordType.RecordTypeCode + "\"";
 

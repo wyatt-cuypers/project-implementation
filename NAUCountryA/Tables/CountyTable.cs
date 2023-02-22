@@ -43,7 +43,7 @@ namespace NAUCountryA.Tables
             get
             {
                 ICollection<int> keys = new HashSet<int>();
-                foreach (KeyValuePair<int,Commodity> pair in this)
+                foreach (KeyValuePair<int,County> pair in this)
                 {
                     keys.Add(pair.Key);
                 }
@@ -122,15 +122,15 @@ namespace NAUCountryA.Tables
                 {
                     string line = lines.Current;
                     string[] values = line.Split(',');
-                    int stateCode = (int)Service.ExpressValue(values[3]);
                     int countyCode = (int)Service.ExpressValue(values[4]);
+                    int stateCode = (int)Service.ExpressValue(values[3]);
                     string countyName = (string)Service.ExpressValue(values[5]);
                     string recordTypeCode = (string)Service.ExpressValue(values[0]);
                     if (!ContainsKey(countyCode))
                     {
                         string sqlCommand = "INSERT INTO public.\"County\" (" +
                             headers[4] + "," + headers[3] + "," + headers[5] + "," + headers[0] + ") VALUES " + 
-                            "(" + countyCode + ", '" + stateCode + "', '" +
+                            "(" + countyCode + ", " + stateCode + ", '" +
                             countyName + "', '" + recordTypeCode + "');";
                         Service.GetDataTable(sqlCommand);
                     }
@@ -162,19 +162,19 @@ namespace NAUCountryA.Tables
                 string lineFromTable = "\"";
                 if (county.CountyCode < 10)
                 {
-                    lineFromTable += "000";
+                    lineFromTable += "00";
                 }
                 else if (county.CountyCode < 100)
                 {
-                    lineFromTable += "00";
+                    lineFromTable += "0";
                 }
-                else if (county.CountyCode < 1000)
+                lineFromTable += county.CountyCode + "\",\"";
+                if (county.State.StateCode < 10)
                 {
                     lineFromTable += "0";
                 }
-                lineFromTable += county.CountyCode + "\",\"" + county.StateCode + "\",\"" +
+                lineFromTable += county.State.StateCode + "\",\"" +
                     county.CountyName + "\",\"" + county.RecordType.RecordTypeCode + "\"";
-
                 if (!contents.Contains(lineFromTable))
                 {
                     string sqlCommand = "DELETE FROM public.\"County\" WHERE \"COUNTY_CODE\" = '" + 

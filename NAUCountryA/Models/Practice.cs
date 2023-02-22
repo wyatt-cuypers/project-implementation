@@ -11,7 +11,8 @@ namespace NAUCountryA.Models
             PracticeCode = practiceCode;
             PracticeName = practiceName;
             PracticeAbbreviation = practiceAbbreviation;
-            CommodityCode = commodityCode;
+            IReadOnlyDictionary<int,Commodity> commodityEntries = new CommodityTable();
+            Commodity = commodityEntries[commodityCode];
             ReleasedDate = releasedDate;
             IReadOnlyDictionary<string,RecordType> recordTypeEntries = new RecordTypeTable();
             RecordType = recordTypeEntries[recordTypeCode];
@@ -40,7 +41,7 @@ namespace NAUCountryA.Models
             private set;
         }
 
-        public int CommodityCode
+        public Commodity Commodity
         {
             get;
             private set;
@@ -69,7 +70,7 @@ namespace NAUCountryA.Models
         public bool Equals(Practice other)
         {
             return PracticeCode == other.PracticeCode && PracticeName == other.PracticeName &&
-            PracticeAbbreviation == other.PracticeAbbreviation && CommodityCode == other.CommodityCode &&
+            PracticeAbbreviation == other.PracticeAbbreviation && Commodity == other.Commodity &&
             Service.DateTimeEquals(ReleasedDate, other.ReleasedDate) && RecordType == other.RecordType;
         }
 
