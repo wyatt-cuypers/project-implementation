@@ -1,4 +1,5 @@
 using NAUCountryA.Tables;
+using System.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace NAUCountryA.Models
 
         }
 
-        public Commodity(DataRow row)
+        public State(DataRow row)
         : this((int)row["STATE_CODE"], (string)row["STATE_NAME"], (string)row["STATE_ABBREVIATION"], (string)row["RECORD_TYPE_CODE"])
         {
         }
@@ -74,7 +75,11 @@ namespace NAUCountryA.Models
 
         public override bool Equals(object obj)
         {
-            return base.Equals(obj);
+            if (!(obj is State))
+            {
+                return false;
+            }
+            return Equals((State)obj);
         }
 
         public override int GetHashCode()
@@ -87,12 +92,12 @@ namespace NAUCountryA.Models
             return base.ToString();
         }
 
-        public static bool operator ==(Commodity a, Commodity b)
+        public static bool operator ==(State a, State b)
         {
             return a.Equals(b);
         }
 
-        public static bool operator !=(Commodity a, Commodity b)
+        public static bool operator !=(State a, State b)
         {
             return !a.Equals(b);
         }
