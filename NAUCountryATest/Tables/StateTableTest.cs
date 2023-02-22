@@ -22,9 +22,19 @@ namespace NAUCountryATest.Tables
         }
 
         [Test]
-        public void Test1()
+        public void TestContainsKey1()
         {
-            Assert.Pass();
+            bool actual = tableMockup.ContainsKey("06");
+            Assert.That(actual, Is.True);
         }
+
+        [Test]
+        public void TestContainsKey2()
+        {
+            bool actual = tableMockup.ContainsKey("98");
+            Assert.That(actual, Is.False);
+        }
+
+        
     }
 }

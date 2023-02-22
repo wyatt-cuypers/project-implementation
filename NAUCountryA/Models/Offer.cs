@@ -7,7 +7,7 @@ namespace NAUCountryA.Models
 {
     public class Offer : IEquatable<Offer>
     {
-        public State(int offerID, int practiceCode, int countyCode, int typeCode, int irrigationPracticeCode, int year)
+        public State(int offerID, int practiceCode, int countyCode, int typeCode, int irrigationPracticeCode)
         {
             OfferID = offerID;
             IReadOnlyDictionary<string, Practice> practiceEntries = new PracticeTable();
@@ -21,7 +21,7 @@ namespace NAUCountryA.Models
         }
 
         public State(DataRow row)
-        : this((int)row["ADM_INSURANCE_OFFER_ID"], (int)row["PRACTICE_CODE"], (int)row["COUNTY_CODE"], int)row["TYPE_CODE"], (int) row["IRRIGATION_PRACTICE_CODE"])
+        : this((int)row["ADM_INSURANCE_OFFER_ID"], (int)row["PRACTICE_CODE"], (int)row["COUNTY_CODE"], (int)row["TYPE_CODE"], (int) row["IRRIGATION_PRACTICE_CODE"])
         {
         }
 
