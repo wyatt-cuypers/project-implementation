@@ -171,6 +171,7 @@ namespace NAUCountryA.Tables
             {
                 State state = new State(Table.Rows[position]);
                 string lineFromTable = "\"" + state.StateCode + "\",\"";
+                //not sure about this
                 if (state.StateName < 10)
                 {
                     lineFromTable += "0";

@@ -8,9 +8,10 @@ namespace NAUCountryA.Models
 {
     public class State : IEquatable<State>
     {
+        //is this part needed?
         public State(IReadOnlyDictionary<string, State> stateEntries, string stateCode)
         {
-            StateCode = stateEntries[stateCode].RecordTypeCode;
+            StateCode = stateEntries[stateCode].StateCode;
             StateName = stateEntries[stateCode].StateName;
             StateAbbreviation = stateEntries[stateCode].StateAbbreviation;
         }
@@ -52,6 +53,14 @@ namespace NAUCountryA.Models
         {
             get;
             private set;
+        }
+
+        public KeyValuePair<int, State> Pair
+        {
+            get
+            {
+                return new KeyValuePair<int, State>(StateCode, this);
+            }
         }
 
         public bool Equals(State other)
