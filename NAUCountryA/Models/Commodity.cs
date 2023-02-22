@@ -82,7 +82,11 @@ namespace NAUCountryA.Models
 
         public override bool Equals(object obj)
         {
-            return base.Equals(obj);
+            if (!(obj is Commodity))
+            {
+                return false;
+            }
+            return Equals((Commodity)obj);
         }
 
         public override int GetHashCode()
