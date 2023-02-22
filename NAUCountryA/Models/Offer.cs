@@ -1,27 +1,34 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using NAUCountryA.Tables;
+using System.Data;
 
 namespace NAUCountryA.Models
 {
     public class Offer : IEquatable<Offer>
     {
+<<<<<<< HEAD
         public State(int offerID, int practiceCode, int countyCode, int typeCode, int irrigationPracticeCode)
+=======
+        public Offer(int offerID, int practiceCode, int countyCode, int typeCode, int irrigationPracticeCode, int year)
+>>>>>>> 8e53eab381027d36464f769cdd8357eb2496c463
         {
             OfferID = offerID;
-            IReadOnlyDictionary<string, Practice> practiceEntries = new PracticeTable();
-            Practice = practiceEntries[practiceCode];
-            IReadOnlyDictionary<string, County> countyEntries = new CountyTable();
+            IReadOnlyDictionary<int, Practice> practiceEntries = new PracticeTable();
+            this.Practice = practiceEntries[practiceCode];
+            IReadOnlyDictionary<int, County> countyEntries = new CountyTable();
             County = countyEntries[countyCode];
-            IReadOnlyDictionary<string, Type> typeEntries = new TypeTable();
+            IReadOnlyDictionary<int, Type> typeEntries = new TypeTable();
             Type = typeEntries[typeCode];
             IrrigationPracticeCode = irrigationPracticeCode;
 
         }
 
+<<<<<<< HEAD
         public State(DataRow row)
         : this((int)row["ADM_INSURANCE_OFFER_ID"], (int)row["PRACTICE_CODE"], (int)row["COUNTY_CODE"], (int)row["TYPE_CODE"], (int) row["IRRIGATION_PRACTICE_CODE"])
+=======
+        public Offer(DataRow row)
+        : this((int)row["ADM_INSURANCE_OFFER_ID"], (int)row["PRACTICE_CODE"], (int)row["COUNTY_CODE"], int)row["TYPE_CODE"], (int) row["IRRIGATION_PRACTICE_CODE"])
+>>>>>>> 8e53eab381027d36464f769cdd8357eb2496c463
         {
         }
 
