@@ -5,7 +5,7 @@ namespace NAUCountryA.Models
 {
     public class Commodity : IEquatable<Commodity>
     {
-        public Commodity(int commodityCode, string commodityName, string commodityAbbreviation, string annualPlantingCode, int commodityYear, DateTime releasedDate, string recordTypeCode)
+        public Commodity(int commodityCode, string commodityName, string commodityAbbreviation, char annualPlantingCode, int commodityYear, DateTime releasedDate, string recordTypeCode)
         {
             CommodityCode = commodityCode;
             CommodityName = commodityName;
@@ -18,7 +18,7 @@ namespace NAUCountryA.Models
         }
 
         public Commodity(DataRow row)
-        :this((int)row["COMMODITY_CODE"], (string)row["COMMODITY_NAME"], (string)row["COMMODITY_ABBREVIATION"],(string)row["ANNUAL_PLANTING_CODE"], (int)row["COMMODITY_YEAR"], (DateTime)row["RELEASED_DATE"], (string)row["RECORD_TYPE_CODE"])
+        :this((int)row["COMMODITY_CODE"], (string)row["COMMODITY_NAME"], (string)row["COMMODITY_ABBREVIATION"],(char)row["ANNUAL_PLANTING_CODE"], (int)row["COMMODITY_YEAR"], (DateTime)row["RELEASED_DATE"], (string)row["RECORD_TYPE_CODE"])
         {
         }
 
@@ -40,7 +40,7 @@ namespace NAUCountryA.Models
             private set;
         }
 
-        public string AnnualPlantingCode
+        public char AnnualPlantingCode
         {
             get;
             private set;
@@ -62,6 +62,14 @@ namespace NAUCountryA.Models
         {
             get;
             private set;
+        }
+
+        public KeyValuePair<int,Commodity> Pair
+        {
+            get
+            {
+                return new KeyValuePair<int,Commodity>(CommodityCode, this);
+            }
         }
 
         public bool Equals(Commodity other)
