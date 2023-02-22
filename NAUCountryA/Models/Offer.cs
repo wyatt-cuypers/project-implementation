@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using NAUCountryA.Tables;
+using System.Data;
 
 namespace NAUCountryA.Models
 {
     public class Offer : IEquatable<Offer>
     {
-        public State(int offerID, int practiceCode, int countyCode, int typeCode, int irrigationPracticeCode, int year)
+        public Offer(int offerID, int practiceCode, int countyCode, int typeCode, int irrigationPracticeCode, int year)
         {
             OfferID = offerID;
             IReadOnlyDictionary<string, Practice> practiceEntries = new PracticeTable();
@@ -20,7 +18,7 @@ namespace NAUCountryA.Models
 
         }
 
-        public State(DataRow row)
+        public Offer(DataRow row)
         : this((int)row["ADM_INSURANCE_OFFER_ID"], (int)row["PRACTICE_CODE"], (int)row["COUNTY_CODE"], int)row["TYPE_CODE"], (int) row["IRRIGATION_PRACTICE_CODE"])
         {
         }

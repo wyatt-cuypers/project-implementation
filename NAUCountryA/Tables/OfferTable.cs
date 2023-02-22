@@ -1,12 +1,12 @@
-using System;
+using NAUCountryA.Models;
+using Npgsql;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Data;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NAUCountryA.Tables
 {
-    public class OfferTable : IReadOnlyDictionary<string, Offer>
+    public class OfferTable : IReadOnlyDictionary<int, Offer>
     {
         public OfferTable()
         {
@@ -38,12 +38,12 @@ namespace NAUCountryA.Tables
             }
         }
 
-        public IEnumerable<string> Keys
+        public IEnumerable<int> Keys
         {
             get
             {
-                ICollection<string> keys = new HashSet<string>();
-                foreach (KeyValuePair<string, Offer> pair in this)
+                ICollection<int> keys = new HashSet<int>();
+                foreach (KeyValuePair<int, Offer> pair in this)
                 {
                     keys.Add(pair.Key);
                 }
@@ -56,7 +56,7 @@ namespace NAUCountryA.Tables
             get
             {
                 ICollection<Offer> values = new List<Offer>();
-                foreach (KeyValuePair<string, Offer> pair in this)
+                foreach (KeyValuePair<int, Offer> pair in this)
                 {
                     values.Add(pair.Value);
                 }
@@ -72,9 +72,9 @@ namespace NAUCountryA.Tables
             return table.Rows.Count >= 1;
         }
 
-        public IEnumerator<KeyValuePair<string, Offer>> GetEnumerator()
+        public IEnumerator<KeyValuePair<int, Offer>> GetEnumerator()
         {
-            ICollection<KeyValuePair<string, Offer>> pairs = new HashSet<KeyValuePair<string, Offer>>();
+            ICollection<KeyValuePair<int, Offer>> pairs = new HashSet<KeyValuePair<int, Offer>>();
             DataTable table = Table;
             foreach (DataRow row in table.Rows)
             {
@@ -138,7 +138,7 @@ namespace NAUCountryA.Tables
                             string sqlCommand = "INSERT INTO public.\"Offer\" (" +
                                 headers[0] + "," + headers[2] + "," + headers[3] + "," + headers[4] + "," + headers[5] ") VALUES " +
                                 "('" + offerID + "', " + practiceCode + "," +
-                                countyCode + "," + typeCode + "," + irrigationPracticeCode ");";
+                                countyCode + "," + typeCode + "," + irrigationPracticeCode + ");";
                             Service.GetDataTable(sqlCommand);
                         }
                     }
