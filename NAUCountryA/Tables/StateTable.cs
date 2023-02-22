@@ -132,7 +132,6 @@ namespace NAUCountryA.Tables
                     string recordTypeCode = (string)Service.ExpressValue(values[0]);
                     if (!ContainsKey(stateCode))
                     {
-<<<<<<< HEAD
                         string line = lines.Current;
                         string[] values = line.Split(',');
                         int stateCode = (int)Service.ExpressValue(values[3]);
@@ -148,14 +147,13 @@ namespace NAUCountryA.Tables
                                 recordTypeCode ");";
                             Service.GetDataTable(sqlCommand);
                         }
-=======
                         string sqlCommand = "INSERT INTO public.\"State\" (" +
                             headers[3] + "," + headers[4] + "," + headers[5] + "," + headers[0] + ") VALUES " +
                             "(" + stateCode + ", '" + stateName + "', '" +
                             stateAbbreviation + "', '" +
                             recordTypeCode + "');";
                         Service.GetDataTable(sqlCommand);
->>>>>>> 085de5a80a8d2e37179ec69752919c0aef1b8f8c
+
                     }
                 }
             }
@@ -175,16 +173,13 @@ namespace NAUCountryA.Tables
             ICollection<string> contents = new HashSet<string>();
             foreach (string line in CsvContents)
             {
-<<<<<<< HEAD
                 foreach (string line in contents1)
                 {
                     string[] values = line.Split(',');
                     contents.Add(values[3] + "," + values[4] + "," + values[5] + "," + values[0]);
                 }
-=======
                 string[] values = line.Split(',');
                 contents.Add(values[3] + "," + values[4] + "," + values[5] + "," + values[0]);
->>>>>>> 085de5a80a8d2e37179ec69752919c0aef1b8f8c
             }
             int position = 0;
             while (position < Count)
@@ -195,11 +190,8 @@ namespace NAUCountryA.Tables
                 {
                     lineFromTable += "0";
                 }
-<<<<<<< HEAD
                 lineFromTable += state.StateCode + "\",\"" + state.StateName + "\",\"" + state.StateAbbreviation + "\",\"" + state.RecordTypeCode "\"";
-=======
                 lineFromTable += state.StateCode + "\",\"" + state.StateName + "\",\"" + state.StateAbbreviation + "\",\"" + state.RecordType.RecordTypeCode + "\"";
->>>>>>> 085de5a80a8d2e37179ec69752919c0aef1b8f8c
                 if (!contents.Contains(lineFromTable))
                 {
                     string sqlCommand = "DELETE FROM public.\"State\" WHERE \"STATE_CODE\" = '" +
