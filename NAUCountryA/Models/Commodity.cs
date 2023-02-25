@@ -89,6 +89,23 @@ namespace NAUCountryA.Models
             return Equals((Commodity)obj);
         }
 
+        public string FormatCommodityCode()
+        {
+            if (CommodityCode < 10)
+            {
+                return $"\"000'{CommodityCode}'\"";
+            }
+            else if (CommodityCode < 100)
+            {
+                return $"\"00'{CommodityCode}'\"";
+            }
+            else if (CommodityCode < 1000)
+            {
+                return $"\"0'{CommodityCode}'\"";
+            }
+            return $"\"'{CommodityCode}'\"";
+        }
+
         public override int GetHashCode()
         {
             return base.GetHashCode();
@@ -96,7 +113,9 @@ namespace NAUCountryA.Models
 
         public override string ToString()
         {
-            return base.ToString();
+            return $"'{FormatCommodityCode()}',\"'{CommodityName}'\",\"'{CommodityAbbreviation}'\",\"" +
+                $"'{AnnualPlantingCode}'\",\"'{CommodityYear}'\",\"'{Service.ToString(ReleasedDate)}'\"" +
+                $"'{RecordType.RecordTypeCode}'\"";
         }
 
         public static bool operator== (Commodity a, Commodity b)

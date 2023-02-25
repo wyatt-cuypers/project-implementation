@@ -32,7 +32,7 @@ namespace NAUCountryA.Tables
                 DataTable table = Service.GetDataTable(sqlCommand);
                 if (table.Rows.Count == 0)
                 {
-                    throw new KeyNotFoundException("The RECORD_TYPE_CODE: " + recordTypeCode + " doesn't exist.");
+                    throw new KeyNotFoundException($"The RECORD_TYPE_CODE: '{recordTypeCode}' doesn't exist.");
                 }
                 return new RecordType(table.Rows[0]);
             }
@@ -137,9 +137,8 @@ namespace NAUCountryA.Tables
                         int reinsuranceYear = (int)Service.ExpressValue(values[2]);
                         if (!ContainsKey(recordTypeCode))
                         {
-                            string sqlCommand = "INSERT INTO public.\"RecordType\" (" +
-                                headers[0] + "," + headers[1] + "," + headers[2] + ") VALUES " + 
-                                "('" + recordTypeCode + "', " + recordCategoryCode + "," +
+                            string sqlCommand = $"INSERT INTO public.\"RecordType\" ('{headers[0]}','{headers[1]}'," + 
+                                $"'{headers[2]}') VALUES (''{recordTypeCode}'','{recordCategoryCode}'," +
                                 reinsuranceYear + ");";
                             Service.GetDataTable(sqlCommand);
                         }
@@ -165,23 +164,16 @@ namespace NAUCountryA.Tables
                 foreach(string line in contents1)
                 {
                     string[] values = line.Split(',');
-                    contents.Add(values[0] + "," + values[1] + "," + values[2]);
+                    contents.Add($"'{values[0]}','{values[1]}','{values[2]}'");
                 }
             }
             int position = 0;
             while (position < Count)
             {
                 RecordType recordType = new RecordType(Table.Rows[position]);
-                string lineFromTable = "\"" + recordType.RecordTypeCode + "\",\"";
-                if (recordType.RecordCategoryCode < 10)
+                if (!contents.Contains(recordType.ToString()))
                 {
-                    lineFromTable += "0";
-                }
-                lineFromTable += recordType.RecordCategoryCode + "\",\"" + recordType.ReinsuranceYear + "\"";
-                if (!contents.Contains(lineFromTable))
-                {
-                    string sqlCommand = "DELETE FROM public.\"RecordType\" WHERE \"RECORD_CATEGORY_CODE\" = '" + 
-                        recordType.RecordTypeCode + "';";
+                    string sqlCommand = $"DELETE FROM public.\"RecordType\" WHERE \"RECORD_CATEGORY_CODE\" = ''{recordType.RecordTypeCode}''';";
                     Service.GetDataTable(sqlCommand);
                 }
                 else

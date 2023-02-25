@@ -6,9 +6,9 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace NAUCountryA.Tables
 {
-    public class CountyTable : IReadOnlyDictionary<int, County>
+    public class NauTypeTable : IReadOnlyDictionary<int, NAUType>
     {
-        public CountyTable()
+        public NauTypeTable()
         {
             ConstructTable();
             TrimEntries();
@@ -23,17 +23,17 @@ namespace NAUCountryA.Tables
             }
         }
 
-        public County this[int countyCode]
+        public NAUType this[int typeCode]
         {
             get
             {
-                string sqlCommand = $"SELECT * FROM public.\"County\" WHERE \"COUNTY_CODE\"='{countyCode}';";
+                string sqlCommand = $"SELECT * FROM public.\"Type\" WHERE \"TYPE_CODE\" = '{typeCode}';";
                 DataTable table = Service.GetDataTable(sqlCommand);
                 if (table.Rows.Count == 0)
                 {
-                    throw new KeyNotFoundException($"The COUNTY_CODE: '{countyCode}' doesn't exist.");
+                    throw new KeyNotFoundException($"The TYPE_CODE: '{typeCode}' doesn't exist.");
                 }
-                return new County(table.Rows[0]);
+                return new NAUType(table.Rows[0]);
             }
         }
 
@@ -42,7 +42,7 @@ namespace NAUCountryA.Tables
             get
             {
                 ICollection<int> keys = new HashSet<int>();
-                foreach (KeyValuePair<int,County> pair in this)
+                foreach (KeyValuePair<int, NAUType> pair in this)
                 {
                     keys.Add(pair.Key);
                 }
@@ -50,12 +50,12 @@ namespace NAUCountryA.Tables
             }
         }
 
-        public IEnumerable<County> Values
+        public IEnumerable<NAUType> Values
         {
             get
             {
-                ICollection<County> values = new List<County>();
-                foreach (KeyValuePair<int,County> pair in this)
+                ICollection<NAUType> values = new List<NAUType>();
+                foreach (KeyValuePair<int, NAUType> pair in this)
                 {
                     values.Add(pair.Value);
                 }
@@ -63,21 +63,21 @@ namespace NAUCountryA.Tables
             }
         }
 
-        public bool ContainsKey(int countyCode)
+        public bool ContainsKey(int typeCode)
         {
-            string sqlCommand = $"SELECT * FROM public.\"County\" WHERE \"COUNTY_CODE\"='{countyCode}';";
+            string sqlCommand = $"SELECT * FROM public.\"Type\" WHERE \"TYPE_CODE\" = '{typeCode}';";
             DataTable table = Service.GetDataTable(sqlCommand);
             return table.Rows.Count >= 1;
         }
 
-        public IEnumerator<KeyValuePair<int,County>> GetEnumerator()
+        public IEnumerator<KeyValuePair<int, NAUType>> GetEnumerator()
         {
-            ICollection<KeyValuePair<int,County>> pairs = new HashSet<KeyValuePair<int,County>>();
+            ICollection<KeyValuePair<int, NAUType>> pairs = new HashSet<KeyValuePair<int, NAUType>>();
             DataTable table = Table;
             foreach (DataRow row in table.Rows)
             {
-                County county = new County(row);
-                pairs.Add(county.Pair);
+                NAUType type = new NAUType(row);
+                pairs.Add(type.Pair);
             }
             return pairs.GetEnumerator();
         }
@@ -87,16 +87,17 @@ namespace NAUCountryA.Tables
             return GetEnumerator();
         }
 
-        public bool TryGetValue(int countyCode, [MaybeNullWhen(false)] out County value)
+        public bool TryGetValue(int typeCode, [MaybeNullWhen(false)] out NAUType value)
         {
             value = null;
-            return ContainsKey(countyCode);
+            return ContainsKey(typeCode);
         }
+
         private IEnumerable<string> CsvContents
         {
             get
             {
-                return Service.ToCollection("A23_County");
+                return Service.ToCollection("A23_TYPE");
             }
         }
 
@@ -104,7 +105,7 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                string sqlCommand = "SELECT * FROM public.\"County\";";
+                string sqlCommand = "SELECT * FROM public.\"Type\";";
                 return Service.GetDataTable(sqlCommand);
             }
         }
@@ -112,23 +113,26 @@ namespace NAUCountryA.Tables
         private void AddEntries()
         {
             IEnumerator<string> lines = CsvContents.GetEnumerator();
-            if (lines.MoveNext())
+            if(lines.MoveNext())
             {
                 string headerLine = lines.Current;
                 string[] headers = headerLine.Split(',');
                 while (lines.MoveNext())
                 {
                     string line = lines.Current;
-                    string[] values = line.Split(',');
-                    int countyCode = (int)Service.ExpressValue(values[4]);
-                    int stateCode = (int)Service.ExpressValue(values[3]);
-                    string countyName = (string)Service.ExpressValue(values[5]);
+                    string[] values = line.Split(",");
+                    int typeCode = (int)Service.ExpressValue(values[4]);
+                    string typeName = (string)Service.ExpressValue(values[5]);
+                    string typeAbbreviation = (string)Service.ExpressValue(values[6]);
+                    int commodityCode = (int)Service.ExpressValue(values[3]); 
+                    DateTime releasedDate = (DateTime)Service.ExpressValue(values[8]);
                     string recordTypeCode = (string)Service.ExpressValue(values[0]);
-                    if (!ContainsKey(countyCode))
+                    if(!ContainsKey(typeCode))
                     {
-                        string sqlCommand = $"INSERT INTO public.\"County\" ('{headers[4]}','{headers[3]}'" + 
-                            $",'{headers[5]}','{headers[0]}') VALUES ('{countyCode}','{stateCode}'," +
-                            $"''{countyName}'',''{recordTypeCode}'');";
+                        string sqlCommand = $"INSERT INTO public.\"State\" ('{headers[4]}','{headers[5]}'," + 
+                            $"'{headers[6]}','{headers[3]}','{headers[8]}','{headers[0]}') VALUES ('{typeCode}'," +
+                            $"''{typeName}'',''{typeAbbreviation}'','{commodityCode}',''{Service.ToString(releasedDate)}''" +
+                            $",''{recordTypeCode}'');";
                         Service.GetDataTable(sqlCommand);
                     }
                 }
@@ -137,7 +141,7 @@ namespace NAUCountryA.Tables
 
         private void ConstructTable()
         {
-            string sqlCommand = Service.GetCreateTableSQLCommand("county");
+            string sqlCommand = Service.GetCreateTableSQLCommand("type");
             NpgsqlCommand cmd = new NpgsqlCommand(sqlCommand, Service.User.Connection);
             cmd.Connection.Open();
             cmd.ExecuteNonQuery();
@@ -147,19 +151,19 @@ namespace NAUCountryA.Tables
         private void TrimEntries()
         {
             ICollection<string> contents = new HashSet<string>();
-            foreach(string line in CsvContents)
+            foreach (string line in CsvContents)
             {
                 string[] values = line.Split(',');
-                contents.Add($"'{values[4]}','{values[3]}','{values[5]}','{values[0]}'");
+                contents.Add($"'{values[4]}','{values[5]}','{values[6]}','{values[3]}','{values[8]}','{values[0]}'");
             }
             int position = 0;
             while (position < Count)
             {
-                County county = new County(Table.Rows[position]);
-                if (!contents.Contains(county.ToString()))
+                NAUType type = new NAUType(Table.Rows[position]);
+                if(!contents.Contains(type.ToString()))
                 {
-                    string sqlCommand = "DELETE FROM public.\"County\" WHERE \"COUNTY_CODE\" = '" + 
-                        county.CountyCode + "';";
+                    string sqlCommand = "DELETE FROM public.\"Type\" WHERE \"TYPE_NAME\" = '" +
+                        type.TypeName + "';";
                     Service.GetDataTable(sqlCommand);
                 }
                 else
@@ -167,6 +171,8 @@ namespace NAUCountryA.Tables
                     position++;
                 }
             }
+
         }
+
     }
 }

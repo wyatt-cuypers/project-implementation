@@ -128,7 +128,7 @@ namespace NAUCountryATest
                 actualFirstEntry = lineEnumerator.Current;
             }
             Assert.That(actualFirstEntry, Is.EqualTo(expectedFirstEntry));
-        }
+        }*/
 
         [Test]
         public void TestExpressValue1()
@@ -144,6 +144,15 @@ namespace NAUCountryATest
             int expected = 1;
             int actual = (int)Service.ExpressValue("\"01\"");
             Assert.That(actual, Is.EqualTo(expected));
-        }*/
+        }
+
+        [Test]
+
+        public void TestExpressValue3()
+        {
+            double expected = 0.0;
+            double actual = (double)Service.ExpressValue("\"\"");
+            Assert.That(actual, Is.EqualTo(expected));
+        }
     }
 }

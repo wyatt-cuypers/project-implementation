@@ -67,6 +67,19 @@ namespace NAUCountryA.Models
             return Equals((County)obj);
         }
 
+        public string FormatCountyCode()
+        {
+            if (CountyCode < 10)
+            {
+                return $"\"00'{CountyCode}'\"";
+            }
+            else if (CountyCode < 100)
+            {
+                return $"\"0'{CountyCode}'\"";
+            }
+            return $"\"'{CountyCode}'\"";
+        }
+
         public override int GetHashCode()
         {
             return base.GetHashCode();
@@ -74,7 +87,7 @@ namespace NAUCountryA.Models
 
         public override string ToString()
         {
-            return base.ToString();
+            return $"'{FormatCountyCode()}','{State.FormatStateCode()}',\"'{CountyName}'\",\"'{RecordType.RecordTypeCode}'\"";
         }
 
         public static bool operator== (County a, County b)

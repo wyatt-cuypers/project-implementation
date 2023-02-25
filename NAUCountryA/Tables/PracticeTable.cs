@@ -27,12 +27,11 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                string sqlCommand = "SELECT * FROM public.\"Practice\" WHERE \"PRACTICE_CODE\" = " 
-                + practiceCode + ";";
+                string sqlCommand = $"SELECT * FROM public.\"Practice\" WHERE \"PRACTICE_CODE\" = '{practiceCode}';";
                 DataTable table = Service.GetDataTable(sqlCommand);
                 if (table.Rows.Count == 0)
                 {
-                    throw new KeyNotFoundException("The PRACTICE_CODE: " + practiceCode + " doesn't exist.");
+                    throw new KeyNotFoundException($"The PRACTICE_CODE: '{practiceCode}' doesn't exist.");
                 }
                 return new Practice(table.Rows[0]);
             }
@@ -66,8 +65,7 @@ namespace NAUCountryA.Tables
 
         public bool ContainsKey(int practiceCode)
         {
-            string sqlCommand = "SELECT * FROM public.\"Practice\" WHERE \"PRACTICE_CODE\" = " 
-                + practiceCode + ";";
+            string sqlCommand = $"SELECT * FROM public.\"Practice\" WHERE \"PRACTICE_CODE\" = '{practiceCode}';";
             DataTable table = Service.GetDataTable(sqlCommand);
             return table.Rows.Count >= 1;
         }
@@ -130,12 +128,10 @@ namespace NAUCountryA.Tables
                     string recordTypeCode = (string)Service.ExpressValue(values[0]);
                     if (!ContainsKey(practiceCode))
                     {
-                        string sqlCommand = "INSERT INTO public.\"Practice\" (" +
-                            headers[4] + "," + headers[5] + "," + headers[6] + "," + headers[3] + "," +
-                            headers[8] + "," + headers[0] + ") VALUES " + 
-                            "(" + practiceCode + ", '" + practiceName + "', '" +
-                            practiceAbbreviation + "', '" + commodityCode + "', '" + 
-                            Service.ToString(releasedDate) + "', '" + recordTypeCode + "');";
+                        string sqlCommand = $"INSERT INTO public.\"Practice\" ('{headers[4]}','{headers[5]}'," +
+                        $"'{headers[6]}','{headers[3]}','{headers[8]}',{headers[0]}') VALUES ('{practiceCode}'," + 
+                        $"''{practiceName}'',''{practiceAbbreviation}'','{commodityCode}',''{Service.ToString(releasedDate)}''," +
+                        $"''{recordTypeCode}'');";
                         Service.GetDataTable(sqlCommand);
                     }
                 }
@@ -157,41 +153,13 @@ namespace NAUCountryA.Tables
             foreach(string line in CsvContents)
             {
                 string[] values = line.Split(',');
-                contents.Add(values[4] + "," + values[5] + "," + values[6] + "," + values[3] + "," +
-                             values[8] + "," + values[0]);
+                contents.Add($"'{values[4]}','{values[5]}','{values[6]}','{values[3]}','{values[8]}','{values[0]}'");
             }
             int position = 0;
             while (position < Count)
             {
                 Practice practice = new Practice(Table.Rows[position]);
-                string lineFromTable = "\"";
-                if (practice.PracticeCode < 10)
-                {
-                    lineFromTable += "00";
-                }
-                else if (practice.PracticeCode < 100)
-                {
-                    lineFromTable += "0";
-                }
-                lineFromTable += practice.PracticeCode + "\",\"" + practice.PracticeName + "\",\"" +
-                    practice.PracticeAbbreviation + "\",\"";
-                if (practice.Commodity.CommodityCode < 10)
-                {
-                    lineFromTable += "000";
-                }
-                else if (practice.Commodity.CommodityCode < 100)
-                {
-                    lineFromTable += "00";
-                }
-                else if (practice.Commodity.CommodityCode < 1000)
-                {
-                    lineFromTable += "0";
-                } 
-                lineFromTable += practice.Commodity.CommodityCode + "\",\"" +
-                    Service.ToString(practice.ReleasedDate) + "\",\"" +
-                    practice.RecordType.RecordTypeCode + "\"";
-
-                if (!contents.Contains(lineFromTable))
+                if (!contents.Contains(practice.ToString()))
                 {
                     string sqlCommand = "DELETE FROM public.\"Practice\" WHERE \"PRACTICE_CODE\" = '" + 
                         practice.PracticeCode + "';";

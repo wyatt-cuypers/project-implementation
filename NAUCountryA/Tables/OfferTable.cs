@@ -95,12 +95,13 @@ namespace NAUCountryA.Tables
             return ContainsKey(offerID);
         }
 
-        private ICollection<ICollection<string>> CsvContents
+        private IEnumerable<KeyValuePair<int,IEnumerable<string>>> CsvContents
         {
             get
             {
-                ICollection<ICollection<string>> contents = new List<ICollection<string>>();
-                contents.Add(Service.ToCollection("A22_Price"));
+                IDictionary<int,IEnumerable<string>> contents = new Dictionary<int,IEnumerable<string>>();
+                contents.Add(2022, Service.ToCollection("A22_INSURANCE_OFFER"));
+                contents.Add(2023, Service.ToCollection("A23_INSURANCE_OFFER"));
                 return contents;
             }
         }
@@ -116,10 +117,9 @@ namespace NAUCountryA.Tables
 
         private void AddEntries()
         {
-            ICollection<ICollection<string>> csvContents = CsvContents;
-            foreach (ICollection<string> contents in csvContents)
+            foreach (KeyValuePair<int,IEnumerable<string>> pair in CsvContents)
             {
-                IEnumerator<string> lines = contents.GetEnumerator();
+                IEnumerator<string> lines = pair.Value.GetEnumerator();
                 if (lines.MoveNext())
                 {
                     string headerLine = lines.Current;
@@ -129,16 +129,17 @@ namespace NAUCountryA.Tables
                         string line = lines.Current;
                         string[] values = line.Split(',');
                         int offerID = (int)Service.ExpressValue(values[0]);
-                        int practiceCode = (int)Service.ExpressValue(values[2]);
-                        int countyCode = (int)Service.ExpressValue(values[3]);
-                        int typeCode = (int)Service.ExpressValue(values[4]);
+                        int stateCode = (int)Service.ExpressValue(values[1]);
+                        int practiceCode = (int)Service.ExpressValue(values[4]);
+                        int countyCode = (int)Service.ExpressValue(values[2]);
+                        int typeCode = (int)Service.ExpressValue(values[3]);
                         int irrigationPracticeCode = (int)Service.ExpressValue(values[5]);
                         if (!ContainsKey(offerID))
                         {
-                            string sqlCommand = "INSERT INTO public.\"Offer\" (" +
-                                headers[0] + "," + headers[2] + "," + headers[3] + "," + headers[4] + "," + headers[5] ") VALUES " +
-                                "('" + offerID + "', " + practiceCode + "," +
-                                countyCode + "," + typeCode + "," + irrigationPracticeCode + ");";
+                            string sqlCommand = $"INSERT INTO public.\"Offer\" ('{headers[0]}','{headers[1]},'" +
+                            $"'{headers[4]}','{headers[2]}','{headers[3]}','{headers[5]}',\"YEAR\") VALUES ('" + 
+                            $"'{offerID}','{stateCode}','{practiceCode}','{countyCode}','{typeCode}," + 
+                            $"'{irrigationPracticeCode}','{pair.Key}');";
                             Service.GetDataTable(sqlCommand);
                         }
                     }
@@ -158,52 +159,22 @@ namespace NAUCountryA.Tables
         private void TrimEntries()
         {
             ICollection<string> contents = new HashSet<string>();
-            foreach (ICollection<string> contents1 in CsvContents)
+            foreach (KeyValuePair<int,IEnumerable<string>> pair in CsvContents)
             {
-                foreach (string line in contents1)
+                foreach (string line in pair.Value)
                 {
                     string[] values = line.Split(',');
-                    contents.Add(values[0] + "," + values[2] + "," + values[3] + "," + values[4] + "," + values[5]);
+                    contents.Add($"'{values[0]}','{values[1]}','{values[4]}','{values[2]}','{values[3]}'," +
+                    $"'{values[5]}','{pair.Key}'");
                 }
             }
             int position = 0;
             while (position < Count)
             {
                 Offer offer = new Offer(Table.Rows[position]);
-                string lineFromTable = "\"";
-                if (offer.OfferID < 10)
+                if (!contents.Contains(offer.ToString()))
                 {
-                    lineFromTable += "0000000";
-                }
-                else if (offer.OfferID < 100)
-                {
-                    lineFromTable += "000000";
-                }
-                else if (offer.OfferID < 1000)
-                {
-                    lineFromTable += "00000";
-                }
-                else if (offer.OfferID < 10000)
-                {
-                    lineFromTable += "0000";
-                }
-                else if (offer.OfferID < 100000)
-                {
-                    lineFromTable += "000";
-                }
-                else if (offer.OfferID < 1000000)
-                {
-                    lineFromTable += "00";
-                }
-                else if (offer.OfferID < 10000000)
-                {
-                    lineFromTable += "0";
-                }
-                lineFromTable += offer.OfferID + "\",\"" + offer.PracticeCode + "\",\"" + offer.CountyCode + "\",\"" + offer.TypeCode + "\",\"" + offer.IrrigationPracticeCode "\"";
-                if (!contents.Contains(lineFromTable))
-                {
-                    string sqlCommand = "DELETE FROM public.\"Offer\" WHERE \"ADM_INSURANCE_OFFER_ID\" = '" +
-                        offer.OfferID + "';";
+                    string sqlCommand = $"DELETE FROM public.\"Offer\" WHERE \"ADM_INSURANCE_OFFER_ID\" = '{offer.OfferID}';";
                     Service.GetDataTable(sqlCommand);
                 }
                 else

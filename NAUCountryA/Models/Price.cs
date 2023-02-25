@@ -29,6 +29,14 @@ namespace NAUCountryA.Models
             private set;
         }
 
+        public KeyValuePair<Offer,Price> Pair
+        {
+            get
+            {
+                return new KeyValuePair<Offer,Price>(Offer, this);
+            }
+        }
+
         public bool Equals(Price other)
         {
             return Offer == other.Offer && ExpectedIndexValue== other.ExpectedIndexValue;
@@ -50,7 +58,7 @@ namespace NAUCountryA.Models
 
         public override string ToString()
         {
-            return base.ToString();
+            return $"'{Offer.FormatOfferID()}',\"'{Service.ToString(ExpectedIndexValue)}'\"";
         }
 
         public static bool operator ==(Price a, Price b)

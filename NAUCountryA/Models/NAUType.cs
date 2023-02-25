@@ -60,6 +60,14 @@ namespace NAUCountryA.Models
             private set;
         }
 
+        public KeyValuePair<int, NAUType> Pair
+        {
+            get
+            {
+                return new KeyValuePair<int,NAUType>(TypeCode, this);
+            }
+        }
+
         public bool Equals(NAUType other)
         {
             return TypeCode == other.TypeCode &&
@@ -68,7 +76,19 @@ namespace NAUCountryA.Models
                 Commodity == other.Commodity &&
                 Service.DateTimeEquals(ReleasedDate, other.ReleasedDate) &&
                 RecordType == other.RecordType;
+        }
 
+        public string FormatTypeCode()
+        {
+            if (TypeCode < 10)
+            {
+                return $"\"00'{TypeCode}'\"";
+            }
+            else if (TypeCode < 100)
+            {
+                return $"\"0'{TypeCode}'\"";
+            }
+            return $"\"'{TypeCode}'\"";
         }
 
         public override bool Equals(object obj)
@@ -87,7 +107,8 @@ namespace NAUCountryA.Models
 
         public override string ToString()
         {
-            return base.ToString();
+            return $"'{FormatTypeCode()}',\"'{TypeName}'\",\"'{TypeAbbreviation}'\",'{Commodity.FormatCommodityCode()}'" +
+                $"\"'{Service.ToString(ReleasedDate)}'\",\"'{RecordType.RecordTypeCode}'\"";
         }
 
         public static bool operator ==(NAUType a, NAUType b)

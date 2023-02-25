@@ -27,12 +27,11 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                string sqlCommand = "SELECT * FROM public.\"Commodity\" WHERE \"COMMODITY_CODE\" = " 
-                + commodityCode + ";";
+                string sqlCommand = $"SELECT * FROM public.\"Commodity\" WHERE \"COMMODITY_CODE\" = '{commodityCode}';";
                 DataTable table = Service.GetDataTable(sqlCommand);
                 if (table.Rows.Count == 0)
                 {
-                    throw new KeyNotFoundException("The COMMODITY_CODE: " + commodityCode + " doesn't exist.");
+                    throw new KeyNotFoundException($"The COMMODITY_CODE: '{commodityCode}' doesn't exist.");
                 }
                 return new Commodity(table.Rows[0]);
             }
@@ -66,8 +65,7 @@ namespace NAUCountryA.Tables
 
         public bool ContainsKey(int commodityCode)
         {
-            string sqlCommand = "SELECT * FROM public.\"Commodity\" WHERE \"COMMODITY_CODE\" = " 
-                + commodityCode + ";";
+            string sqlCommand = $"SELECT * FROM public.\"Commodity\" WHERE \"COMMODITY_CODE\" = '{commodityCode}';";
             DataTable table = Service.GetDataTable(sqlCommand);
             return table.Rows.Count >= 1;
         }
@@ -131,12 +129,10 @@ namespace NAUCountryA.Tables
                     string recordTypeCode = (string)Service.ExpressValue(values[0]);
                     if (!ContainsKey(commodityCode))
                     {
-                        string sqlCommand = "INSERT INTO public.\"Commodity\" (" +
-                            headers[4] + "," + headers[5] + "," + headers[6] + "," + headers[7] + "," +
-                            headers[3] + "," + headers[9] + "," + headers[0] + ") VALUES " + 
-                            "(" + commodityCode + ", '" + commodityName + "', '" +
-                            commodityAbbreviation + "', '" + annualPlantingCode + "', " + commodityYear +
-                            ", " + releasedDate + ", '" + recordTypeCode + "');";
+                        string sqlCommand = $"INSERT INTO public.\"Commodity\" ('{headers[4]}','{headers[5]}','{headers[6]}','{headers[7]}'" +
+                            $"'{headers[3]}','{headers[9]}','{headers[0]}') VALUES (" + 
+                            $"'{commodityCode}',''{commodityName}'',''{commodityAbbreviation}'',''{annualPlantingCode}'','{commodityYear}'," +
+                            $"''{Service.ToString(releasedDate)}'',''{recordTypeCode}'');";
                         Service.GetDataTable(sqlCommand);
                     }
                 }
@@ -158,35 +154,17 @@ namespace NAUCountryA.Tables
             foreach(string line in CsvContents)
             {
                 string[] values = line.Split(',');
-                contents.Add(values[4] + "," + values[5] + "," + values[6] + "," + values[7] + "," +
-                    values[3] + "," + values[9] + "," + values[0]);
+                contents.Add($"'{values[4]}','{values[5]}','{values[6]}','{values[7]}'," +
+                    $"'{values[3]}','{values[9]}','{values[0]}'");
             }
             int position = 0;
             while (position < Count)
             {
                 Commodity commodity = new Commodity(Table.Rows[position]);
-                string lineFromTable = "\"";
-                if (commodity.CommodityCode < 10)
+                if (!contents.Contains(commodity.ToString()))
                 {
-                    lineFromTable += "000";
-                }
-                else if (commodity.CommodityCode < 100)
-                {
-                    lineFromTable += "00";
-                }
-                else if (commodity.CommodityCode < 1000)
-                {
-                    lineFromTable += "0";
-                }
-                lineFromTable += commodity.CommodityCode + "\",\"" + commodity.CommodityName + "\",\"" +
-                    commodity.CommodityAbbreviation + "\",\"" + commodity.AnnualPlantingCode + "\",\"" +
-                    commodity.CommodityYear + "\",\"" + Service.ToString(commodity.ReleasedDate) + "\",\"" +
-                    commodity.RecordType.RecordTypeCode + "\"";
-
-                if (!contents.Contains(lineFromTable))
-                {
-                    string sqlCommand = "DELETE FROM public.\"Commodity\" WHERE \"COMMODITY_CODE\" = '" + 
-                        commodity.CommodityCode + "';";
+                    string sqlCommand = "DELETE FROM public.\"Commodity\" WHERE \"COMMODITY_CODE\" =" + 
+                        $"'{commodity.CommodityCode}';";
                     Service.GetDataTable(sqlCommand);
                 }
                 else

@@ -66,6 +66,15 @@ namespace NAUCountryA.Models
             return Equals((State)obj);
         }
 
+        public string FormatStateCode()
+        {
+            if (StateCode < 10)
+            {
+                return $"\"0'{StateCode}'\"";
+            }
+            return $"\"'{StateCode}\"";
+        }
+
         public override int GetHashCode()
         {
             return base.GetHashCode();
@@ -73,7 +82,7 @@ namespace NAUCountryA.Models
 
         public override string ToString()
         {
-            return base.ToString();
+            return $"'{FormatStateCode()}',\"'{StateName}'\",\"'{StateAbbreviation}'\",\"'{RecordType.RecordTypeCode}'\"";
         }
 
         public static bool operator ==(State a, State b)

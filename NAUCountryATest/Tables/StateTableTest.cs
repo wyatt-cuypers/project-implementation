@@ -8,7 +8,7 @@ namespace NAUCountryATest.Tables
 {
     public class StateTableTest
     {
-        [SetUp]
+        /*[SetUp]
         public void Setup()
         {
             try
@@ -25,6 +25,6 @@ namespace NAUCountryATest.Tables
         public void Test1()
         {
             Assert.Pass();
-        }
+        }*/
     }
 }
