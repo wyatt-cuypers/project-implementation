@@ -1,19 +1,12 @@
 using NAUCountryA.Tables;
+using System.Collections.Generic;
 using System.Data;
 
 namespace NAUCountryA.Models
 {
     public class Offer : IEquatable<Offer>
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        public State(int offerID, int practiceCode, int countyCode, int typeCode, int irrigationPracticeCode)
-=======
-        public Offer(int offerID, int practiceCode, int countyCode, int typeCode, int irrigationPracticeCode, int year)
->>>>>>> 8e53eab381027d36464f769cdd8357eb2496c463
-=======
         public Offer(int offerID, int stateCode, int practiceCode, int countyCode, int typeCode, int irrigationPracticeCode, int year)
->>>>>>> ab71ab6b3641c1062593458fe8026b871a58ca96
         {
             OfferID = offerID;
             IReadOnlyDictionary<int, State> stateEntries = new StateTable();
@@ -28,17 +21,8 @@ namespace NAUCountryA.Models
             Year = year;
         }
 
-<<<<<<< HEAD
-        public State(DataRow row)
-        : this((int)row["ADM_INSURANCE_OFFER_ID"], (int)row["PRACTICE_CODE"], (int)row["COUNTY_CODE"], (int)row["TYPE_CODE"], (int) row["IRRIGATION_PRACTICE_CODE"])
-=======
         public Offer(DataRow row)
-<<<<<<< HEAD
-        : this((int)row["ADM_INSURANCE_OFFER_ID"], (int)row["PRACTICE_CODE"], (int)row["COUNTY_CODE"], int)row["TYPE_CODE"], (int) row["IRRIGATION_PRACTICE_CODE"])
->>>>>>> 8e53eab381027d36464f769cdd8357eb2496c463
-=======
-        : this((int)row["ADM_INSURANCE_OFFER_ID"],(int)row["STATE_CODE"], (int)row["PRACTICE_CODE"], (int)row["COUNTY_CODE"], (int)row["TYPE_CODE"], (int)row["IRRIGATION_PRACTICE_CODE"],(int)row["YEAR"])
->>>>>>> ab71ab6b3641c1062593458fe8026b871a58ca96
+        : this((int)row["ADM_INSURANCE_OFFER_ID"], (int)row["STATE_CODE"], (int)row["PRACTICE_CODE"], (int)row["COUNTY_CODE"], (int)row["TYPE_CODE"], (int)row["IRRIGATION_PRACTICE_CODE"], (int)row["YEAR"])
         {
         }
 
@@ -85,7 +69,7 @@ namespace NAUCountryA.Models
         }
 
 
-    public KeyValuePair<int, Offer> Pair
+        public KeyValuePair<int, Offer> Pair
         {
             get
             {
