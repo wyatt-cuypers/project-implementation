@@ -22,7 +22,7 @@ namespace NAUCountryATest.Tables
             }
             catch (NullReferenceException)
             {
-                Service.InitializeUserTo(new User("localhost", 2023, "postgres", "naucountrydev"));
+                Service.InitializeUserTo(new NAUUser("localhost", 2023, "postgres", "naucountrydev"));
             }
         }
 

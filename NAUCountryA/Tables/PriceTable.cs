@@ -1,13 +1,15 @@
 using NAUCountryA.Models;
-using System;
+using Npgsql;
 using System.Collections;
+using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace NAUCountryA.Tables
 {
-    public class PriceTable : IReadOnlyDictionary<string, Price>
+    public class PriceTable : IReadOnlyDictionary<Offer, Price>
     {
         public PriceTable()
         {
@@ -24,27 +26,26 @@ namespace NAUCountryA.Tables
             }
         }
 
-        public Price this[string offerID]
+        public Price this[Offer offer]
         {
             get
             {
-                string sqlCommand = "SELECT * FROM public.\"Price\" WHERE \"OFFER_ID\" = '"
-                + offerID + "';";
+                string sqlCommand = $"SELECT * FROM public.\"Price\" WHERE \"OFFER_ID\" = '{offer.OfferID}';";
                 DataTable table = Service.GetDataTable(sqlCommand);
                 if (table.Rows.Count == 0)
                 {
-                    throw new KeyNotFoundException("The OFFER_ID: " + offerID + " doesn't exist.");
+                    throw new KeyNotFoundException($"The OFFER_ID: '{offer.OfferID}' doesn't exist.");
                 }
                 return new Price(table.Rows[0]);
             }
         }
 
-        public IEnumerable<string> Keys
+        public IEnumerable<Offer> Keys
         {
             get
             {
-                ICollection<string> keys = new HashSet<string>();
-                foreach (KeyValuePair<string, State> pair in this)
+                ICollection<Offer> keys = new HashSet<Offer>();
+                foreach (KeyValuePair<Offer, Price> pair in this)
                 {
                     keys.Add(pair.Key);
                 }
@@ -57,7 +58,7 @@ namespace NAUCountryA.Tables
             get
             {
                 ICollection<Price> values = new List<Price>();
-                foreach (KeyValuePair<string, Price> pair in this)
+                foreach (KeyValuePair<Offer, Price> pair in this)
                 {
                     values.Add(pair.Value);
                 }
@@ -65,22 +66,21 @@ namespace NAUCountryA.Tables
             }
         }
 
-        public bool ContainsKey(int offerID)
+        public bool ContainsKey(Offer offer)
         {
-            string sqlCommand = "SELECT * FROM public.\"Price\" WHERE \"OFFER_ID\" = '"
-                + offerID + "';";
+            string sqlCommand = $"SELECT * FROM public.\"Price\" WHERE \"OFFER_ID\" = '{offer.OfferID}';";
             DataTable table = Service.GetDataTable(sqlCommand);
             return table.Rows.Count >= 1;
         }
 
-        public IEnumerator<KeyValuePair<string, Price>> GetEnumerator()
+        public IEnumerator<KeyValuePair<Offer, Price>> GetEnumerator()
         {
-            ICollection<KeyValuePair<string, Price>> pairs = new HashSet<KeyValuePair<string, Price>>();
+            ICollection<KeyValuePair<Offer, Price>> pairs = new HashSet<KeyValuePair<Offer, Price>>();
             DataTable table = Table;
             foreach (DataRow row in table.Rows)
             {
                 Price price = new Price(row);
-                pairs.Add(Price.Pair);
+                pairs.Add(price.Pair);
             }
             return pairs.GetEnumerator();
         }
@@ -90,10 +90,10 @@ namespace NAUCountryA.Tables
             return GetEnumerator();
         }
 
-        public bool TryGetValue(string offerID, [MaybeNullWhen(false)] out Price value)
+        public bool TryGetValue(Offer offer, [MaybeNullWhen(false)] out Price value)
         {
             value = null;
-            return ContainsKey(offerID);
+            return ContainsKey(offer);
         }
 
         private ICollection<ICollection<string>> CsvContents
@@ -101,7 +101,8 @@ namespace NAUCountryA.Tables
             get
             {
                 ICollection<ICollection<string>> contents = new List<ICollection<string>>();
-                contents.Add(Service.ToCollection("A23_INSURANCE_OFFER"));
+                contents.Add(Service.ToCollection("A22_PRICE"));
+                contents.Add(Service.ToCollection("A23_Price"));
                 return contents;
             }
         }
@@ -116,8 +117,7 @@ namespace NAUCountryA.Tables
 
         private void AddEntries()
         {
-            ICollection<ICollection<string>> csvContents = CsvContents;
-            foreach (ICollection<string> contents in csvContents)
+            foreach (ICollection<string> contents in CsvContents)
             {
                 IEnumerator<string> lines = contents.GetEnumerator();
                 if (lines.MoveNext())
@@ -129,12 +129,12 @@ namespace NAUCountryA.Tables
                         string line = lines.Current;
                         string[] values = line.Split(",");
                         int offerID = (int)Service.ExpressValue(values[0]);
-                        double expectedIndexValue = (double)Service.ExpressValue(values[1]); 
-                        if(!ContainsKey(offerID))
+                        double expectedIndexValue = (double)Service.ExpressValue(values[1]);
+                        IReadOnlyDictionary<int,Offer> offerEntries = new OfferTable();
+                        if(!ContainsKey(offerEntries[offerID]))
                         {
-                            string sqlCommand = "INSERT INTO public.\"Price\" (" +
-                                headers[0] + "," + headers[1] ") VALUES" +
-                                "('" + offerID + "," + expectedIndexValue + ");";
+                            string sqlCommand = $"INSERT INTO public.\"Price\" ('{headers[0]}','{headers[1]}') VALUES " +
+                                $"('{offerID}','{expectedIndexValue});";
                             Service.GetDataTable(sqlCommand);
 
                         }
@@ -161,23 +161,17 @@ namespace NAUCountryA.Tables
                 foreach (string line in contents1)
                 {
                     string[] values = line.Split(',');
-                    contents.Add(values[0] + "," + values[1] + "," + values[2] + "," + values[3]);
+                    contents.Add($"'{values[0]}','{values[1]}'");
                 }
             }
             int position = 0;
             while(position < Count)
             {
                 Price price = new Price(Table.Rows[position]);
-                string lineFromTable = "\"" + price.OfferID + "\"";
-                if(price.OfferID < 10)
+                if(!contents.Contains(price.ToString()))
                 {
-                    lineFromTable += "0";
-                }
-                lineFromTable += price.ExpectedIndexValue "\"";
-                if(!contents.Contains(lineFromTable))
-                {
-                    string sqlCommand = "DELETE FROM public.\"Price\" WHERE \"EXPECTED_INDEX_VALUE\" = '" +
-                        price.ExpectedIndexValue + "\"";
+                    string sqlCommand = "DELETE FROM public.\"Price\" WHERE \"ADM_INSURACE_OFFER_ID\" = '" +
+                        price.Offer.OfferID + "\"";
                     Service.GetDataTable(sqlCommand);
                 }
                 else
@@ -185,7 +179,6 @@ namespace NAUCountryA.Tables
                     position++;
                 }
             }
-
-
         }
+    }
 }

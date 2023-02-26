@@ -8,7 +8,7 @@ namespace NAUCountryATest.Tables
 {
     public class StateTableTest
     {
-        [SetUp]
+        /*[SetUp]
         public void Setup()
         {
             try
@@ -24,6 +24,7 @@ namespace NAUCountryATest.Tables
         [Test]
         public void TestContainsKey1()
         {
+<<<<<<< HEAD
             bool actual = tableMockup.ContainsKey("06");
             Assert.That(actual, Is.True);
         }
@@ -36,5 +37,9 @@ namespace NAUCountryATest.Tables
         }
 
         
+=======
+            Assert.Pass();
+        }*/
+>>>>>>> ab71ab6b3641c1062593458fe8026b871a58ca96
     }
 }

@@ -1,4 +1,3 @@
-using System.Net;
 using NAUCountryA.Tables;
 using System.Data;
 
@@ -83,6 +82,19 @@ namespace NAUCountryA.Models
             return Equals((Practice)obj);
         }
 
+        public string FormatPracticeCode()
+        {
+            if (PracticeCode < 10)
+            {
+                return $"\"00'{PracticeCode}'\"";
+            }
+            else if (PracticeCode < 100)
+            {
+                return $"\"0'{PracticeCode}'\"";
+            }
+            return $"\"'{PracticeCode}'\"";
+        }
+
         public override int GetHashCode()
         {
             return base.GetHashCode();
@@ -90,7 +102,8 @@ namespace NAUCountryA.Models
 
         public override string ToString()
         {
-            return base.ToString();
+            return $"'{FormatPracticeCode()}',\"'{PracticeName}'\",\"'{PracticeAbbreviation}'\"," + 
+                $"'{Commodity.FormatCommodityCode()}',\"'{Service.ToString(ReleasedDate)}'\",\"'{RecordType.RecordTypeCode}'\"";
         }
 
         public static bool operator== (Practice a, Practice b)

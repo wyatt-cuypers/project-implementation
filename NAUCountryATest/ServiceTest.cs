@@ -1,4 +1,5 @@
 using NAUCountryA;
+using NAUCountryA.Models;
 namespace NAUCountryATest
 {
     public class ServiceTest
@@ -14,7 +15,7 @@ namespace NAUCountryATest
         [Test]
         public void TestInitialPathLocation()
         {
-            string expectedPath = "C:\\Users\\zakme\\OneDrive - North Dakota University System\\Documents\\project-implementation";
+            string expectedPath = "c:\\Users\\zakme\\OneDrive - North Dakota University System\\Documents\\project-implementation";
             Assert.That(Service.InitialPathLocation, Is.EqualTo(expectedPath));
         }
 
@@ -25,7 +26,7 @@ namespace NAUCountryATest
             Assert.That(Service.ToCollection("A22_INSURANCE_OFFER"), Has.Count.EqualTo(expected));
         }
 
-        /*[Test]
+        [Test]
         public void TestToCollectionOfA22_INSURANCE_OFFERHeaders()
         {
             string expectedHeaders = "\"ADM_INSURANCE_OFFER_ID\",\"STATE_CODE\",\"COUNTY_CODE\",\"TYPE_CODE\",\"PRACTICE_CODE\",\"IRRIGATION_PRACTICE_CODE\"";
@@ -144,6 +145,99 @@ namespace NAUCountryATest
             int expected = 1;
             int actual = (int)Service.ExpressValue("\"01\"");
             Assert.That(actual, Is.EqualTo(expected));
-        }*/
+        }
+
+        [Test]
+
+        public void TestExpressValue3()
+        {
+            double expected = 0.0;
+            double actual = (double)Service.ExpressValue("\"\"");
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void TestExpressValue4()
+        {
+            char expected = 'P';
+            char actual = (char)Service.ExpressValue("\"P\"");
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void TestExpressValue5()
+        {
+            double expected = 42.9;
+            double actual = (double)Service.ExpressValue("\"42.9000\"");
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void TestExpressValue6()
+        {
+            DateTime expected = new DateTime(2023, 2, 25);
+            DateTime actual = (DateTime)Service.ExpressValue("\"2/25/2023\"");
+            Assert.That(Service.DateTimeEquals(expected,actual), Is.True);
+        }
+
+        [Test]
+        public void TestGetCreateTableSQLCommand()
+        {
+            string expected = "CREATE TABLE IF NOT EXISTS public.\"Commodity\"" +
+            "(    " +
+                "\"COMMODITY_CODE\" integer NOT NULL,    " +
+                "\"COMMODITY_NAME\" character varying(30) NOT NULL,    " +
+                "\"COMMODITY_ABBREVIATION\" character varying(15) NOT NULL,    " +
+                "\"ANNUAL_PLANTING_CODE\" character(1) NOT NULL,    " +
+                "\"COMMODITY_YEAR\" integer NOT NULL,    " +
+                "\"RELEASED_DATE\" character varying(10) NOT NULL,    " +
+                "\"RECORD_TYPE_CODE\" character varying(10) NOT NULL,    " +
+                "CONSTRAINT \"Pk_Commodity\" PRIMARY KEY (\"COMMODITY_CODE\"),    " +
+                "CONSTRAINT \"Fk_RecordType\" FOREIGN KEY (\"RECORD_TYPE_CODE\")        " +
+                    "REFERENCES public.\"RecordType\" (\"RECORD_TYPE_CODE\") MATCH SIMPLE        " +
+                    "ON UPDATE NO ACTION        " +
+                    "ON DELETE NO ACTION        " +
+                    "NOT VALID" +
+            ")" +
+
+            "TABLESPACE pg_default;" + 
+
+            "ALTER TABLE IF EXISTS public.\"Commodity\"    " +
+                "OWNER to postgres;";
+            string actual = Service.GetCreateTableSQLCommand("commodity");
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void TestInitializeUserTo()
+        {
+            NAUUser user = new NAUUser("localhost", 2023, "postgres", "naucountrydev");
+            Service.InitializeUserTo(user);
+            Assert.That(user.Connection, Is.EqualTo(Service.User.Connection));
+        }
+
+        [Test]
+        public void TestToString1()
+        {
+            string expected = "2/25/2023";
+            string actual = Service.ToString(new DateTime(2023, 2, 25));
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void TestToString2()
+        {
+            string expected = "";
+            string actual = Service.ToString(0);
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void TestToString3()
+        {
+            string expected = "42.9000";
+            string actual = Service.ToString(42.9);
+            Assert.That(actual, Is.EqualTo(expected));
+        }
     }
 }

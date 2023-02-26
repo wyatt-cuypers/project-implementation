@@ -30,7 +30,7 @@ namespace NAUCountryA
             }
         }
 
-        public static User User
+        public static NAUUser User
         {
             get;
             private set;
@@ -58,7 +58,7 @@ namespace NAUCountryA
             string userID = Console.ReadLine();
             Console.WriteLine("Enter your password: ");
             string password = Console.ReadLine();
-            User = new User(serverName, portNumber, userID, password);
+            User = new NAUUser(serverName, portNumber, userID, password);
         }
 
         public static bool DateTimeEquals(DateTime a, DateTime b)
@@ -68,10 +68,22 @@ namespace NAUCountryA
 
         public static object ExpressValue(string value)
         {
+            if ("\"\"".Equals(value))
+            {
+                return 0.0;
+            }
             string temp = value.Substring(1, value.Length - 2);
-            if (IsInt(temp))
+            if (temp.Length == 1)
+            {
+                return temp[0];
+            }
+            else if (IsInt(temp))
             {
                 return Convert.ToInt32(temp);
+            }
+            else if (IsDouble(temp))
+            {
+                return Convert.ToDouble(temp);
             }
             else if (IsDate(temp))
             {
@@ -132,7 +144,7 @@ namespace NAUCountryA
             return table;
         }
 
-        public static void InitializeUserTo(User user)
+        public static void InitializeUserTo(NAUUser user)
         {
             User = user;
         }
@@ -166,6 +178,29 @@ namespace NAUCountryA
             return date.Month + "/" + date.Day + "/" + date.Year;
         }
 
+        public static string ToString(double number)
+        {
+            if (number == 0.0)
+            {
+                return "";
+            }
+            try
+            {
+                string temp = number.ToString().Split('.')[1];
+                switch (temp.Length)
+                {
+                    case 1: return $"{number.ToString()}000";
+                    case 2: return $"{number.ToString()}00";
+                    case 3: return $"{number.ToString()}0";
+                }
+                return $"'{number.ToString()}'";
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return $"{number.ToString()}.0000";
+            }
+        }
+
         private static string GetInitialPathLocation(string currentLocation)
         {
             DirectoryInfo temp = Directory.GetParent(currentLocation); 
@@ -181,6 +216,19 @@ namespace NAUCountryA
             try
             {
                 ToDateTime(value);
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        }
+
+        private static bool IsDouble(string value)
+        {
+            try
+            {
+                Convert.ToDouble(value);
                 return true;
             }
             catch (FormatException)
