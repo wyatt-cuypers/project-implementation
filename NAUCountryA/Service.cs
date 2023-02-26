@@ -73,7 +73,11 @@ namespace NAUCountryA
                 return 0.0;
             }
             string temp = value.Substring(1, value.Length - 2);
-            if (IsInt(temp))
+            if (temp.Length == 1)
+            {
+                return temp[0];
+            }
+            else if (IsInt(temp))
             {
                 return Convert.ToInt32(temp);
             }
@@ -185,15 +189,15 @@ namespace NAUCountryA
                 string temp = number.ToString().Split('.')[1];
                 switch (temp.Length)
                 {
-                    case 1: return $"'{number.ToString()}'000";
-                    case 2: return $"'{number.ToString()}'00";
-                    case 3: return $"'{number.ToString()}'0";
+                    case 1: return $"{number.ToString()}000";
+                    case 2: return $"{number.ToString()}00";
+                    case 3: return $"{number.ToString()}0";
                 }
                 return $"'{number.ToString()}'";
             }
             catch (IndexOutOfRangeException)
             {
-                return $"'{number.ToString()}.0000";
+                return $"{number.ToString()}.0000";
             }
         }
 
