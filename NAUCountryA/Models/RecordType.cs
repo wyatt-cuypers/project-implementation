@@ -68,7 +68,7 @@ namespace NAUCountryA.Models
 
         public override string ToString()
         {
-            return $"\"'{RecordTypeCode}'\",'{FormatRecordCategoryCode()}',\"'{ReinsuranceYear}'\"";
+            return $"\"{RecordTypeCode}\",{FormatRecordCategoryCode()},\"{ReinsuranceYear}\"";
         }
 
         public static bool operator== (RecordType a, RecordType b)
@@ -85,9 +85,9 @@ namespace NAUCountryA.Models
         {
             if (RecordCategoryCode < 10)
             {
-                return $"\"0'{RecordCategoryCode}'\"";
+                return $"\"0{RecordCategoryCode}\"";
             }
-            return $"\"'{RecordCategoryCode}'\"";
+            return $"\"{RecordCategoryCode}\"";
         }
     }
 }

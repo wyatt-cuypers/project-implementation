@@ -164,7 +164,7 @@ namespace NAUCountryA.Tables
                 foreach(string line in contents1)
                 {
                     string[] values = line.Split(',');
-                    contents.Add($"'{values[0]}','{values[1]}','{values[2]}'");
+                    contents.Add($"{values[0]},{values[1]},{values[2]}");
                 }
             }
             int position = 0;
@@ -173,7 +173,7 @@ namespace NAUCountryA.Tables
                 RecordType recordType = new RecordType(Table.Rows[position]);
                 if (!contents.Contains(recordType.ToString()))
                 {
-                    string sqlCommand = $"DELETE FROM public.\"RecordType\" WHERE \"RECORD_CATEGORY_CODE\" = ''{recordType.RecordTypeCode}''';";
+                    string sqlCommand = $"DELETE FROM public.\"RecordType\" WHERE \"RECORD_CATEGORY_CODE\" = '{recordType.RecordTypeCode}';";
                     Service.GetDataTable(sqlCommand);
                 }
                 else
