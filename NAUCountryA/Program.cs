@@ -1,10 +1,15 @@
 using System.Data;
+using System.Runtime.InteropServices;
 using Microsoft.VisualBasic.FileIO;
 using NAUCountryA;
 using NAUCountryA.Models;
 using NAUCountryA.Tables;
 using Npgsql;
+
+CreatePDF.Run();
 Service.ConstructUser();
+
+
 /*var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
