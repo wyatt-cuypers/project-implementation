@@ -8,6 +8,10 @@ using Npgsql;
 
 Service.ConstructUser();
 
+string sqlCommand = $"SELECT * FROM public.\"State\" WHERE \"STATE_CODE\" = 01;";
+System.Data.DataTable table = Service.GetDataTable(sqlCommand);
+Service.GeneratePDF(new State(table.Rows[0]));
+
 
 /*var builder = WebApplication.CreateBuilder(args);
 

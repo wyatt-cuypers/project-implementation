@@ -241,13 +241,5 @@ namespace NAUCountryATest
             string actual = Service.ToString(42.9);
             Assert.That(actual, Is.EqualTo(expected));
         }
-
-        [Test]
-        public void TestGeneratePDF()
-        {
-            string sqlCommand = $"SELECT * FROM public.\"State\" WHERE \"STATE_CODE\" = 01;";
-            System.Data.DataTable table = Service.GetDataTable(sqlCommand);
-            Service.GeneratePDF("C:\\Users\\delia\\Dropbox\\My PC (LAPTOP-HU4DP35J)\\Downloads\\", new State(table.Rows[0]));
-        }
     }
 }
