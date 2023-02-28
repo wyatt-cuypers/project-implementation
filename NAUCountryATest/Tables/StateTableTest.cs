@@ -40,6 +40,6 @@ namespace NAUCountryATest.Tables
 =======
             Assert.Pass();
         }*/
->>>>>>> ab71ab6b3641c1062593458fe8026b871a58ca96
+        //>>>>>>> ab71ab6b3641c1062593458fe8026b871a58ca96
     }
 }

@@ -1,5 +1,7 @@
 using NAUCountryA;
 using NAUCountryA.Models;
+using NAUCountryA.Tables;
+
 namespace NAUCountryATest
 {
     public class ServiceTest
@@ -177,7 +179,7 @@ namespace NAUCountryATest
         {
             DateTime expected = new DateTime(2023, 2, 25);
             DateTime actual = (DateTime)Service.ExpressValue("\"2/25/2023\"");
-            Assert.That(Service.DateTimeEquals(expected,actual), Is.True);
+            Assert.That(Service.DateTimeEquals(expected, actual), Is.True);
         }
 
         [Test]
@@ -200,7 +202,7 @@ namespace NAUCountryATest
                     "NOT VALID" +
             ")" +
 
-            "TABLESPACE pg_default;" + 
+            "TABLESPACE pg_default;" +
 
             "ALTER TABLE IF EXISTS public.\"Commodity\"    " +
                 "OWNER to postgres;";
@@ -238,6 +240,14 @@ namespace NAUCountryATest
             string expected = "42.9000";
             string actual = Service.ToString(42.9);
             Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void TestGeneratePDF()
+        {
+            string sqlCommand = $"SELECT * FROM public.\"State\" WHERE \"STATE_CODE\" = 01;";
+            System.Data.DataTable table = Service.GetDataTable(sqlCommand);
+            Service.GeneratePDF("C:\\Users\\delia\\Dropbox\\My PC (LAPTOP-HU4DP35J)\\Downloads\\", new State(table.Rows[0]));
         }
     }
 }

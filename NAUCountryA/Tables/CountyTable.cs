@@ -4,6 +4,7 @@ using System.Collections;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 
+
 namespace NAUCountryA.Tables
 {
     public class CountyTable : IReadOnlyDictionary<int, County>
@@ -36,13 +37,22 @@ namespace NAUCountryA.Tables
                 return new County(table.Rows[0]);
             }
         }
-
+        public DataTable getStateCounties(int stateCode)
+        {
+            string sqlCommand = $"SELECT * FROM public.\"County\" WHERE \"STATE_CODE\"='{stateCode}';";
+            DataTable table = Service.GetDataTable(sqlCommand);
+            if (table.Rows.Count == 0)
+            {
+                throw new KeyNotFoundException($"The STATE_CODE: '{stateCode}' doesn't exist.");
+            }
+            return table;
+        }
         public IEnumerable<int> Keys
         {
             get
             {
                 ICollection<int> keys = new HashSet<int>();
-                foreach (KeyValuePair<int,County> pair in this)
+                foreach (KeyValuePair<int, County> pair in this)
                 {
                     keys.Add(pair.Key);
                 }
@@ -55,7 +65,7 @@ namespace NAUCountryA.Tables
             get
             {
                 ICollection<County> values = new List<County>();
-                foreach (KeyValuePair<int,County> pair in this)
+                foreach (KeyValuePair<int, County> pair in this)
                 {
                     values.Add(pair.Value);
                 }
@@ -70,9 +80,9 @@ namespace NAUCountryA.Tables
             return table.Rows.Count >= 1;
         }
 
-        public IEnumerator<KeyValuePair<int,County>> GetEnumerator()
+        public IEnumerator<KeyValuePair<int, County>> GetEnumerator()
         {
-            ICollection<KeyValuePair<int,County>> pairs = new HashSet<KeyValuePair<int,County>>();
+            ICollection<KeyValuePair<int, County>> pairs = new HashSet<KeyValuePair<int, County>>();
             DataTable table = Table;
             foreach (DataRow row in table.Rows)
             {
@@ -126,7 +136,7 @@ namespace NAUCountryA.Tables
                     string recordTypeCode = (string)Service.ExpressValue(values[0]);
                     if (!ContainsKey(countyCode))
                     {
-                        string sqlCommand = $"INSERT INTO public.\"County\" ('{headers[4]}','{headers[3]}'" + 
+                        string sqlCommand = $"INSERT INTO public.\"County\" ('{headers[4]}','{headers[3]}'" +
                             $",'{headers[5]}','{headers[0]}') VALUES ('{countyCode}','{stateCode}'," +
                             $"''{countyName}'',''{recordTypeCode}'');";
                         Service.GetDataTable(sqlCommand);
@@ -147,7 +157,7 @@ namespace NAUCountryA.Tables
         private void TrimEntries()
         {
             ICollection<string> contents = new HashSet<string>();
-            foreach(string line in CsvContents)
+            foreach (string line in CsvContents)
             {
                 string[] values = line.Split(',');
                 contents.Add($"'{values[4]}','{values[3]}','{values[5]}','{values[0]}'");
@@ -158,7 +168,7 @@ namespace NAUCountryA.Tables
                 County county = new County(Table.Rows[position]);
                 if (!contents.Contains(county.ToString()))
                 {
-                    string sqlCommand = "DELETE FROM public.\"County\" WHERE \"COUNTY_CODE\" = '" + 
+                    string sqlCommand = "DELETE FROM public.\"County\" WHERE \"COUNTY_CODE\" = '" +
                         county.CountyCode + "';";
                     Service.GetDataTable(sqlCommand);
                 }

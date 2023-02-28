@@ -1,9 +1,15 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using NAUCountryA.Exceptions;
 using NAUCountryA.Models;
+using NAUCountryA.Tables;
 using Npgsql;
 using System.Data;
 using System.Data.Common;
+using System;
+using System.IO;
+using ceTe.DynamicPDF;
+using ceTe.DynamicPDF.PageElements;
+
 namespace NAUCountryA
 {
     public class Service
@@ -26,7 +32,7 @@ namespace NAUCountryA
         {
             get
             {
-                return GetInitialPathLocation(Path.GetFullPath("."));
+                return GetInitialPathLocation(System.IO.Path.GetFullPath("."));
             }
         }
 
@@ -203,7 +209,7 @@ namespace NAUCountryA
 
         private static string GetInitialPathLocation(string currentLocation)
         {
-            DirectoryInfo temp = Directory.GetParent(currentLocation); 
+            DirectoryInfo temp = Directory.GetParent(currentLocation);
             if (temp.Name.Equals("project-implementation"))
             {
                 return temp.FullName;
@@ -248,6 +254,30 @@ namespace NAUCountryA
             {
                 return false;
             }
+        }
+
+        public static void GeneratePDF(string outputpath, State state)
+        {
+            Document doc = new Document();
+            OfferTable offerTable = new OfferTable();
+            DataTable stateOffers = offerTable.getOffersByState(state.StateCode);
+
+            for (int i = 0; i < stateOffers.Rows.Count; i++)
+            {
+                Offer offer = new Offer(stateOffers.Rows[i]);
+
+                Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
+                doc.Pages.Add(page);
+
+                string labelText = offer.State.StateName + " " + offer.Practice.Commodity.CommodityName + " " + offer.Practice.PracticeName + " " + offer.Type.TypeName + " " + offer.Year.ToString();
+
+                Label label = new Label(labelText, 0, 0, 504, 100, Font.Helvetica, 18, TextAlign.Center);
+                page.Elements.Add(label);
+            }
+
+
+            doc.Draw(outputpath);
+
         }
     }
 }

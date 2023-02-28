@@ -38,6 +38,18 @@ namespace NAUCountryA.Tables
             }
         }
 
+        public DataTable getOffersByState(int stateCode)
+        {
+            string sqlCommand = "SELECT * FROM public.\"Offer\" WHERE \"STATE_CODE\" = '"
+                + stateCode + "';";
+            DataTable table = Service.GetDataTable(sqlCommand);
+            if (table.Rows.Count == 0)
+            {
+                throw new KeyNotFoundException("The STATE_CODE: " + stateCode + " doesn't exist.");
+            }
+            return table;
+        }
+
         public IEnumerable<int> Keys
         {
             get
@@ -95,11 +107,11 @@ namespace NAUCountryA.Tables
             return ContainsKey(offerID);
         }
 
-        private IEnumerable<KeyValuePair<int,IEnumerable<string>>> CsvContents
+        private IEnumerable<KeyValuePair<int, IEnumerable<string>>> CsvContents
         {
             get
             {
-                IDictionary<int,IEnumerable<string>> contents = new Dictionary<int,IEnumerable<string>>();
+                IDictionary<int, IEnumerable<string>> contents = new Dictionary<int, IEnumerable<string>>();
                 contents.Add(2022, Service.ToCollection("A22_INSURANCE_OFFER"));
                 contents.Add(2023, Service.ToCollection("A23_INSURANCE_OFFER"));
                 return contents;
@@ -117,7 +129,7 @@ namespace NAUCountryA.Tables
 
         private void AddEntries()
         {
-            foreach (KeyValuePair<int,IEnumerable<string>> pair in CsvContents)
+            foreach (KeyValuePair<int, IEnumerable<string>> pair in CsvContents)
             {
                 IEnumerator<string> lines = pair.Value.GetEnumerator();
                 if (lines.MoveNext())
@@ -137,8 +149,8 @@ namespace NAUCountryA.Tables
                         if (!ContainsKey(offerID))
                         {
                             string sqlCommand = $"INSERT INTO public.\"Offer\" ('{headers[0]}','{headers[1]},'" +
-                            $"'{headers[4]}','{headers[2]}','{headers[3]}','{headers[5]}',\"YEAR\") VALUES ('" + 
-                            $"'{offerID}','{stateCode}','{practiceCode}','{countyCode}','{typeCode}," + 
+                            $"'{headers[4]}','{headers[2]}','{headers[3]}','{headers[5]}',\"YEAR\") VALUES ('" +
+                            $"'{offerID}','{stateCode}','{practiceCode}','{countyCode}','{typeCode}," +
                             $"'{irrigationPracticeCode}','{pair.Key}');";
                             Service.GetDataTable(sqlCommand);
                         }
@@ -159,7 +171,7 @@ namespace NAUCountryA.Tables
         private void TrimEntries()
         {
             ICollection<string> contents = new HashSet<string>();
-            foreach (KeyValuePair<int,IEnumerable<string>> pair in CsvContents)
+            foreach (KeyValuePair<int, IEnumerable<string>> pair in CsvContents)
             {
                 foreach (string line in pair.Value)
                 {
