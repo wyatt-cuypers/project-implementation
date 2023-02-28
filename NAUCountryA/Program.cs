@@ -6,7 +6,6 @@ using NAUCountryA.Models;
 using NAUCountryA.Tables;
 using Npgsql;
 
-CreatePDF.Run();
 Service.ConstructUser();
 
 
