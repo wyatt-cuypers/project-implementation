@@ -20,11 +20,18 @@ namespace NAUCountryA
             Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
             document.Pages.Add(page);
 
-            string labelText = "Label";
-            Label label = new Label(labelText, 0, 0, 504, 100, Font.Helvetica, 18, TextAlign.Center);
-            page.Elements.Add(label);
-
-            document.Draw(Util.GetPath("PDFOutput/CreatePDF.pdf"));
+            string state = "State";
+            string commodity = "Commodity";
+            string practice = "Practice";
+            string title = "2023 Expected Yield";
+            string map = "Resources/TestImage.png";
+            Label label1 = new Label(state + ", " + commodity + ", " + practice, 0, 0, 504, 100, Font.Helvetica, 15, TextAlign.Left);
+            page.Elements.Add(label1);
+            Label label4 = new Label(title, 0, 20, 504, 100, Font.Helvetica, 15, TextAlign.Left);
+            page.Elements.Add(label4);
+            Image image = new Image((Util.GetPath(map)), 0, 40);
+            page.Elements.Add(image);
+            document.Draw(Util.GetPath("PDFOutput/TestPDF.pdf"));
         }
 
         class Util
