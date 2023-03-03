@@ -86,13 +86,13 @@ namespace NAUCountryA.Models
         {
             if (PracticeCode < 10)
             {
-                return $"\"00'{PracticeCode}'\"";
+                return $"\"00{PracticeCode}\"";
             }
             else if (PracticeCode < 100)
             {
-                return $"\"0'{PracticeCode}'\"";
+                return $"\"0{PracticeCode}\"";
             }
-            return $"\"'{PracticeCode}'\"";
+            return $"\"{PracticeCode}\"";
         }
 
         public override int GetHashCode()
@@ -102,8 +102,8 @@ namespace NAUCountryA.Models
 
         public override string ToString()
         {
-            return $"'{FormatPracticeCode()}',\"'{PracticeName}'\",\"'{PracticeAbbreviation}'\"," + 
-                $"'{Commodity.FormatCommodityCode()}',\"'{Service.ToString(ReleasedDate)}'\",\"'{RecordType.RecordTypeCode}'\"";
+            return $"{FormatPracticeCode()},\"{PracticeName}\",\"{PracticeAbbreviation}\"," + 
+                $"{Commodity.FormatCommodityCode()},\"{Service.ToString(ReleasedDate)}\",\"{RecordType.RecordTypeCode}\"";
         }
 
         public static bool operator== (Practice a, Practice b)

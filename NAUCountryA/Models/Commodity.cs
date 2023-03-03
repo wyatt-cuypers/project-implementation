@@ -113,9 +113,9 @@ namespace NAUCountryA.Models
 
         public override string ToString()
         {
-            return $"'{FormatCommodityCode()}',\"'{CommodityName}'\",\"'{CommodityAbbreviation}'\",\"" +
-                $"'{AnnualPlantingCode}'\",\"'{CommodityYear}'\",\"'{Service.ToString(ReleasedDate)}'\"" +
-                $"'{RecordType.RecordTypeCode}'\"";
+            return $"{FormatCommodityCode()},\"{CommodityName}\",\"{CommodityAbbreviation}\",\"" +
+                $"{AnnualPlantingCode}\",\"{CommodityYear}\",\"{Service.ToString(ReleasedDate)}\"" +
+                $"{RecordType.RecordTypeCode}\"";
         }
 
         public static bool operator== (Commodity a, Commodity b)

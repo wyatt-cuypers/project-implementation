@@ -5,7 +5,7 @@ using NAUCountryA;
 using NAUCountryA.Models;
 using NAUCountryA.Tables;
 using Npgsql;
-CreatePDF.Run();
+//CreatePDF.Run();
 Service.ConstructUser();
 
 string sqlCommand = $"SELECT * FROM public.\"State\" WHERE \"STATE_CODE\" = 01;";

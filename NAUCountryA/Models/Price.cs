@@ -58,7 +58,7 @@ namespace NAUCountryA.Models
 
         public override string ToString()
         {
-            return $"'{Offer.FormatOfferID()}',\"'{Service.ToString(ExpectedIndexValue)}'\"";
+            return $"{Offer.FormatOfferID()},\"{Service.ToString(ExpectedIndexValue)}\"";
         }
 
         public static bool operator ==(Price a, Price b)

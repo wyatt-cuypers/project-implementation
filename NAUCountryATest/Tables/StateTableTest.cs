@@ -1,3 +1,6 @@
+using NAUCountryA;
+using NAUCountryA.Models;
+using NAUCountryA.Tables;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,7 +67,7 @@ namespace NAUCountryATest.Tables
         [Test]
         public void TestGetKeys()
         {
-            IEnumerable<int> expected = new string[] { 01, 02, 04, 05, 06 }.AsEnumerable();
+            IEnumerable<int> expected = new int[] { 01, 02, 04, 05, 06 };
             IEnumerable<int> actual = tableMockup.Keys;
             Assert.That(actual, Is.EqualTo(expected));
         }
@@ -84,7 +87,7 @@ namespace NAUCountryATest.Tables
         [Test]
         public void TestGetEnumerator()
         {
-            ICollection < KeyValuePair<int, State> expected = new HashSet<KeyValuePair<int, State>>();
+            ICollection<KeyValuePair<int,State>> expected = new HashSet<KeyValuePair<int,State>>();
             expected.Add(new KeyValuePair<int, State>(01, new State(01, "Alabama", "AL", "A00520")));
             expected.Add(new KeyValuePair<int, State>(01, new State(02, "Alaska", "AK", "A00520")));
             expected.Add(new KeyValuePair<int, State>(01, new State(04, "Arizona", "AZ", "A00520")));

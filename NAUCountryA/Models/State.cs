@@ -82,7 +82,7 @@ namespace NAUCountryA.Models
 
         public override string ToString()
         {
-            return $"'{FormatStateCode()}',\"'{StateName}'\",\"'{StateAbbreviation}'\",\"'{RecordType.RecordTypeCode}'\"";
+            return $"{FormatStateCode()},\"{StateName}\",\"{StateAbbreviation}\",\"{RecordType.RecordTypeCode}\"";
         }
 
         public static bool operator ==(State a, State b)

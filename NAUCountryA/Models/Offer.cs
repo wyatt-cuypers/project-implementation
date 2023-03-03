@@ -97,33 +97,33 @@ namespace NAUCountryA.Models
         {
             if (OfferID < 10)
             {
-                return $"\"0000000'{OfferID}'\"";
+                return $"\"0000000{OfferID}\"";
             }
             else if (OfferID < 100)
             {
-                return $"\"000000'{OfferID}'\"";
+                return $"\"000000{OfferID}\"";
             }
             else if (OfferID < 1000)
             {
-                return $"\"00000'{OfferID}'\"";
+                return $"\"00000{OfferID}\"";
             }
             else if (OfferID < 10000)
             {
-                return $"\"0000'{OfferID}'\"";
+                return $"\"0000{OfferID}\"";
             }
             else if (OfferID < 100000)
             {
-                return $"\"000'{OfferID}'\"";
+                return $"\"000{OfferID}\"";
             }
             else if (OfferID < 1000000)
             {
-                return $"\"00'{OfferID}'\"";
+                return $"\"00{OfferID}\"";
             }
             else if (OfferID < 10000000)
             {
-                return $"\"0'{OfferID}'\"";
+                return $"\"0{OfferID}\"";
             }
-            return $"\"'{OfferID}'\"";
+            return $"\"{OfferID}\"";
         }
 
         public override int GetHashCode()
@@ -133,9 +133,9 @@ namespace NAUCountryA.Models
 
         public override string ToString()
         {
-            return $"'{FormatOfferID()}','{State.FormatStateCode()}','{Practice.FormatPracticeCode()}'," +
-                $"'{County.FormatCountyCode()}','{Type.FormatTypeCode()}',\"'{IrrigationPracticeCode}'\"," +
-                $"'{Year}";
+            return $"{FormatOfferID()},{State.FormatStateCode()},{Practice.FormatPracticeCode()}," +
+                $"{County.FormatCountyCode()},{Type.FormatTypeCode()},\"{IrrigationPracticeCode}\"," +
+                $"{Year}";
         }
 
         public static bool operator ==(Offer a, Offer b)

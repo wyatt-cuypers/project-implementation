@@ -82,13 +82,13 @@ namespace NAUCountryA.Models
         {
             if (TypeCode < 10)
             {
-                return $"\"00'{TypeCode}'\"";
+                return $"\"00{TypeCode}\"";
             }
             else if (TypeCode < 100)
             {
-                return $"\"0'{TypeCode}'\"";
+                return $"\"0{TypeCode}\"";
             }
-            return $"\"'{TypeCode}'\"";
+            return $"\"{TypeCode}\"";
         }
 
         public override bool Equals(object obj)
@@ -107,8 +107,8 @@ namespace NAUCountryA.Models
 
         public override string ToString()
         {
-            return $"'{FormatTypeCode()}',\"'{TypeName}'\",\"'{TypeAbbreviation}'\",'{Commodity.FormatCommodityCode()}'" +
-                $"\"'{Service.ToString(ReleasedDate)}'\",\"'{RecordType.RecordTypeCode}'\"";
+            return $"{FormatTypeCode()},\"{TypeName}\",\"{TypeAbbreviation}\",{Commodity.FormatCommodityCode()}" +
+                $"\"{Service.ToString(ReleasedDate)}\",\"{RecordType.RecordTypeCode}\"";
         }
 
         public static bool operator ==(NAUType a, NAUType b)
