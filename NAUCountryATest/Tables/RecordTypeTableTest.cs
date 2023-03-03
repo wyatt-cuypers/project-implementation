@@ -12,17 +12,21 @@ namespace NAUCountryATest.Tables
 {
     public class RecordTypeTableTest
     {
-        private RecordTypeTable tableMockup;
+        private IReadOnlyDictionary<string,RecordType> tableMockup;
         [SetUp]
         public void Setup()
         {
-            try
+            while (true)
             {
-                tableMockup = new RecordTypeTable();
-            }
-            catch (NullReferenceException)
-            {
-                Service.InitializeUserTo(new NAUUser("localhost", 2023, "postgres", "naucountrydev"));
+                try
+                {
+                    tableMockup = new RecordTypeTable();
+                    break;
+                }
+                catch (NullReferenceException)
+                {
+                    Service.InitializeUserTo(new NAUUser("localhost", 2023, "postgres", "naucountrydev"));
+                }
             }
         }
 
