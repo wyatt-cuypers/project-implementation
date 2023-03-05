@@ -6,6 +6,7 @@ using NAUCountryA.Models;
 using NAUCountryA.Tables;
 using Npgsql;
 //CreatePDF.Run();
+<<<<<<< HEAD
 //Service.ConstructUser();
 ICollection<string> commodityDataSet = Service.ToCollection("A23_Commodity");
 Console.WriteLine(commodityDataSet.Count);
@@ -24,6 +25,14 @@ if (commodityEnum.MoveNext())
 // string sqlCommand = $"SELECT * FROM public.\"State\" WHERE \"STATE_CODE\" = 01;";
 // System.Data.DataTable table = Service.GetDataTable(sqlCommand);
 // Service.GeneratePDF(new State(table.Rows[0]));
+=======
+
+Service.ConstructUser();
+
+PriceTable priceTable = new PriceTable();
+Price testPrice = priceTable.Values.First();
+Service.GeneratePDF(testPrice.Offer.State, testPrice.Offer.Practice, testPrice.Offer.Type);
+>>>>>>> ef6088bec7f6d2fc590780f2fa02f2717f5c4d0a
 
 
 /*var builder = WebApplication.CreateBuilder(args);
