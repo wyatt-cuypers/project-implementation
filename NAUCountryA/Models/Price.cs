@@ -5,15 +5,14 @@ namespace NAUCountryA.Models
 {
     public class Price : IEquatable<Price> 
     {
-        public Price(int offerID, double expectedIndexValue)
+        public Price(IReadOnlyDictionary<int,Offer> offerEntries, int offerID, double expectedIndexValue)
         {
-            IReadOnlyDictionary<int,Offer> offerEntries = new OfferTable();
             Offer = offerEntries[offerID];
             ExpectedIndexValue = expectedIndexValue;
         }
         
-        public Price(DataRow row)
-        :this((int)row["OFFER_ID"], (double)row["EXPECTED_INDEX_VALUE"])
+        public Price(DataRow row, IReadOnlyDictionary<int,Offer> offerEntries)
+        :this(offerEntries, (int)row["OFFER_ID"], (double)row["EXPECTED_INDEX_VALUE"])
         {
         }
 

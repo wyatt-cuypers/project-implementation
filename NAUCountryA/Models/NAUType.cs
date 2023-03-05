@@ -5,21 +5,19 @@ namespace NAUCountryA.Models
 {
     public class NAUType : IEquatable<NAUType>
     {
-        public NAUType(int typeCode, string typeName, string typeAbbreviation, 
+        public NAUType(IReadOnlyDictionary<int,Commodity> commodityEntries, IReadOnlyDictionary<string,RecordType> recordTypeEntries, int typeCode, string typeName, string typeAbbreviation, 
             int commodityCode, DateTime releasedDate, string recordTypeCode)
         {
             TypeCode = typeCode;
             TypeName = typeName;
             TypeAbbreviation = typeAbbreviation;
-            IReadOnlyDictionary<int,Commodity> commodityEntries = new CommodityTable();
             Commodity = commodityEntries[commodityCode];
             ReleasedDate = releasedDate;
-            IReadOnlyDictionary<string,RecordType> recordTypeEntries = new RecordTypeTable();
             RecordType = recordTypeEntries[recordTypeCode];
         }
 
-        public NAUType(DataRow row)
-        :this((int)row["TYPE_CODE"], (string)row["TYPE_NAME"], (string)row["TYPE_ABBREVIATION"], (int)row["COMMODITY_CODE"], (DateTime)row["RELEASED_DATE"], (string)row["RECORD_TYPE_CODE"])
+        public NAUType(DataRow row, IReadOnlyDictionary<int,Commodity> commodityEntries, IReadOnlyDictionary<string,RecordType> recordTypeEntries)
+        :this(commodityEntries, recordTypeEntries, (int)row["TYPE_CODE"], (string)row["TYPE_NAME"], (string)row["TYPE_ABBREVIATION"], (int)row["COMMODITY_CODE"], (DateTime)row["RELEASED_DATE"], (string)row["RECORD_TYPE_CODE"])
         {
         }
 

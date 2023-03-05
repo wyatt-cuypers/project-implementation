@@ -5,18 +5,17 @@ namespace NAUCountryA.Models
 {
     public class State : IEquatable<State>
     {
-        public State(int stateCode, string stateName, string stateAbbreviation, string recordTypeCode) 
+        public State(IReadOnlyDictionary<string, RecordType> recordTypeEntries, int stateCode, string stateName, string stateAbbreviation, string recordTypeCode) 
         {
             StateCode = stateCode;
             StateName = stateName;
             StateAbbreviation = stateAbbreviation;
-            IReadOnlyDictionary<string, RecordType> recordTypeEntries = new RecordTypeTable();
             RecordType = recordTypeEntries[recordTypeCode];
 
         }
 
-        public State(DataRow row)
-        : this((int)row["STATE_CODE"], (string)row["STATE_NAME"], (string)row["STATE_ABBREVIATION"], (string)row["RECORD_TYPE_CODE"])
+        public State(DataRow row, IReadOnlyDictionary<string, RecordType> recordTypeEntries)
+        : this(recordTypeEntries, (int)row["STATE_CODE"], (string)row["STATE_NAME"], (string)row["STATE_ABBREVIATION"], (string)row["RECORD_TYPE_CODE"])
         {
         }
 

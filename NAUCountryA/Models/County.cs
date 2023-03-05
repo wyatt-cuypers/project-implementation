@@ -5,18 +5,16 @@ namespace NAUCountryA.Models
 {
     public class County : IEquatable<County>
     {
-        public County(int countyCode, int stateCode, string countyName, string recordTypeCode)
+        public County(IReadOnlyDictionary<string, RecordType> recordTypeEntries, IReadOnlyDictionary<int,State> stateEntries, int countyCode, int stateCode, string countyName, string recordTypeCode)
         {
             CountyCode = countyCode;
-            IReadOnlyDictionary<int,State> stateEntries = new StateTable();
             State = stateEntries[stateCode];
             CountyName = countyName;
-            IReadOnlyDictionary<string,RecordType> recordTypeEntries = new RecordTypeTable();
             RecordType = recordTypeEntries[recordTypeCode];
         }
 
-        public County(DataRow row)
-        :this((int)row["COUNTY_CODE"], (int)row["STATE_CODE"], (string)row["COUNTY_NAME"], (string)row["RECORD_TYPE_CODE"])
+        public County(DataRow row, IReadOnlyDictionary<string, RecordType> recordTypeEntries, IReadOnlyDictionary<int,State> stateEntries)
+        :this(recordTypeEntries, stateEntries, (int)row["COUNTY_CODE"], (int)row["STATE_CODE"], (string)row["COUNTY_NAME"], (string)row["RECORD_TYPE_CODE"])
         {
         }
 

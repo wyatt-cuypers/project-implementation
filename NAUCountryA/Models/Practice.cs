@@ -5,20 +5,18 @@ namespace NAUCountryA.Models
 {
     public class Practice : IEquatable<Practice>
     {
-        public Practice(int practiceCode, string practiceName, string practiceAbbreviation, int commodityCode, DateTime releasedDate, string recordTypeCode)
+        public Practice(IReadOnlyDictionary<int,Commodity> commodityEntries, IReadOnlyDictionary<string,RecordType> recordTypeEntries, int practiceCode, string practiceName, string practiceAbbreviation, int commodityCode, DateTime releasedDate, string recordTypeCode)
         {
             PracticeCode = practiceCode;
             PracticeName = practiceName;
             PracticeAbbreviation = practiceAbbreviation;
-            IReadOnlyDictionary<int,Commodity> commodityEntries = new CommodityTable();
             Commodity = commodityEntries[commodityCode];
             ReleasedDate = releasedDate;
-            IReadOnlyDictionary<string,RecordType> recordTypeEntries = new RecordTypeTable();
             RecordType = recordTypeEntries[recordTypeCode];
         }
 
-        public Practice(DataRow row)
-        :this((int)row["PRACTICE_CODE"], (string)row["PRACTICE_NAME"], (string)row["PRACTICE_ABBREVIATION"], (int)row["COMMODITY_CODE"], (DateTime)row["RELEASED_DATE"], (string)row["RECORD_TYPE_CODE"])
+        public Practice(DataRow row, IReadOnlyDictionary<int,Commodity> commodityEntries, IReadOnlyDictionary<string,RecordType> recordTypeEntries)
+        :this(commodityEntries, recordTypeEntries, (int)row["PRACTICE_CODE"], (string)row["PRACTICE_NAME"], (string)row["PRACTICE_ABBREVIATION"], (int)row["COMMODITY_CODE"], (DateTime)row["RELEASED_DATE"], (string)row["RECORD_TYPE_CODE"])
         {
         }
 
