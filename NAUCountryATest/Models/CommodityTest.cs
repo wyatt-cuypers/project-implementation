@@ -7,7 +7,6 @@ namespace NAUCountryATest.Models
     public class CommodityTest
     {
         private Commodity commodity;
-        private IReadOnlyDictionary<string,RecordType> recordTypeEntries;
         [SetUp]
         public void Setup()
         {
@@ -15,13 +14,12 @@ namespace NAUCountryATest.Models
             {
                 try
                 {
-                    recordTypeEntries = new RecordTypeTable();
-                    commodity = new Commodity(recordTypeEntries, 37, "Raisins", "RAISINS", 'P', 2022, Service.ToDateTime("4/7/2022"), "A00420");
+                    commodity = new Commodity(37, "Raisins", "RAISINS", 'P', 2022, Service.ToDateTime("4/7/2022"), "A00420");
                     break;
                 }
                 catch (NullReferenceException)
                 {
-                    Service.InitializeUserTo(new NAUUser("localhost", 2023, "postgres", "naucountrydev"));
+                    Service.InitializeUserTo(ServiceTest.TEST_USER);
                 }
             }
         }
@@ -29,14 +27,14 @@ namespace NAUCountryATest.Models
         [Test]
         public void TestEquals1()
         {
-            object other = new Commodity(recordTypeEntries, 37, "Raisins", "RAISINS", 'P', 2022, new DateTime(2022, 4, 7), "A00420");
+            object other = new Commodity(37, "Raisins", "RAISINS", 'P', 2022, new DateTime(2022, 4, 7), "A00420");
             Assert.That(commodity.Equals(other), Is.True);
         }
 
         [Test]
         public void TestEquals2()
         {
-            object other = new Commodity(recordTypeEntries, 3,"Raisins", "RAISINS", 'P', 2022, new DateTime(2022, 4, 7), "A00420");
+            object other = new Commodity(3,"Raisins", "RAISINS", 'P', 2022, new DateTime(2022, 4, 7), "A00420");
             Assert.That(commodity.Equals(other), Is.False);
         }
 
