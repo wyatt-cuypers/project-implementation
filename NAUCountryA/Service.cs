@@ -151,7 +151,7 @@ namespace NAUCountryA
 
         public IEnumerable<County> GetStateCounties(State state)
         {
-            IReadOnlyDictionary<int,County> countryEntries = new CountyTable();
+            IReadOnlyDictionary<int, County> countryEntries = new CountyTable();
             ICollection<County> counties = new List<County>();
             foreach (County county in countryEntries.Values)
             {
@@ -277,21 +277,31 @@ namespace NAUCountryA
             }
         }
 
-        public static void GeneratePDF(State state)
+        public static void GeneratePDF(State state, Practice practice, NAUType type)
         {
             Document doc = new Document();
-            IReadOnlyDictionary<int,Offer> offerTable = new OfferTable();
-            foreach (Offer offer in offerTable.Values)
+            Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
+            doc.Pages.Add(page);
+
+            IReadOnlyDictionary<Offer, Price> priceTable = new PriceTable();
+            ICollection<Price> prices = new List<Price>();
+            foreach (Price price in priceTable.Values)
             {
-                if (offer.State == state)
+                if (price.Offer.State == state && price.Offer.Practice == practice && price.Offer.Type == type && price.Offer.Year == 2023)
                 {
-                    Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
-                    doc.Pages.Add(page);
-                    string labelText = $"{offer.State.StateName} {offer.Practice.Commodity.CommodityName} {offer.Practice.PracticeName} {offer.Type.TypeName} {offer.Year}";
-                    Label label = new Label(labelText, 0, 0, 504, 100, Font.Helvetica, 18, TextAlign.Center);
-                    page.Elements.Add(label);
+                    prices.Add(price);
                 }
             }
+
+            string labelText = $"{state.StateName} {practice.Commodity.CommodityName} {practice.PracticeName} {type.TypeName} {2023}";
+            Label label = new Label(labelText, 0, 0, 504, 100, Font.Helvetica, 18, TextAlign.Center);
+            page.Elements.Add(label);
+            TextArea textArea = new TextArea("", 100, 100, 400, 30, ceTe.DynamicPDF.Font.HelveticaBoldOblique, 18);
+            foreach (Price price in prices)
+            {
+                textArea.Text = textArea.Text + price.Offer.County + ": " + price.ExpectedIndexValue + "\n";
+            }
+            page.Elements.Add(textArea);
             doc.Draw(GetPath("PDFOutput/CreatePDF.pdf")); ;
         }
     }

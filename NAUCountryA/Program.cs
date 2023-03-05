@@ -6,11 +6,12 @@ using NAUCountryA.Models;
 using NAUCountryA.Tables;
 using Npgsql;
 //CreatePDF.Run();
+
 Service.ConstructUser();
 
-string sqlCommand = $"SELECT * FROM public.\"State\" WHERE \"STATE_CODE\" = 01;";
-System.Data.DataTable table = Service.GetDataTable(sqlCommand);
-Service.GeneratePDF(new State(table.Rows[0]));
+PriceTable priceTable = new PriceTable();
+Price testPrice = priceTable.Values.First();
+Service.GeneratePDF(testPrice.Offer.State, testPrice.Offer.Practice, testPrice.Offer.Type);
 
 
 /*var builder = WebApplication.CreateBuilder(args);
