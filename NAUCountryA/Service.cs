@@ -111,6 +111,7 @@ namespace NAUCountryA
             Console.WriteLine("Enter your password: ");
             string password = Console.ReadLine();
             User = new NAUUser(serverName, portNumber, userID, password);
+            LoadTables();
         }
 
         public static bool DateTimeEquals(DateTime a, DateTime b)
@@ -213,6 +214,7 @@ namespace NAUCountryA
         public static void InitializeUserTo(NAUUser user)
         {
             User = user;
+            LoadTables();
         }
 
         public static ICollection<string> ToCollection(string csvFileName)
@@ -322,6 +324,18 @@ namespace NAUCountryA
             {
                 return false;
             }
+        }
+
+        private static void LoadTables()
+        {
+            RecordTypeEntries = new RecordTypeTable();
+            CommodityEntries = new CommodityTable();
+            StateEntries = new StateTable();
+            CountyEntries = new CountyTable();
+            TypeEntries = new NauTypeTable();
+            PracticeEntries = new PracticeTable();
+            OfferEntries = new OfferTable();
+            PriceEntries = new PriceTable();
         }
 
         public static void GeneratePDF(State state, Practice practice, NAUType type)

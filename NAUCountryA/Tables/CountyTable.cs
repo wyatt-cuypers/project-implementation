@@ -34,7 +34,7 @@ namespace NAUCountryA.Tables
                 {
                     throw new KeyNotFoundException($"The COUNTY_CODE: {countyCode} doesn't exist.");
                 }
-                return new County(table.Rows[0], recordTypeEntries, stateEntries);
+                return new County(table.Rows[0]);
             }
         }
         public IEnumerable<int> Keys
@@ -76,7 +76,7 @@ namespace NAUCountryA.Tables
             DataTable table = Table;
             foreach (DataRow row in table.Rows)
             {
-                County county = new County(row, recordTypeEntries, stateEntries);
+                County county = new County(row);
                 pairs.Add(county.Pair);
             }
             return pairs.GetEnumerator();
@@ -155,7 +155,7 @@ namespace NAUCountryA.Tables
             int position = 0;
             while (position < Count)
             {
-                County county = new County(Table.Rows[position], recordTypeEntries, stateEntries);
+                County county = new County(Table.Rows[position]);
                 if (!contents.Contains(county.ToString()))
                 {
                     string sqlCommand = "DELETE FROM public.\"County\" WHERE \"COUNTY_CODE\" = " +
