@@ -1,22 +1,33 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using NUnit.Framework;
+using NAUCountryA;
+using NAUCountryA.Models;
+using NAUCountryA.Tables;
 
 namespace NAUCountryATest.Tables
 {
     public class CommodityTableTest
     {
+        private IReadOnlyDictionary<int,Commodity> commodityEntries;
         [SetUp]
         public void Setup()
         {
+            while (true)
+            {
+                try
+                {
+                    commodityEntries = new CommodityTable();
+                    break;
+                }
+                catch (NullReferenceException)
+                {
+                    Service.InitializeUserTo(new NAUUser("localhost", 2023, "postgres", "naucountrydev"));
+                }
+            }
         }
 
         [Test]
-        public void Test1()
+        public void TestCount()
         {
-            Assert.Pass();
+            Assert.That(commodityEntries.Count,Is.EqualTo(140));
         }
     }
 }

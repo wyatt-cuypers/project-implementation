@@ -8,8 +8,10 @@ namespace NAUCountryA.Tables
 {
     public class CommodityTable : IReadOnlyDictionary<int, Commodity>
     {
+        private readonly IReadOnlyDictionary<string,RecordType> recordTypeEntries;
         public CommodityTable()
         {
+            recordTypeEntries = new RecordTypeTable();
             ConstructTable();
             TrimEntries();
             AddEntries();
@@ -33,7 +35,7 @@ namespace NAUCountryA.Tables
                 {
                     throw new KeyNotFoundException($"The COMMODITY_CODE: {commodityCode} doesn't exist.");
                 }
-                return new Commodity(table.Rows[0]);
+                return new Commodity(table.Rows[0], recordTypeEntries);
             }
         }
 
@@ -76,7 +78,7 @@ namespace NAUCountryA.Tables
             DataTable table = Table;
             foreach (DataRow row in table.Rows)
             {
-                Commodity commodity = new Commodity(row);
+                Commodity commodity = new Commodity(row, recordTypeEntries);
                 pairs.Add(commodity.Pair);
             }
             return pairs.GetEnumerator();
@@ -129,8 +131,8 @@ namespace NAUCountryA.Tables
                     string recordTypeCode = (string)Service.ExpressValue(values[0]);
                     if (!ContainsKey(commodityCode))
                     {
-                        string sqlCommand = $"INSERT INTO public.\"Commodity\" ({headers[4]},{headers[5]},{headers[6]},{headers[7]}" +
-                            $"{headers[3]},{headers[9]},{headers[0]}') VALUES (" + 
+                        string sqlCommand = $"INSERT INTO public.\"Commodity\" ({headers[4]},{headers[5]},{headers[6]},{headers[7]}," +
+                            $"{headers[3]},{headers[9]},{headers[0]}) VALUES (" + 
                             $"{commodityCode},'{commodityName}','{commodityAbbreviation}','{annualPlantingCode}',{commodityYear}," +
                             $"'{Service.ToString(releasedDate)}','{recordTypeCode}');";
                         Service.GetDataTable(sqlCommand);
@@ -160,7 +162,7 @@ namespace NAUCountryA.Tables
             int position = 0;
             while (position < Count)
             {
-                Commodity commodity = new Commodity(Table.Rows[position]);
+                Commodity commodity = new Commodity(Table.Rows[position], recordTypeEntries);
                 if (!contents.Contains(commodity.ToString()))
                 {
                     string sqlCommand = "DELETE FROM public.\"Commodity\" WHERE \"COMMODITY_CODE\" =" + 

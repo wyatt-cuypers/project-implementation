@@ -5,7 +5,7 @@ namespace NAUCountryA.Models
 {
     public class Commodity : IEquatable<Commodity>
     {
-        public Commodity(int commodityCode, string commodityName, string commodityAbbreviation, char annualPlantingCode, int commodityYear, DateTime releasedDate, string recordTypeCode)
+        public Commodity(IReadOnlyDictionary<string,RecordType> recordTypeEntries, int commodityCode, string commodityName, string commodityAbbreviation, char annualPlantingCode, int commodityYear, DateTime releasedDate, string recordTypeCode)
         {
             CommodityCode = commodityCode;
             CommodityName = commodityName;
@@ -13,12 +13,11 @@ namespace NAUCountryA.Models
             AnnualPlantingCode = annualPlantingCode;
             CommodityYear = commodityYear;
             ReleasedDate = releasedDate;
-            IReadOnlyDictionary<string,RecordType> recordTypeEntries = new RecordTypeTable();
             RecordType = recordTypeEntries[recordTypeCode];
         }
 
-        public Commodity(DataRow row)
-        :this((int)row["COMMODITY_CODE"], (string)row["COMMODITY_NAME"], (string)row["COMMODITY_ABBREVIATION"],(char)row["ANNUAL_PLANTING_CODE"], (int)row["COMMODITY_YEAR"], (DateTime)row["RELEASED_DATE"], (string)row["RECORD_TYPE_CODE"])
+        public Commodity(DataRow row, IReadOnlyDictionary<string,RecordType> recordTypeEntries)
+        :this(recordTypeEntries,(int)row["COMMODITY_CODE"], (string)row["COMMODITY_NAME"], (string)row["COMMODITY_ABBREVIATION"],row["ANNUAL_PLANTING_CODE"].ToString()[0], (int)row["COMMODITY_YEAR"], Service.ToDateTime(row["RELEASED_DATE"].ToString()), (string)row["RECORD_TYPE_CODE"])
         {
         }
 
