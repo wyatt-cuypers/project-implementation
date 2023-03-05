@@ -26,9 +26,7 @@ if (commodityEnum.MoveNext())
 // Service.GeneratePDF(new State(table.Rows[0]));
 
 Service.ConstructUser();
-
-PriceTable priceTable = new PriceTable();
-Price testPrice = priceTable.Values.First();
+Price testPrice = Service.PriceEntries.Values.First();
 Service.GeneratePDF(testPrice.Offer.State, testPrice.Offer.Practice, testPrice.Offer.Type);
 
 

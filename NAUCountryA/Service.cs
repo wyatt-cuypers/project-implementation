@@ -199,9 +199,8 @@ namespace NAUCountryA
 
         public IEnumerable<County> GetStateCounties(State state)
         {
-            IReadOnlyDictionary<int, County> countryEntries = new CountyTable();
             ICollection<County> counties = new List<County>();
-            foreach (County county in countryEntries.Values)
+            foreach (County county in CountyEntries.Values)
             {
                 if (county.State == state)
                 {
@@ -343,17 +342,14 @@ namespace NAUCountryA
             Document doc = new Document();
             Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
             doc.Pages.Add(page);
-
-            IReadOnlyDictionary<Offer, Price> priceTable = new PriceTable();
             ICollection<Price> prices = new List<Price>();
-            foreach (Price price in priceTable.Values)
+            foreach (Price price in PriceEntries.Values)
             {
                 if (price.Offer.State == state && price.Offer.Practice == practice && price.Offer.Type == type && price.Offer.Year == 2023)
                 {
                     prices.Add(price);
                 }
             }
-
             string labelText = $"{state.StateName} {practice.Commodity.CommodityName} {practice.PracticeName} {type.TypeName} {2023}";
             Label label = new Label(labelText, 0, 0, 504, 100, Font.Helvetica, 18, TextAlign.Center);
             page.Elements.Add(label);
