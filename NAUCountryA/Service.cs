@@ -13,6 +13,17 @@ namespace NAUCountryA
 {
     public class Service
     {
+        public static IReadOnlyDictionary<int, Commodity> CommodityEntries
+        {
+            get;
+            private set;
+        }
+
+        public static IReadOnlyDictionary<int, County> CountyEntries
+        {
+            get;
+            private set;
+        }
         public static string CreateDatabaseSQLCommand
         {
             get
@@ -33,6 +44,42 @@ namespace NAUCountryA
             {
                 return GetInitialPathLocation(System.IO.Path.GetFullPath("."));
             }
+        }
+
+        public static IReadOnlyDictionary<int, Offer> OfferEntries
+        {
+            get;
+            private set;
+        }
+
+        public static IReadOnlyDictionary<int, Practice> PracticeEntries
+        {
+            get;
+            private set;
+        }
+
+        public static IReadOnlyDictionary<Offer,Price> PriceEntries
+        {
+            get;
+            private set;
+        }
+
+        public static IReadOnlyDictionary<string,RecordType> RecordTypeEntries
+        {
+            get;
+            private set;
+        }
+
+        public static IReadOnlyDictionary<int,State> StateEntries
+        {
+            get;
+            private set;
+        }
+
+        public static IReadOnlyDictionary<int, NAUType> TypeEntries
+        {
+            get;
+            private set;
         }
 
         public static NAUUser User

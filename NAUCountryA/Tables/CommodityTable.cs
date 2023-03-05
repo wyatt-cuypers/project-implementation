@@ -8,10 +8,8 @@ namespace NAUCountryA.Tables
 {
     public class CommodityTable : IReadOnlyDictionary<int, Commodity>
     {
-        private readonly IReadOnlyDictionary<string,RecordType> recordTypeEntries;
         public CommodityTable()
         {
-            recordTypeEntries = new RecordTypeTable();
             ConstructTable();
             TrimEntries();
             AddEntries();
@@ -35,7 +33,7 @@ namespace NAUCountryA.Tables
                 {
                     throw new KeyNotFoundException($"The COMMODITY_CODE: {commodityCode} doesn't exist.");
                 }
-                return new Commodity(table.Rows[0], recordTypeEntries);
+                return new Commodity(table.Rows[0]);
             }
         }
 
@@ -78,7 +76,7 @@ namespace NAUCountryA.Tables
             DataTable table = Table;
             foreach (DataRow row in table.Rows)
             {
-                Commodity commodity = new Commodity(row, recordTypeEntries);
+                Commodity commodity = new Commodity(row);
                 pairs.Add(commodity.Pair);
             }
             return pairs.GetEnumerator();
@@ -162,7 +160,7 @@ namespace NAUCountryA.Tables
             int position = 0;
             while (position < Count)
             {
-                Commodity commodity = new Commodity(Table.Rows[position], recordTypeEntries);
+                Commodity commodity = new Commodity(Table.Rows[position]);
                 if (!contents.Contains(commodity.ToString()))
                 {
                     string sqlCommand = "DELETE FROM public.\"Commodity\" WHERE \"COMMODITY_CODE\" =" + 
