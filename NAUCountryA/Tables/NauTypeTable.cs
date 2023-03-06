@@ -129,7 +129,7 @@ namespace NAUCountryA.Tables
                     string recordTypeCode = (string)Service.ExpressValue(values[0]);
                     if(!ContainsKey(typeCode))
                     {
-                        string sqlCommand = $"INSERT INTO public.\"State\" ({headers[4]},{headers[5]}," + 
+                        string sqlCommand = $"INSERT INTO public.\"Type\" ({headers[4]},{headers[5]}," + 
                             $"{headers[6]},{headers[3]},{headers[8]},{headers[0]}) VALUES ({typeCode}," +
                             $"'{typeName}','{typeAbbreviation}',{commodityCode},'{Service.ToString(releasedDate)}'" +
                             $",'{recordTypeCode}');";

@@ -69,9 +69,9 @@ namespace NAUCountryA.Models
         {
             if (StateCode < 10)
             {
-                return $"\"0'{StateCode}'\"";
+                return $"\"0{StateCode}\"";
             }
-            return $"\"'{StateCode}\"";
+            return $"\"{StateCode}\"";
         }
 
         public override int GetHashCode()

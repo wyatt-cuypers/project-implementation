@@ -123,7 +123,7 @@ namespace NAUCountryA.Tables
                     int commodityCode = (int)Service.ExpressValue(values[4]);
                     string commodityName = (string)Service.ExpressValue(values[5]);
                     string commodityAbbreviation = (string)Service.ExpressValue(values[6]);
-                    char annualPlantingCode = (char)Service.ExpressValue(values[7]);
+                    char annualPlantingCode = ((string)Service.ExpressValue(values[7]))[0];
                     int commodityYear = (int)Service.ExpressValue(values[3]);
                     DateTime releasedDate = (DateTime)Service.ExpressValue(values[9]);
                     string recordTypeCode = (string)Service.ExpressValue(values[0]);

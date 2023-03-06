@@ -126,11 +126,7 @@ namespace NAUCountryA
                 return 0.0;
             }
             string temp = value.Substring(1, value.Length - 2);
-            if (temp.Length == 1)
-            {
-                return temp[0];
-            }
-            else if (IsInt(temp))
+            if (IsInt(temp))
             {
                 return Convert.ToInt32(temp);
             }
