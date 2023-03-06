@@ -6,10 +6,9 @@ namespace NAUCountryA.Models
 {
     public class Offer : IEquatable<Offer>
     {
-        public Offer(int offerID, int stateCode, int practiceCode, int countyCode, int typeCode, int irrigationPracticeCode, int year)
+        public Offer(int offerID, int practiceCode, int countyCode, int typeCode, int irrigationPracticeCode, int year)
         {
             OfferID = offerID;
-            State = Service.StateEntries[stateCode];
             Practice = Service.PracticeEntries[practiceCode];
             County = Service.CountyEntries[countyCode];
             Type = Service.TypeEntries[typeCode];
@@ -18,17 +17,11 @@ namespace NAUCountryA.Models
         }
 
         public Offer(DataRow row)
-        : this((int)row["ADM_INSURANCE_OFFER_ID"], (int)row["STATE_CODE"], (int)row["PRACTICE_CODE"], (int)row["COUNTY_CODE"], (int)row["TYPE_CODE"], (int)row["IRRIGATION_PRACTICE_CODE"], (int)row["YEAR"])
+        : this((int)row["ADM_INSURANCE_OFFER_ID"], (int)row["PRACTICE_CODE"], (int)row["COUNTY_CODE"], (int)row["TYPE_CODE"], (int)row["IRRIGATION_PRACTICE_CODE"], (int)row["YEAR"])
         {
         }
 
         public int OfferID
-        {
-            get;
-            private set;
-        }
-
-        public State State
         {
             get;
             private set;
@@ -129,7 +122,7 @@ namespace NAUCountryA.Models
 
         public override string ToString()
         {
-            return $"{FormatOfferID()},{State.FormatStateCode()},{Practice.FormatPracticeCode()}," +
+            return $"{FormatOfferID()},{Practice.FormatPracticeCode()}," +
                 $"{County.FormatCountyCode()},{Type.FormatTypeCode()},\"{IrrigationPracticeCode}\"," +
                 $"{Year}";
         }

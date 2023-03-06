@@ -110,8 +110,11 @@ namespace NAUCountryA
             string userID = Console.ReadLine();
             Console.WriteLine("Enter your password: ");
             string password = Console.ReadLine();
+            Console.WriteLine("Logging in...");
             User = new NAUUser(serverName, portNumber, userID, password);
+            Console.WriteLine("Loading Tables");
             LoadTables();
+            Console.WriteLine("Tables Loaded");
         }
 
         public static bool DateTimeEquals(DateTime a, DateTime b)
@@ -324,13 +327,21 @@ namespace NAUCountryA
         private static void LoadTables()
         {
             RecordTypeEntries = new RecordTypeTable();
+            Console.WriteLine("Record Type Table Loaded");
             CommodityEntries = new CommodityTable();
+            Console.WriteLine("Commodity Table Loaded");
             StateEntries = new StateTable();
+            Console.WriteLine("State Table Loaded");
             CountyEntries = new CountyTable();
+            Console.WriteLine("County Table Loaded");
             TypeEntries = new NauTypeTable();
+            Console.WriteLine("Type Table Loaded");
             PracticeEntries = new PracticeTable();
+            Console.WriteLine("Practice Table Loaded");
             OfferEntries = new OfferTable();
+            Console.WriteLine("Offer Table Loaded");
             PriceEntries = new PriceTable();
+            Console.WriteLine("Price Table Loaded");
         }
 
         public static void GeneratePDF(State state, Practice practice, NAUType type)
@@ -341,7 +352,7 @@ namespace NAUCountryA
             ICollection<Price> prices = new List<Price>();
             foreach (Price price in PriceEntries.Values)
             {
-                if (price.Offer.State == state && price.Offer.Practice == practice && price.Offer.Type == type && price.Offer.Year == 2023)
+                if (price.Offer.County.State == state && price.Offer.Practice == practice && price.Offer.Type == type && price.Offer.Year == 2023)
                 {
                     prices.Add(price);
                 }

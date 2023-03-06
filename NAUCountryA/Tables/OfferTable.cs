@@ -127,16 +127,15 @@ namespace NAUCountryA.Tables
                         string line = lines.Current;
                         string[] values = line.Split(',');
                         int offerID = (int)Service.ExpressValue(values[0]);
-                        int stateCode = (int)Service.ExpressValue(values[1]);
                         int practiceCode = (int)Service.ExpressValue(values[4]);
                         int countyCode = (int)Service.ExpressValue(values[2]);
                         int typeCode = (int)Service.ExpressValue(values[3]);
                         int irrigationPracticeCode = (int)Service.ExpressValue(values[5]);
                         if (!ContainsKey(offerID))
                         {
-                            string sqlCommand = $"INSERT INTO public.\"Offer\" ({headers[0]},{headers[1]}," +
+                            string sqlCommand = $"INSERT INTO public.\"Offer\" ({headers[0]}," +
                             $"{headers[4]},{headers[2]},{headers[3]},{headers[5]},\"YEAR\") VALUES (" +
-                            $"{offerID},{stateCode},{practiceCode},{countyCode},{typeCode}," +
+                            $"{offerID},{practiceCode},{countyCode},{typeCode}," +
                             $"{irrigationPracticeCode},{pair.Key});";
                             Service.GetDataTable(sqlCommand);
                         }
@@ -162,8 +161,8 @@ namespace NAUCountryA.Tables
                 foreach (string line in pair.Value)
                 {
                     string[] values = line.Split(',');
-                    contents.Add($"'{values[0]}','{values[1]}','{values[4]}','{values[2]}','{values[3]}'," +
-                    $"'{values[5]}','{pair.Key}'");
+                    contents.Add($"{values[0]},{values[1]},{values[4]},{values[2]},{values[3]}," +
+                    $"{values[5]},{pair.Key}");
                 }
             }
             int position = 0;
@@ -172,7 +171,7 @@ namespace NAUCountryA.Tables
                 Offer offer = new Offer(Table.Rows[position]);
                 if (!contents.Contains(offer.ToString()))
                 {
-                    string sqlCommand = $"DELETE FROM public.\"Offer\" WHERE \"ADM_INSURANCE_OFFER_ID\" = '{offer.OfferID}';";
+                    string sqlCommand = $"DELETE FROM public.\"Offer\" WHERE \"ADM_INSURANCE_OFFER_ID\" = {offer.OfferID};";
                     Service.GetDataTable(sqlCommand);
                 }
                 else

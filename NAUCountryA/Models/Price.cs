@@ -12,7 +12,7 @@ namespace NAUCountryA.Models
         }
         
         public Price(DataRow row)
-        :this((int)row["OFFER_ID"], (double)row["EXPECTED_INDEX_VALUE"])
+        :this((int)row["ADM_INSURANCE_OFFER_ID"], (double)row["EXPECTED_INDEX_VALUE"])
         {
         }
 
