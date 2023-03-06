@@ -1,8 +1,12 @@
 using System;
+using System.IO.Pipes;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using NAUCountryA;
+using NAUCountryA.Models;
+using NAUCountryA.Tables;
 
 namespace NAUCountryATest.Tables
 {
@@ -64,7 +68,7 @@ namespace NAUCountryATest.Tables
         [Test]
         public void TestGetKeys()
         {
-            IEnumerable<int> expected = new string[] { 25360764, 25343586, 25375014, 27870877, 27869719 }.AsEnumerable();
+            IEnumerable<int> expected = new int[] { 25360764, 25343586, 25375014, 27870877, 27869719 }.AsEnumerable();
             IEnumerable<int> actual = tableMockup.Keys;
             Assert.That(actual, Is.EqualTo(expected));
         }
@@ -84,13 +88,13 @@ namespace NAUCountryATest.Tables
         [Test]
         public void TestGetEnumerator()
         {
-            ICollection < KeyValuePair<int, Offer> expected = new HashSet<KeyValuePair<int, Offer>>();
+            ICollection < KeyValuePair<int,Offer>> expected = new HashSet<KeyValuePair<int,Offer>>();
             expected.Add(new KeyValuePair<int, Offer>(25360764, new Offer(25360764, 06, 092, 019, 997, 997, 2022)));
             expected.Add(new KeyValuePair<int, Offer>(25343586, new Offer(25343586, 06, 093, 019, 997, 997, 2022)));
             expected.Add(new KeyValuePair<int, Offer>(25375014, new Offer(25375014, 06, 775, 019, 997, 997, 2022)));
             expected.Add(new KeyValuePair<int, Offer>(27870877, new Offer(27870877, 06, 092, 019, 997, 997, 2023)));
             expected.Add(new KeyValuePair<int, Offer>(27869719, new Offer(27869719, 06, 093, 019, 997, 997, 2023)));
-            ICollection<KeyValuePair<int, Offer> actual = new HashSet<KeyValuePair<int, Offer>>();
+            ICollection<KeyValuePair<int, Offer>> actual = new HashSet<KeyValuePair<int,Offer>>();
             foreach (KeyValuePair<int, Offer> pair in tableMockup)
             {
                 actual.Add(pair);
