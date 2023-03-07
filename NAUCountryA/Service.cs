@@ -299,7 +299,7 @@ namespace NAUCountryA
         {
             RecordTypeEntries = new RecordTypeTable();
             // Console.WriteLine("Record Type Table Loaded");
-            // CommodityEntries = new CommodityTable();
+            CommodityEntries = new CommodityTable();
             // Console.WriteLine("Commodity Table Loaded");
             // StateEntries = new StateTable();
             // Console.WriteLine("State Table Loaded");

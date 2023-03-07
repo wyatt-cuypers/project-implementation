@@ -1,16 +1,15 @@
 using NAUCountryA.Models;
-using Npgsql;
 using System.Collections;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
 
 namespace NAUCountryA.Tables
 {
     public class CommodityTable : IReadOnlyDictionary<int, Commodity>
     {
+        private readonly IDictionary<int,Commodity> commodityEntries;
         public CommodityTable()
         {
-            ConstructTable();
+            commodityEntries = new Dictionary<int,Commodity>();
             TrimEntries();
             AddEntries();
         }
@@ -19,7 +18,7 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                return Table.Rows.Count;
+                return commodityEntries.Count;
             }
         }
 
@@ -27,13 +26,7 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                string sqlCommand = $"SELECT * FROM public.\"Commodity\" WHERE \"COMMODITY_CODE\" = {commodityCode};";
-                DataTable table = Service.GetDataTable(sqlCommand);
-                if (table.Rows.Count == 0)
-                {
-                    throw new KeyNotFoundException($"The COMMODITY_CODE: {commodityCode} doesn't exist.");
-                }
-                return new Commodity(table.Rows[0]);
+                return commodityEntries[commodityCode];
             }
         }
 
@@ -41,12 +34,7 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                ICollection<int> keys = new HashSet<int>();
-                foreach (KeyValuePair<int,Commodity> pair in this)
-                {
-                    keys.Add(pair.Key);
-                }
-                return keys;
+                return commodityEntries.Keys;
             }
         }
 
@@ -54,32 +42,18 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                ICollection<Commodity> values = new List<Commodity>();
-                foreach (KeyValuePair<int,Commodity> pair in this)
-                {
-                    values.Add(pair.Value);
-                }
-                return values;
+                return commodityEntries.Values;
             }
         }
 
         public bool ContainsKey(int commodityCode)
         {
-            string sqlCommand = $"SELECT * FROM public.\"Commodity\" WHERE \"COMMODITY_CODE\" = {commodityCode};";
-            DataTable table = Service.GetDataTable(sqlCommand);
-            return table.Rows.Count >= 1;
+            return commodityEntries.ContainsKey(commodityCode);
         }
 
         public IEnumerator<KeyValuePair<int,Commodity>> GetEnumerator()
         {
-            ICollection<KeyValuePair<int,Commodity>> pairs = new HashSet<KeyValuePair<int,Commodity>>();
-            DataTable table = Table;
-            foreach (DataRow row in table.Rows)
-            {
-                Commodity commodity = new Commodity(row);
-                pairs.Add(commodity.Pair);
-            }
-            return pairs.GetEnumerator();
+            return commodityEntries.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -89,8 +63,7 @@ namespace NAUCountryA.Tables
 
         public bool TryGetValue(int commodityCode, [MaybeNullWhen(false)] out Commodity value)
         {
-            value = null;
-            return ContainsKey(commodityCode);
+            return commodityEntries.TryGetValue(commodityCode, out value);
         }
         private IEnumerable<string> CsvContents
         {
@@ -100,12 +73,16 @@ namespace NAUCountryA.Tables
             }
         }
 
-        private DataTable Table
+        private IList<KeyValuePair<int,Commodity>> CurrentContents
         {
             get
             {
-                string sqlCommand = "SELECT * FROM public.\"Commodity\";";
-                return Service.GetDataTable(sqlCommand);
+                IList<KeyValuePair<int,Commodity>> currentEntries = new List<KeyValuePair<int,Commodity>>();
+                foreach (KeyValuePair<int,Commodity> pair in this)
+                {
+                    currentEntries.Add(pair);
+                }
+                return currentEntries;
             }
         }
 
@@ -118,54 +95,29 @@ namespace NAUCountryA.Tables
                 string[] headers = headerLine.Split(',');
                 while (lines.MoveNext())
                 {
-                    string line = lines.Current;
-                    string[] values = line.Split(',');
-                    int commodityCode = (int)Service.ExpressValue(values[4]);
-                    string commodityName = (string)Service.ExpressValue(values[5]);
-                    string commodityAbbreviation = (string)Service.ExpressValue(values[6]);
-                    char annualPlantingCode = ((string)Service.ExpressValue(values[7]))[0];
-                    int commodityYear = (int)Service.ExpressValue(values[3]);
-                    DateTime releasedDate = (DateTime)Service.ExpressValue(values[9]);
-                    string recordTypeCode = (string)Service.ExpressValue(values[0]);
-                    if (!ContainsKey(commodityCode))
+                    Commodity current = new Commodity(lines.Current);
+                    if (!commodityEntries.ContainsKey(current.Pair.Key))
                     {
-                        string sqlCommand = $"INSERT INTO public.\"Commodity\" ({headers[4]},{headers[5]},{headers[6]},{headers[7]}," +
-                            $"{headers[3]},{headers[9]},{headers[0]}) VALUES (" + 
-                            $"{commodityCode},'{commodityName}','{commodityAbbreviation}','{annualPlantingCode}',{commodityYear}," +
-                            $"'{Service.ToString(releasedDate)}','{recordTypeCode}');";
-                        Service.GetDataTable(sqlCommand);
+                        commodityEntries.Add(current.Pair);
                     }
                 }
             }
         }
 
-        private void ConstructTable()
-        {
-            string sqlCommand = Service.GetCreateTableSQLCommand("commodity");
-            NpgsqlCommand cmd = new NpgsqlCommand(sqlCommand, Service.User.Connection);
-            cmd.Connection.Open();
-            cmd.ExecuteNonQuery();
-            cmd.Connection.Close();
-        }
-
         private void TrimEntries()
         {
-            ICollection<string> contents = new HashSet<string>();
+            ICollection<string> currentCSVContents = new HashSet<string>();
             foreach(string line in CsvContents)
             {
                 string[] values = line.Split(',');
-                contents.Add($"{values[4]},{values[5]},{values[6]},{values[7]}," +
-                    $"{values[3]},{values[9]},{values[0]}");
+                currentCSVContents.Add($"{values[4]},{values[5]},{values[6]},{values[7]},{values[3]},{values[9]},{values[0]}");
             }
             int position = 0;
-            while (position < Count)
+            while (position < CurrentContents.Count)
             {
-                Commodity commodity = new Commodity(Table.Rows[position]);
-                if (!contents.Contains(commodity.ToString()))
+                if (!currentCSVContents.Contains(CurrentContents[position].Value.ToString()))
                 {
-                    string sqlCommand = "DELETE FROM public.\"Commodity\" WHERE \"COMMODITY_CODE\" =" + 
-                        $"{commodity.CommodityCode};";
-                    Service.GetDataTable(sqlCommand);
+                    commodityEntries.Remove(CurrentContents[position]);
                 }
                 else
                 {

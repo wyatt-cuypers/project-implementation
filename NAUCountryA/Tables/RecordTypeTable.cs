@@ -1,7 +1,5 @@
 using NAUCountryA.Models;
-using Npgsql;
 using System.Collections;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
 
 namespace NAUCountryA.Tables
@@ -29,13 +27,6 @@ namespace NAUCountryA.Tables
             get
             {
                 return recordTypeEntries[recordTypeCode];
-                // string sqlCommand = $"SELECT * FROM public.\"RecordType\" WHERE \"RECORD_TYPE_CODE\" = '{recordTypeCode}';";
-                // DataTable table = Service.GetDataTable(sqlCommand);
-                // if (table.Rows.Count == 0)
-                // {
-                //     throw new KeyNotFoundException($"The RECORD_TYPE_CODE: {recordTypeCode} doesn't exist.");
-                // }
-                // return new RecordType(table.Rows[0]);
             }
         }
 
@@ -44,12 +35,6 @@ namespace NAUCountryA.Tables
             get
             {
                 return recordTypeEntries.Keys;
-                // ICollection<string> keys = new HashSet<string>();
-                // foreach (KeyValuePair<string,RecordType> pair in this)
-                // {
-                //     keys.Add(pair.Key);
-                // }
-                // return keys;
             }
         }
 
@@ -58,34 +43,17 @@ namespace NAUCountryA.Tables
             get
             {
                 return recordTypeEntries.Values;
-                // ICollection<RecordType> values = new List<RecordType>();
-                // foreach (KeyValuePair<string,RecordType> pair in this)
-                // {
-                //     values.Add(pair.Value);
-                // }
-                // return values;
             }
         }
 
         public bool ContainsKey(string recordTypeCode)
         {
             return recordTypeEntries.ContainsKey(recordTypeCode);
-            // string sqlCommand = $"SELECT * FROM public.\"RecordType\" WHERE \"RECORD_TYPE_CODE\" = '{recordTypeCode}';";
-            // DataTable table = Service.GetDataTable(sqlCommand);
-            // return table.Rows.Count >= 1;
         }
 
         public IEnumerator<KeyValuePair<string,RecordType>> GetEnumerator()
         {
             return recordTypeEntries.GetEnumerator();
-            // ICollection<KeyValuePair<string,RecordType>> pairs = new HashSet<KeyValuePair<string,RecordType>>();
-            // DataTable table = Table;
-            // foreach (DataRow row in table.Rows)
-            // {
-            //     RecordType recordType = new RecordType(row);
-            //     pairs.Add(recordType.Pair);
-            // }
-            // return pairs.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

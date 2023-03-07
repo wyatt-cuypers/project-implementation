@@ -16,9 +16,16 @@ namespace NAUCountryA.Models
             RecordType = Service.RecordTypeEntries[recordTypeCode];
         }
 
-        public Commodity(DataRow row)
-        :this((int)row["COMMODITY_CODE"], (string)row["COMMODITY_NAME"], (string)row["COMMODITY_ABBREVIATION"],row["ANNUAL_PLANTING_CODE"].ToString()[0], (int)row["COMMODITY_YEAR"], Service.ToDateTime(row["RELEASED_DATE"].ToString()), (string)row["RECORD_TYPE_CODE"])
+        public Commodity(string line)
         {
+            string[] values = line.Split(',');
+            CommodityCode = (int)Service.ExpressValue(values[4]);
+            CommodityName = (string)Service.ExpressValue(values[5]);
+            CommodityAbbreviation = (string)Service.ExpressValue(values[6]);
+            AnnualPlantingCode = ((string)Service.ExpressValue(values[7]))[0];
+            CommodityYear = (int)Service.ExpressValue(values[3]);
+            ReleasedDate = (DateTime)Service.ExpressValue(values[9]);
+            RecordType = Service.RecordTypeEntries[(string)Service.ExpressValue(values[0])];
         }
 
         public int CommodityCode
