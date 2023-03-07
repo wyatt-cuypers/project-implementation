@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-namespace NAUCountryATest.Tables
+namespace NAUCountryATest.Models
 {
-    public class CountyTableTest
+    public class CountyTest
     {
         // Assigned to Wyatt Cuypers
         [SetUp]

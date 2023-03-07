@@ -1,13 +1,12 @@
 using NAUCountryA.Models;
-using Npgsql;
 using System.Collections;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
 
 namespace NAUCountryA.Tables
 {
     public class OfferTable : IReadOnlyDictionary<int, Offer>
     {
+        // Assigned to Miranda Ryan
         public OfferTable()
         {
             ConstructTable();

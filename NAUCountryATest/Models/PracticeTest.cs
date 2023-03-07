@@ -4,10 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-namespace NAUCountryATest.Tables
+namespace NAUCountryATest.Models
 {
-    public class TypeTableTest
+    public class PracticeTest
     {
+        // Assigned to Wyatt Cuypers
         [SetUp]
         public void Setup()
         {

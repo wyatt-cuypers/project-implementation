@@ -16,7 +16,6 @@
   <ItemGroup>
     <PackageReference Include="DynamicPDF" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.3" />
-    <PackageReference Include="Npgsql" Version="7.0.2" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,10 +1,10 @@
-using NAUCountryA.Tables;
-using System.Data;
+
 
 namespace NAUCountryA.Models
 {
     public class State : IEquatable<State>
     {
+        // Assigned to Miranda Ryan
         public State(int stateCode, string stateName, string stateAbbreviation, string recordTypeCode) 
         {
             StateCode = stateCode;

@@ -1,10 +1,10 @@
-using NAUCountryA.Tables;
-using System.Data;
+
 
 namespace NAUCountryA.Models
 {
     public class Practice : IEquatable<Practice>
     {
+        // Assigned to Wyatt Cuypers
         public Practice(int practiceCode, string practiceName, string practiceAbbreviation, int commodityCode, DateTime releasedDate, string recordTypeCode)
         {
             PracticeCode = practiceCode;

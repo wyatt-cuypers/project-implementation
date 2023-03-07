@@ -1,11 +1,10 @@
-using NAUCountryA.Tables;
-using System.Collections.Generic;
-using System.Data;
+
 
 namespace NAUCountryA.Models
 {
     public class Offer : IEquatable<Offer>
     {
+        // Assigned to Miranda Ryan
         public Offer(int offerID, int practiceCode, int countyCode, int typeCode, int irrigationPracticeCode, int year)
         {
             OfferID = offerID;

@@ -1,10 +1,6 @@
 ﻿using Microsoft.VisualBasic.FileIO;
-using NAUCountryA.Exceptions;
 using NAUCountryA.Models;
 using NAUCountryA.Tables;
-using Npgsql;
-using System.Data;
-using System.Data.Common;
 using ceTe.DynamicPDF;
 using ceTe.DynamicPDF.PageElements;
 using System.Text.RegularExpressions;
@@ -23,20 +19,6 @@ namespace NAUCountryA
         {
             get;
             private set;
-        }
-        public static string CreateDatabaseSQLCommand
-        {
-            get
-            {
-                string sqlCommand = "";
-                string filePath = InitialPathLocation + "\\NAUCountryA\\Resources\\database_construction.sql";
-                TextFieldParser sqlParcer = new TextFieldParser(filePath);
-                while (!sqlParcer.EndOfData)
-                {
-                    sqlCommand += sqlParcer.ReadLine();
-                }
-                return sqlCommand;
-            }
         }
         public static string InitialPathLocation
         {
@@ -82,11 +64,6 @@ namespace NAUCountryA
             private set;
         }
 
-        public static NAUUser User
-        {
-            get;
-            private set;
-        }
 
         public static bool DateTimeEquals(DateTime a, DateTime b)
         {
@@ -115,56 +92,37 @@ namespace NAUCountryA
             return temp;
         }
 
-        public static string GetCreateTableSQLCommand(string tableName)
+        public static void GeneratePDF(State state, Practice practice, NAUType type)
         {
-            string sqlCommand = "";
-            string filePath = InitialPathLocation + "\\NAUCountryA\\Resources\\" + tableName.ToLower() + "_construction.sql";
-            TextFieldParser sqlParcer = new TextFieldParser(filePath);
-            while (!sqlParcer.EndOfData)
+            Document doc = new Document();
+            Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
+            doc.Pages.Add(page);
+            ICollection<Price> prices = new List<Price>();
+            foreach (Price price in PriceEntries.Values)
             {
-                sqlCommand += sqlParcer.ReadLine();
+                if (price.Offer.County.State == state && price.Offer.Practice == practice && price.Offer.Type == type && price.Offer.Year == 2023)
+                {
+                    prices.Add(price);
+                }
             }
-            return sqlCommand;
+            string labelText = $"{state.StateName} {practice.Commodity.CommodityName} {practice.PracticeName} {type.TypeName} {2023}";
+            Label label = new Label(labelText, 0, 0, 504, 100, Font.Helvetica, 18, TextAlign.Center);
+            page.Elements.Add(label);
+            TextArea textArea = new TextArea("", 100, 100, 400, 30, ceTe.DynamicPDF.Font.HelveticaBoldOblique, 18);
+            foreach (Price price in prices)
+            {
+                textArea.Text = textArea.Text + price.Offer.County + ": " + price.ExpectedIndexValue + "\n";
+            }
+            page.Elements.Add(textArea);
+            doc.Draw(GetPath("PDFOutput/CreatePDF.pdf")); ;
         }
-        public static DataTable GetDataTable(string sqlCommand)
+
+        public static string GetPath(string filePath)
         {
-            DataTable table = new DataTable();
-            NpgsqlCommand cmd = new NpgsqlCommand(sqlCommand, User.Connection);
-            DbDataAdapter adapter = new NpgsqlDataAdapter(cmd);
-            string command = sqlCommand.Substring(0, sqlCommand.IndexOf(' ')).ToUpper();
-            switch (command)
-            {
-                case "DELETE":
-                    adapter.DeleteCommand = cmd;
-                    adapter.DeleteCommand.Connection.Open();
-                    adapter.DeleteCommand.ExecuteNonQuery();
-                    adapter.Update(table);
-                    adapter.DeleteCommand.Connection.Close();
-                    break;
-                case "INSERT":
-                    adapter.InsertCommand = cmd;
-                    adapter.InsertCommand.Connection.Open();
-                    adapter.InsertCommand.ExecuteNonQuery();
-                    adapter.Update(table);
-                    adapter.InsertCommand.Connection.Close();
-                    break;
-                case "SELECT":
-                    adapter.SelectCommand = cmd;
-                    adapter.SelectCommand.Connection.Open();
-                    adapter.SelectCommand.ExecuteNonQuery();
-                    adapter.Fill(table);
-                    adapter.SelectCommand.Connection.Close();
-                    break;
-                case "UPDATE":
-                    adapter.UpdateCommand = cmd;
-                    adapter.UpdateCommand.Connection.Open();
-                    adapter.UpdateCommand.ExecuteNonQuery();
-                    adapter.Update(table);
-                    adapter.UpdateCommand.Connection.Close();
-                    break;
-                default: throw new UnrecognizedSQLCommandException("The command isn't recognized in PostgreSQL.");
-            }
-            return table;
+            var exePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            Regex appPathMatcher = new Regex(@"(?<!fil)[A-Za-z]:\\+[\S\s]*?(?=\\+bin)");
+            var appRoot = appPathMatcher.Match(exePath).Value;
+            return System.IO.Path.Combine(appRoot, filePath);
         }
 
         public IEnumerable<County> GetStateCounties(State state)
@@ -180,10 +138,24 @@ namespace NAUCountryA
             return counties;
         }
 
-        public static void InitializeUserTo(NAUUser user)
+        public static void LoadTables()
         {
-            User = user;
-            LoadTables();
+            RecordTypeEntries = new RecordTypeTable();
+            // Console.WriteLine("Record Type Table Loaded");
+            CommodityEntries = new CommodityTable();
+            // Console.WriteLine("Commodity Table Loaded");
+            // StateEntries = new StateTable();
+            // Console.WriteLine("State Table Loaded");
+            // CountyEntries = new CountyTable();
+            // Console.WriteLine("County Table Loaded");
+            // TypeEntries = new NauTypeTable();
+            // Console.WriteLine("Type Table Loaded");
+            // PracticeEntries = new PracticeTable();
+            // Console.WriteLine("Practice Table Loaded");
+            // OfferEntries = new OfferTable();
+            // Console.WriteLine("Offer Table Loaded");
+            // PriceEntries = new PriceTable();
+            // Console.WriteLine("Price Table Loaded");
         }
 
         public static ICollection<string> ToCollection(string csvFileName)
@@ -248,14 +220,6 @@ namespace NAUCountryA
             return GetInitialPathLocation(temp.FullName);
         }
 
-        public static string GetPath(string filePath)
-        {
-            var exePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            Regex appPathMatcher = new Regex(@"(?<!fil)[A-Za-z]:\\+[\S\s]*?(?=\\+bin)");
-            var appRoot = appPathMatcher.Match(exePath).Value;
-            return System.IO.Path.Combine(appRoot, filePath);
-        }
-
         private static bool IsDate(string value)
         {
             try
@@ -293,51 +257,6 @@ namespace NAUCountryA
             {
                 return false;
             }
-        }
-
-        public static void LoadTables()
-        {
-            RecordTypeEntries = new RecordTypeTable();
-            // Console.WriteLine("Record Type Table Loaded");
-            CommodityEntries = new CommodityTable();
-            // Console.WriteLine("Commodity Table Loaded");
-            // StateEntries = new StateTable();
-            // Console.WriteLine("State Table Loaded");
-            // CountyEntries = new CountyTable();
-            // Console.WriteLine("County Table Loaded");
-            // TypeEntries = new NauTypeTable();
-            // Console.WriteLine("Type Table Loaded");
-            // PracticeEntries = new PracticeTable();
-            // Console.WriteLine("Practice Table Loaded");
-            // OfferEntries = new OfferTable();
-            // Console.WriteLine("Offer Table Loaded");
-            // PriceEntries = new PriceTable();
-            // Console.WriteLine("Price Table Loaded");
-        }
-
-        public static void GeneratePDF(State state, Practice practice, NAUType type)
-        {
-            Document doc = new Document();
-            Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
-            doc.Pages.Add(page);
-            ICollection<Price> prices = new List<Price>();
-            foreach (Price price in PriceEntries.Values)
-            {
-                if (price.Offer.County.State == state && price.Offer.Practice == practice && price.Offer.Type == type && price.Offer.Year == 2023)
-                {
-                    prices.Add(price);
-                }
-            }
-            string labelText = $"{state.StateName} {practice.Commodity.CommodityName} {practice.PracticeName} {type.TypeName} {2023}";
-            Label label = new Label(labelText, 0, 0, 504, 100, Font.Helvetica, 18, TextAlign.Center);
-            page.Elements.Add(label);
-            TextArea textArea = new TextArea("", 100, 100, 400, 30, ceTe.DynamicPDF.Font.HelveticaBoldOblique, 18);
-            foreach (Price price in prices)
-            {
-                textArea.Text = textArea.Text + price.Offer.County + ": " + price.ExpectedIndexValue + "\n";
-            }
-            page.Elements.Add(textArea);
-            doc.Draw(GetPath("PDFOutput/CreatePDF.pdf")); ;
         }
     }
 }

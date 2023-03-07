@@ -1,10 +1,10 @@
-using NAUCountryA.Tables;
-using System.Data;
+
 
 namespace NAUCountryA.Models
 {
     public class NAUType : IEquatable<NAUType>
     {
+        // Assigned to Katelyn Runsvold
         public NAUType(int typeCode, string typeName, string typeAbbreviation, 
             int commodityCode, DateTime releasedDate, string recordTypeCode)
         {

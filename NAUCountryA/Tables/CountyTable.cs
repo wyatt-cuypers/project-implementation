@@ -1,7 +1,5 @@
 using NAUCountryA.Models;
-using Npgsql;
 using System.Collections;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
 
 
@@ -9,6 +7,7 @@ namespace NAUCountryA.Tables
 {
     public class CountyTable : IReadOnlyDictionary<int, County>
     {
+        // Assigned to Wyatt Cuypers
         public CountyTable()
         {
             ConstructTable();

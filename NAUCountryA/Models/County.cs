@@ -1,10 +1,10 @@
-using NAUCountryA.Tables;
-using System.Data;
+
 
 namespace NAUCountryA.Models
 {
     public class County : IEquatable<County>
     {
+        // Assigned to Wyatt Cuypers
         public County(int countyCode, int stateCode, string countyName, string recordTypeCode)
         {
             CountyCode = countyCode;

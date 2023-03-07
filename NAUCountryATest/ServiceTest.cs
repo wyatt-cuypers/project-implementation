@@ -6,13 +6,6 @@ namespace NAUCountryATest
 {
     public class ServiceTest
     {
-        internal readonly static NAUUser TEST_USER = new NAUUser("localhost", 2023, "postgres", "naucountrydev");
-        [Test]
-        public void TestCreateDatabaseSQLCommand()
-        {
-            string expected = "CREATE DATABASE \"NAUCountryData\"    WITH    OWNER = postgres    TEMPLATE = template0    ENCODING = 'UTF8'    LC_COLLATE = 'English_United States.1252'    LC_CTYPE = 'English_United States.1252'    TABLESPACE = pg_default    CONNECTION LIMIT = -1    IS_TEMPLATE = False;";
-            Assert.That(Service.CreateDatabaseSQLCommand, Is.EqualTo(expected));
-        }
 
         [Test]
         public void TestInitialPathLocation()
@@ -180,42 +173,6 @@ namespace NAUCountryATest
             DateTime expected = new DateTime(2023, 2, 25);
             DateTime actual = (DateTime)Service.ExpressValue("\"2/25/2023\"");
             Assert.That(Service.DateTimeEquals(expected, actual), Is.True);
-        }
-
-        [Test]
-        public void TestGetCreateTableSQLCommand()
-        {
-            string expected = "CREATE TABLE IF NOT EXISTS public.\"Commodity\"" +
-            "(    " +
-                "\"COMMODITY_CODE\" integer NOT NULL,    " +
-                "\"COMMODITY_NAME\" character varying(30) NOT NULL,    " +
-                "\"COMMODITY_ABBREVIATION\" character varying(15) NOT NULL,    " +
-                "\"ANNUAL_PLANTING_CODE\" character(1) NOT NULL,    " +
-                "\"COMMODITY_YEAR\" integer NOT NULL,    " +
-                "\"RELEASED_DATE\" character varying(10) NOT NULL,    " +
-                "\"RECORD_TYPE_CODE\" character varying(10) NOT NULL,    " +
-                "CONSTRAINT \"Pk_Commodity\" PRIMARY KEY (\"COMMODITY_CODE\"),    " +
-                "CONSTRAINT \"Fk_RecordType\" FOREIGN KEY (\"RECORD_TYPE_CODE\")        " +
-                    "REFERENCES public.\"RecordType\" (\"RECORD_TYPE_CODE\") MATCH SIMPLE        " +
-                    "ON UPDATE NO ACTION        " +
-                    "ON DELETE NO ACTION        " +
-                    "NOT VALID" +
-            ")" +
-
-            "TABLESPACE pg_default;" +
-
-            "ALTER TABLE IF EXISTS public.\"Commodity\"    " +
-                "OWNER to postgres;";
-            string actual = Service.GetCreateTableSQLCommand("commodity");
-            Assert.That(actual, Is.EqualTo(expected));
-        }
-
-        [Test]
-        public void TestInitializeUserTo()
-        {
-            NAUUser user = new NAUUser("localhost", 2023, "postgres", "naucountrydev");
-            Service.InitializeUserTo(user);
-            Assert.That(user.Connection, Is.EqualTo(Service.User.Connection));
         }
 
         [Test]

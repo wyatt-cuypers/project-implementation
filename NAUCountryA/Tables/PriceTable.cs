@@ -1,16 +1,12 @@
 using NAUCountryA.Models;
-using Npgsql;
 using System.Collections;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace NAUCountryA.Tables
 {
     public class PriceTable : IReadOnlyDictionary<Offer, Price>
     {
+        // Assigned to Katelyn Runsvold
         public PriceTable()
         {
             ConstructTable();

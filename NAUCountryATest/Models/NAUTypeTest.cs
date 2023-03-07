@@ -4,11 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-namespace NAUCountryATest.Tables
+namespace NAUCountryATest.Models
 {
-    public class CountyTableTest
+    public class NAUTypeTest
     {
-        // Assigned to Wyatt Cuypers
+        // Assigned to Katelyn Runsvold
         [SetUp]
         public void Setup()
         {

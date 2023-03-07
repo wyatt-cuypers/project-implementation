@@ -1,6 +1,5 @@
 using NAUCountryA;
 using NAUCountryA.Models;
-using NAUCountryA.Tables;
 
 namespace NAUCountryATest.Models
 {
@@ -10,18 +9,7 @@ namespace NAUCountryATest.Models
         [SetUp]
         public void Setup()
         {
-            while (true)
-            {
-                try
-                {
-                    commodity = new Commodity(37, "Raisins", "RAISINS", 'P', 2022, Service.ToDateTime("4/7/2022"), "A00420");
-                    break;
-                }
-                catch (NullReferenceException)
-                {
-                    Service.InitializeUserTo(ServiceTest.TEST_USER);
-                }
-            }
+            Service.LoadTables();
         }
 
         [Test]

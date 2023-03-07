@@ -8,6 +8,7 @@ namespace NAUCountryATest.Tables
 {
     public class PracticeTableTest
     {
+        // Assigned to Wyatt Cuypers
         [SetUp]
         public void Setup()
         {

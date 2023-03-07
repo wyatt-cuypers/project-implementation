@@ -1,5 +1,4 @@
-using NAUCountryA.Tables;
-using System.Data;
+
 
 namespace NAUCountryA.Models
 {

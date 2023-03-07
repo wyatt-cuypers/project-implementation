@@ -1,10 +1,10 @@
-using NAUCountryA.Tables;
-using System.Data;
+
 
 namespace NAUCountryA.Models
 {
     public class Price : IEquatable<Price> 
     {
+        // Assigned to Katelyn Runsvold
         public Price(int offerID, double expectedIndexValue)
         {
             Offer = Service.OfferEntries[offerID];

@@ -12,6 +12,7 @@ namespace NAUCountryATest.Tables
 {
     public class StateTableTest
     {
+        // Assigned to Miranda Ryan
         private StateTable tableMockup;
         [SetUp]
         public void Setup()

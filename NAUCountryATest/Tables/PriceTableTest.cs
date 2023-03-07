@@ -8,6 +8,7 @@ namespace NAUCountryATest.Tables
 {
     public class PriceTableTest
     {
+        // Assigned to Katelyn Runsvold
         [SetUp]
         public void Setup()
         {

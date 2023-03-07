@@ -1,13 +1,12 @@
 using NAUCountryA.Models;
-using Npgsql;
 using System.Collections;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
 
 namespace NAUCountryA.Tables
 {
     public class PracticeTable : IReadOnlyDictionary<int, Practice>
     {
+        // Assigned to Wyatt Cuypers
         public PracticeTable()
         {
             ConstructTable();

@@ -6,9 +6,8 @@ using NUnit.Framework;
 
 namespace NAUCountryATest.Tables
 {
-    public class CountyTableTest
+    public class NAUTypeTableTest
     {
-        // Assigned to Wyatt Cuypers
         [SetUp]
         public void Setup()
         {

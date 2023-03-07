@@ -1,14 +1,13 @@
 using NAUCountryA.Models;
-using Npgsql;
 using System.Collections;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
 
 namespace NAUCountryA.Tables
 {
-    public class NauTypeTable : IReadOnlyDictionary<int, NAUType>
+    public class NAUTypeTable : IReadOnlyDictionary<int, NAUType>
     {
-        public NauTypeTable()
+        // Assigned to Katelyn Runsvold
+        public NAUTypeTable()
         {
             ConstructTable();
             TrimEntries();

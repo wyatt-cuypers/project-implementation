@@ -1,4 +1,3 @@
-using NAUCountryA;
 using NAUCountryA.Models;
 
 namespace NAUCountryATest.Models
