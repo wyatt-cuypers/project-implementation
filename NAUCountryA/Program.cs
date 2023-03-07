@@ -25,7 +25,7 @@ using Npgsql;
 // System.Data.DataTable table = Service.GetDataTable(sqlCommand);
 // Service.GeneratePDF(new State(table.Rows[0]));
 
-Service.ConstructUser();
+Console.WriteLine("Hello World");
 // Price testPrice = Service.PriceEntries.Values.First();
 // Service.GeneratePDF(testPrice.Offer.State, testPrice.Offer.Practice, testPrice.Offer.Type);
 

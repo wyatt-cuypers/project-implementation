@@ -15,9 +15,12 @@ namespace NAUCountryA.Models
             ReinsuranceYear = reinsuranceYear;
         }
 
-        public RecordType (DataRow row)
-        :this((string)row["RECORD_TYPE_CODE"],(int)row["RECORD_CATEGORY_CODE"],(int)row["REINSURANCE_YEAR"])
+        public RecordType (string line)
         {
+            string[] values = line.Split(',');
+            RecordTypeCode = (string)Service.ExpressValue(values[0]);
+            RecordCategoryCode = (int)Service.ExpressValue(values[1]);
+            ReinsuranceYear = (int)Service.ExpressValue(values[2]);
         }
 
         public string RecordTypeCode

@@ -8,9 +8,10 @@ namespace NAUCountryA.Tables
 {
     public class RecordTypeTable : IReadOnlyDictionary<string, RecordType>
     {
+        private readonly IDictionary<string,RecordType> recordTypeEntries;
         public RecordTypeTable()
         {
-            ConstructTable();
+            recordTypeEntries = new Dictionary<string,RecordType>();
             TrimEntries();
             AddEntries();
         }
@@ -19,7 +20,7 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                return Table.Rows.Count;
+                return recordTypeEntries.Count;
             }
         }
 
@@ -27,13 +28,14 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                string sqlCommand = $"SELECT * FROM public.\"RecordType\" WHERE \"RECORD_TYPE_CODE\" = '{recordTypeCode}';";
-                DataTable table = Service.GetDataTable(sqlCommand);
-                if (table.Rows.Count == 0)
-                {
-                    throw new KeyNotFoundException($"The RECORD_TYPE_CODE: {recordTypeCode} doesn't exist.");
-                }
-                return new RecordType(table.Rows[0]);
+                return recordTypeEntries[recordTypeCode];
+                // string sqlCommand = $"SELECT * FROM public.\"RecordType\" WHERE \"RECORD_TYPE_CODE\" = '{recordTypeCode}';";
+                // DataTable table = Service.GetDataTable(sqlCommand);
+                // if (table.Rows.Count == 0)
+                // {
+                //     throw new KeyNotFoundException($"The RECORD_TYPE_CODE: {recordTypeCode} doesn't exist.");
+                // }
+                // return new RecordType(table.Rows[0]);
             }
         }
 
@@ -41,12 +43,13 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                ICollection<string> keys = new HashSet<string>();
-                foreach (KeyValuePair<string,RecordType> pair in this)
-                {
-                    keys.Add(pair.Key);
-                }
-                return keys;
+                return recordTypeEntries.Keys;
+                // ICollection<string> keys = new HashSet<string>();
+                // foreach (KeyValuePair<string,RecordType> pair in this)
+                // {
+                //     keys.Add(pair.Key);
+                // }
+                // return keys;
             }
         }
 
@@ -54,32 +57,35 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                ICollection<RecordType> values = new List<RecordType>();
-                foreach (KeyValuePair<string,RecordType> pair in this)
-                {
-                    values.Add(pair.Value);
-                }
-                return values;
+                return recordTypeEntries.Values;
+                // ICollection<RecordType> values = new List<RecordType>();
+                // foreach (KeyValuePair<string,RecordType> pair in this)
+                // {
+                //     values.Add(pair.Value);
+                // }
+                // return values;
             }
         }
 
         public bool ContainsKey(string recordTypeCode)
         {
-            string sqlCommand = $"SELECT * FROM public.\"RecordType\" WHERE \"RECORD_TYPE_CODE\" = '{recordTypeCode}';";
-            DataTable table = Service.GetDataTable(sqlCommand);
-            return table.Rows.Count >= 1;
+            return recordTypeEntries.ContainsKey(recordTypeCode);
+            // string sqlCommand = $"SELECT * FROM public.\"RecordType\" WHERE \"RECORD_TYPE_CODE\" = '{recordTypeCode}';";
+            // DataTable table = Service.GetDataTable(sqlCommand);
+            // return table.Rows.Count >= 1;
         }
 
         public IEnumerator<KeyValuePair<string,RecordType>> GetEnumerator()
         {
-            ICollection<KeyValuePair<string,RecordType>> pairs = new HashSet<KeyValuePair<string,RecordType>>();
-            DataTable table = Table;
-            foreach (DataRow row in table.Rows)
-            {
-                RecordType recordType = new RecordType(row);
-                pairs.Add(recordType.Pair);
-            }
-            return pairs.GetEnumerator();
+            return recordTypeEntries.GetEnumerator();
+            // ICollection<KeyValuePair<string,RecordType>> pairs = new HashSet<KeyValuePair<string,RecordType>>();
+            // DataTable table = Table;
+            // foreach (DataRow row in table.Rows)
+            // {
+            //     RecordType recordType = new RecordType(row);
+            //     pairs.Add(recordType.Pair);
+            // }
+            // return pairs.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -89,8 +95,7 @@ namespace NAUCountryA.Tables
 
         public bool TryGetValue(string recordTypeCode, [MaybeNullWhen(false)] out RecordType value)
         {
-            value = null;
-            return ContainsKey(recordTypeCode);
+            return recordTypeEntries.TryGetValue(recordTypeCode, out value);
         }
 
         private ICollection<ICollection<string>> CsvContents
@@ -107,12 +112,16 @@ namespace NAUCountryA.Tables
             }
         }
 
-        private DataTable Table
+        private IList<KeyValuePair<string,RecordType>> CurrentContents
         {
             get
             {
-                string sqlCommand = "SELECT * FROM public.\"RecordType\";";
-                return Service.GetDataTable(sqlCommand);
+                IList<KeyValuePair<string,RecordType>> currentEntries = new List<KeyValuePair<string,RecordType>>();
+                foreach (KeyValuePair<string,RecordType> pair in this)
+                {
+                    currentEntries.Add(pair);
+                }
+                return currentEntries;
             }
         }
 
@@ -133,46 +142,33 @@ namespace NAUCountryA.Tables
                         string recordTypeCode = (string)Service.ExpressValue(values[0]);
                         int recordCategoryCode = (int)Service.ExpressValue(values[1]);
                         int reinsuranceYear = (int)Service.ExpressValue(values[2]);
-                        if (!ContainsKey(recordTypeCode))
+                        RecordType recordType = new RecordType(recordTypeCode, recordCategoryCode, reinsuranceYear);
+                        if (!recordTypeEntries.ContainsKey(recordTypeCode))
                         {
-                            string sqlCommand = $"INSERT INTO public.\"RecordType\" ({headers[0]},{headers[1]}," + 
-                                $"{headers[2]}) VALUES ('{recordTypeCode}',{recordCategoryCode}," +
-                                reinsuranceYear + ");";
-                            Service.GetDataTable(sqlCommand);
+                            recordTypeEntries.Add(recordType.Pair);
                         }
                     }
                 }
             }
         }
 
-        private void ConstructTable()
-        {
-            string sqlCommand = Service.GetCreateTableSQLCommand("record_type");
-            NpgsqlCommand cmd = new NpgsqlCommand(sqlCommand, Service.User.Connection);
-            cmd.Connection.Open();
-            cmd.ExecuteNonQuery();
-            cmd.Connection.Close();
-        }
-
         private void TrimEntries()
         {
-            ICollection<string> contents = new HashSet<string>();
-            foreach (ICollection<string> contents1 in CsvContents)
+            ICollection<string> currentCSVContents = new HashSet<string>();
+            foreach (ICollection<string> contents in CsvContents)
             {
-                foreach(string line in contents1)
+                foreach(string line in contents)
                 {
                     string[] values = line.Split(',');
-                    contents.Add($"{values[0]},{values[1]},{values[2]}");
+                    currentCSVContents.Add($"{values[0]},{values[1]},{values[2]}");
                 }
             }
             int position = 0;
-            while (position < Count)
+            while (position < CurrentContents.Count)
             {
-                RecordType recordType = new RecordType(Table.Rows[position]);
-                if (!contents.Contains(recordType.ToString()))
+                if (!currentCSVContents.Contains(CurrentContents[position].Value.ToString()))
                 {
-                    string sqlCommand = $"DELETE FROM public.\"RecordType\" WHERE \"RECORD_CATEGORY_CODE\" = '{recordType.RecordTypeCode}';";
-                    Service.GetDataTable(sqlCommand);
+                    recordTypeEntries.Remove(CurrentContents[position]);
                 }
                 else
                 {

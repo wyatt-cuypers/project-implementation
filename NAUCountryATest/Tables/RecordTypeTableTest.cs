@@ -1,5 +1,6 @@
 using NAUCountryA;
 using NAUCountryA.Models;
+using NAUCountryA.Tables;
 
 namespace NAUCountryATest.Tables
 {
@@ -8,7 +9,7 @@ namespace NAUCountryATest.Tables
         [SetUp]
         public void Setup()
         {
-            Service.InitializeUserTo(ServiceTest.TEST_USER);
+            Service.LoadTables();
         }
 
         [Test]

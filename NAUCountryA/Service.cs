@@ -88,35 +88,6 @@ namespace NAUCountryA
             private set;
         }
 
-        public static void ConstructUser()
-        {
-            Console.WriteLine("Enter your server name: ");
-            string serverName = Console.ReadLine();
-            int portNumber;
-            while (true)
-            {
-                try
-                {
-                    Console.WriteLine("Enter your port number");
-                    portNumber = Convert.ToInt32(Console.ReadLine());
-                    break;
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("The port number must be an integer. Try Again.");
-                }
-            }
-            Console.WriteLine("Enter your User ID: ");
-            string userID = Console.ReadLine();
-            Console.WriteLine("Enter your password: ");
-            string password = Console.ReadLine();
-            Console.WriteLine("Logging in...");
-            User = new NAUUser(serverName, portNumber, userID, password);
-            Console.WriteLine("Loading Tables");
-            LoadTables();
-            Console.WriteLine("Tables Loaded");
-        }
-
         public static bool DateTimeEquals(DateTime a, DateTime b)
         {
             return a.Month == b.Month && a.Day == b.Day && a.Year == b.Year;
@@ -324,24 +295,24 @@ namespace NAUCountryA
             }
         }
 
-        private static void LoadTables()
+        public static void LoadTables()
         {
             RecordTypeEntries = new RecordTypeTable();
-            Console.WriteLine("Record Type Table Loaded");
-            CommodityEntries = new CommodityTable();
-            Console.WriteLine("Commodity Table Loaded");
-            StateEntries = new StateTable();
-            Console.WriteLine("State Table Loaded");
-            CountyEntries = new CountyTable();
-            Console.WriteLine("County Table Loaded");
-            TypeEntries = new NauTypeTable();
-            Console.WriteLine("Type Table Loaded");
-            PracticeEntries = new PracticeTable();
-            Console.WriteLine("Practice Table Loaded");
-            OfferEntries = new OfferTable();
-            Console.WriteLine("Offer Table Loaded");
-            PriceEntries = new PriceTable();
-            Console.WriteLine("Price Table Loaded");
+            // Console.WriteLine("Record Type Table Loaded");
+            // CommodityEntries = new CommodityTable();
+            // Console.WriteLine("Commodity Table Loaded");
+            // StateEntries = new StateTable();
+            // Console.WriteLine("State Table Loaded");
+            // CountyEntries = new CountyTable();
+            // Console.WriteLine("County Table Loaded");
+            // TypeEntries = new NauTypeTable();
+            // Console.WriteLine("Type Table Loaded");
+            // PracticeEntries = new PracticeTable();
+            // Console.WriteLine("Practice Table Loaded");
+            // OfferEntries = new OfferTable();
+            // Console.WriteLine("Offer Table Loaded");
+            // PriceEntries = new PriceTable();
+            // Console.WriteLine("Price Table Loaded");
         }
 
         public static void GeneratePDF(State state, Practice practice, NAUType type)
