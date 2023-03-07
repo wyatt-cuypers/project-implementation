@@ -159,12 +159,9 @@ namespace NAUCountryA.Tables
             int position = 0;
             while (position < Count)
             {
-                Console.WriteLine($"Line Number: {position + 2}");
                 NAUType type = new NAUType(Table.Rows[position]);
-                Console.WriteLine(type.ToString());
                 if(!contents.Contains(type.ToString()))
                 {
-                    Console.WriteLine(type.TypeCode);
                     string sqlCommand = $"DELETE FROM public.\"Type\" WHERE \"TYPE_CODE\" = {type.TypeCode};";
                     Service.GetDataTable(sqlCommand);
                 }
