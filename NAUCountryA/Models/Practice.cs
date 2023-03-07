@@ -10,15 +10,13 @@ namespace NAUCountryA.Models
             PracticeCode = practiceCode;
             PracticeName = practiceName;
             PracticeAbbreviation = practiceAbbreviation;
-            IReadOnlyDictionary<int,Commodity> commodityEntries = new CommodityTable();
-            Commodity = commodityEntries[commodityCode];
+            Commodity = Service.CommodityEntries[commodityCode];
             ReleasedDate = releasedDate;
-            IReadOnlyDictionary<string,RecordType> recordTypeEntries = new RecordTypeTable();
-            RecordType = recordTypeEntries[recordTypeCode];
+            RecordType = Service.RecordTypeEntries[recordTypeCode];
         }
 
         public Practice(DataRow row)
-        :this((int)row["PRACTICE_CODE"], (string)row["PRACTICE_NAME"], (string)row["PRACTICE_ABBREVIATION"], (int)row["COMMODITY_CODE"], (DateTime)row["RELEASED_DATE"], (string)row["RECORD_TYPE_CODE"])
+        :this((int)row["PRACTICE_CODE"], (string)row["PRACTICE_NAME"], (string)row["PRACTICE_ABBREVIATION"], (int)row["COMMODITY_CODE"], Service.ToDateTime(row["RELEASED_DATE"].ToString()), (string)row["RECORD_TYPE_CODE"])
         {
         }
 
@@ -86,13 +84,13 @@ namespace NAUCountryA.Models
         {
             if (PracticeCode < 10)
             {
-                return $"\"00'{PracticeCode}'\"";
+                return $"\"00{PracticeCode}\"";
             }
             else if (PracticeCode < 100)
             {
-                return $"\"0'{PracticeCode}'\"";
+                return $"\"0{PracticeCode}\"";
             }
-            return $"\"'{PracticeCode}'\"";
+            return $"\"{PracticeCode}\"";
         }
 
         public override int GetHashCode()
@@ -102,8 +100,8 @@ namespace NAUCountryA.Models
 
         public override string ToString()
         {
-            return $"'{FormatPracticeCode()}',\"'{PracticeName}'\",\"'{PracticeAbbreviation}'\"," + 
-                $"'{Commodity.FormatCommodityCode()}',\"'{Service.ToString(ReleasedDate)}'\",\"'{RecordType.RecordTypeCode}'\"";
+            return $"{FormatPracticeCode()},\"{PracticeName}\",\"{PracticeAbbreviation}\"," + 
+                $"{Commodity.FormatCommodityCode()},\"{Service.ToString(ReleasedDate)}\",\"{RecordType.RecordTypeCode}\"";
         }
 
         public static bool operator== (Practice a, Practice b)

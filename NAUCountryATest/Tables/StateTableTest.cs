@@ -1,3 +1,6 @@
+using NAUCountryA;
+using NAUCountryA.Models;
+using NAUCountryA.Tables;
 using System;
 using System.IO.Pipes;
 using System.Collections.Generic;
@@ -88,7 +91,7 @@ namespace NAUCountryATest.Tables
         [Test]
         public void TestGetEnumerator()
         {
-            ICollection < KeyValuePair<int, State>> expected = new HashSet<KeyValuePair<int, State>>();
+            ICollection<KeyValuePair<int,State>> expected = new HashSet<KeyValuePair<int,State>>();
             expected.Add(new KeyValuePair<int, State>(01, new State(01, "Alabama", "AL", "A00520")));
             expected.Add(new KeyValuePair<int, State>(02, new State(02, "Alaska", "AK", "A00520")));
             expected.Add(new KeyValuePair<int, State>(04, new State(04, "Arizona", "AZ", "A00520")));

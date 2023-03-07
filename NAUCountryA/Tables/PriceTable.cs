@@ -30,11 +30,11 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                string sqlCommand = $"SELECT * FROM public.\"Price\" WHERE \"OFFER_ID\" = '{offer.OfferID}';";
+                string sqlCommand = $"SELECT * FROM public.\"Price\" WHERE \"ADM_INSURANCE_OFFER_ID\" = {offer.OfferID};";
                 DataTable table = Service.GetDataTable(sqlCommand);
                 if (table.Rows.Count == 0)
                 {
-                    throw new KeyNotFoundException($"The OFFER_ID: '{offer.OfferID}' doesn't exist.");
+                    throw new KeyNotFoundException($"The ADM_INSURANCE_OFFER_ID: {offer.OfferID} doesn't exist.");
                 }
                 return new Price(table.Rows[0]);
             }
@@ -68,7 +68,7 @@ namespace NAUCountryA.Tables
 
         public bool ContainsKey(Offer offer)
         {
-            string sqlCommand = $"SELECT * FROM public.\"Price\" WHERE \"OFFER_ID\" = '{offer.OfferID}';";
+            string sqlCommand = $"SELECT * FROM public.\"Price\" WHERE \"ADM_INSURANCE_OFFER_ID\" = {offer.OfferID};";
             DataTable table = Service.GetDataTable(sqlCommand);
             return table.Rows.Count >= 1;
         }
@@ -133,8 +133,8 @@ namespace NAUCountryA.Tables
                         IReadOnlyDictionary<int,Offer> offerEntries = new OfferTable();
                         if(!ContainsKey(offerEntries[offerID]))
                         {
-                            string sqlCommand = $"INSERT INTO public.\"Price\" ('{headers[0]}','{headers[1]}') VALUES " +
-                                $"('{offerID}','{expectedIndexValue});";
+                            string sqlCommand = $"INSERT INTO public.\"Price\" ({headers[0]},{headers[1]}) VALUES " +
+                                $"({offerID},{expectedIndexValue});";
                             Service.GetDataTable(sqlCommand);
 
                         }
@@ -161,7 +161,7 @@ namespace NAUCountryA.Tables
                 foreach (string line in contents1)
                 {
                     string[] values = line.Split(',');
-                    contents.Add($"'{values[0]}','{values[1]}'");
+                    contents.Add($"{values[0]},{values[1]}");
                 }
             }
             int position = 0;
@@ -170,8 +170,7 @@ namespace NAUCountryA.Tables
                 Price price = new Price(Table.Rows[position]);
                 if(!contents.Contains(price.ToString()))
                 {
-                    string sqlCommand = "DELETE FROM public.\"Price\" WHERE \"ADM_INSURACE_OFFER_ID\" = '" +
-                        price.Offer.OfferID + "\"";
+                    string sqlCommand = $"DELETE FROM public.\"Price\" WHERE \"ADM_INSURACE_OFFER_ID\" = {price.Offer.OfferID};";
                     Service.GetDataTable(sqlCommand);
                 }
                 else

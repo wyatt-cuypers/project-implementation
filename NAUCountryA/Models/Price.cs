@@ -7,13 +7,12 @@ namespace NAUCountryA.Models
     {
         public Price(int offerID, double expectedIndexValue)
         {
-            IReadOnlyDictionary<int,Offer> offerEntries = new OfferTable();
-            Offer = offerEntries[offerID];
+            Offer = Service.OfferEntries[offerID];
             ExpectedIndexValue = expectedIndexValue;
         }
         
         public Price(DataRow row)
-        :this((int)row["OFFER_ID"], (double)row["EXPECTED_INDEX_VALUE"])
+        :this((int)row["ADM_INSURANCE_OFFER_ID"], (double)row["EXPECTED_INDEX_VALUE"])
         {
         }
 
@@ -58,7 +57,7 @@ namespace NAUCountryA.Models
 
         public override string ToString()
         {
-            return $"'{Offer.FormatOfferID()}',\"'{Service.ToString(ExpectedIndexValue)}'\"";
+            return $"{Offer.FormatOfferID()},\"{Service.ToString(ExpectedIndexValue)}\"";
         }
 
         public static bool operator ==(Price a, Price b)

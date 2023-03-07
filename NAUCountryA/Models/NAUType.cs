@@ -11,15 +11,13 @@ namespace NAUCountryA.Models
             TypeCode = typeCode;
             TypeName = typeName;
             TypeAbbreviation = typeAbbreviation;
-            IReadOnlyDictionary<int,Commodity> commodityEntries = new CommodityTable();
-            Commodity = commodityEntries[commodityCode];
+            Commodity = Service.CommodityEntries[commodityCode];
             ReleasedDate = releasedDate;
-            IReadOnlyDictionary<string,RecordType> recordTypeEntries = new RecordTypeTable();
-            RecordType = recordTypeEntries[recordTypeCode];
+            RecordType = Service.RecordTypeEntries[recordTypeCode];
         }
 
         public NAUType(DataRow row)
-        :this((int)row["TYPE_CODE"], (string)row["TYPE_NAME"], (string)row["TYPE_ABBREVIATION"], (int)row["COMMODITY_CODE"], (DateTime)row["RELEASED_DATE"], (string)row["RECORD_TYPE_CODE"])
+        :this((int)row["TYPE_CODE"], (string)row["TYPE_NAME"], (string)row["TYPE_ABBREVIATION"], (int)row["COMMODITY_CODE"], Service.ToDateTime(row["RELEASED_DATE"].ToString()), (string)row["RECORD_TYPE_CODE"])
         {
         }
 
@@ -82,13 +80,13 @@ namespace NAUCountryA.Models
         {
             if (TypeCode < 10)
             {
-                return $"\"00'{TypeCode}'\"";
+                return $"\"00{TypeCode}\"";
             }
             else if (TypeCode < 100)
             {
-                return $"\"0'{TypeCode}'\"";
+                return $"\"0{TypeCode}\"";
             }
-            return $"\"'{TypeCode}'\"";
+            return $"\"{TypeCode}\"";
         }
 
         public override bool Equals(object obj)
@@ -107,8 +105,8 @@ namespace NAUCountryA.Models
 
         public override string ToString()
         {
-            return $"'{FormatTypeCode()}',\"'{TypeName}'\",\"'{TypeAbbreviation}'\",'{Commodity.FormatCommodityCode()}'" +
-                $"\"'{Service.ToString(ReleasedDate)}'\",\"'{RecordType.RecordTypeCode}'\"";
+            return $"{FormatTypeCode()},\"{TypeName}\",\"{TypeAbbreviation}\",{Commodity.FormatCommodityCode()}" +
+                $"\"{Service.ToString(ReleasedDate)}\",\"{RecordType.RecordTypeCode}\"";
         }
 
         public static bool operator ==(NAUType a, NAUType b)

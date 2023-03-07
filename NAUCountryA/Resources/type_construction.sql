@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS public."Type"
 (
-	"TYPE_CODE" character varying(10) NOT NULL,
-	"TYPE_NAME" character varying(10) NOT NULL,
+	"TYPE_CODE" integer NOT NULL,
+	"TYPE_NAME" character varying(50) NOT NULL,
 	"TYPE_ABBREVIATION" character varying(10) Not Null,
 	"COMMODITY_CODE" integer NOT NULL,
 	"RELEASED_DATE" character varying(10) NOT NULL,
@@ -21,5 +21,5 @@ CREATE TABLE IF NOT EXISTS public."Type"
 	
 )
 TABLESPACE pg_default;
-ALTER TABLE IF EXISTS public "Type"
+ALTER TABLE IF EXISTS public."Type"
 	OWNER to postgres;
