@@ -40,19 +40,19 @@ namespace NAUCountryA
             private set;
         }
 
-        public static IReadOnlyDictionary<Offer,Price> PriceEntries
+        public static IReadOnlyDictionary<Offer, Price> PriceEntries
         {
             get;
             private set;
         }
 
-        public static IReadOnlyDictionary<string,RecordType> RecordTypeEntries
+        public static IReadOnlyDictionary<string, RecordType> RecordTypeEntries
         {
             get;
             private set;
         }
 
-        public static IReadOnlyDictionary<int,State> StateEntries
+        public static IReadOnlyDictionary<int, State> StateEntries
         {
             get;
             private set;
@@ -92,28 +92,63 @@ namespace NAUCountryA
             return temp;
         }
 
-        public static void GeneratePDF(State state, Practice practice, NAUType type)
+        public static void GeneratePDF(State state, Commodity commodity, int year)
         {
             Document doc = new Document();
-            Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
-            doc.Pages.Add(page);
+
             ICollection<Price> prices = new List<Price>();
             foreach (Price price in PriceEntries.Values)
             {
-                if (price.Offer.County.State == state && price.Offer.Practice == practice && price.Offer.Type == type && price.Offer.Year == 2023)
+                if (price.Offer.County.State == state && price.Offer.Type.Commodity == commodity && price.Offer.Year == year)
                 {
                     prices.Add(price);
                 }
             }
-            string labelText = $"{state.StateName} {practice.Commodity.CommodityName} {practice.PracticeName} {type.TypeName} {2023}";
-            Label label = new Label(labelText, 0, 0, 504, 100, Font.Helvetica, 18, TextAlign.Center);
-            page.Elements.Add(label);
-            TextArea textArea = new TextArea("", 100, 100, 400, 30, ceTe.DynamicPDF.Font.HelveticaBoldOblique, 18);
+            ICollection<NAUType> types = new List<NAUType>();
             foreach (Price price in prices)
             {
-                textArea.Text = textArea.Text + price.Offer.County + ": " + price.ExpectedIndexValue + "\n";
+                if (!types.Contains(price.Offer.Type))
+                {
+                    types.Add(price.Offer.Type);
+                }
             }
-            page.Elements.Add(textArea);
+            ICollection<Practice> practices = new List<Practice>();
+            foreach (Price price in prices)
+            {
+                if (!practices.Contains(price.Offer.Practice))
+                {
+                    practices.Add(price.Offer.Practice);
+                }
+            }
+
+            Page page1 = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
+            doc.Pages.Add(page1);
+            string labelText1 = $"{state.StateName} {commodity.CommodityName} {year}";
+            Label label1 = new Label(labelText1, 0, 0, 504, 100, Font.Helvetica, 18, TextAlign.Center);
+            page1.Elements.Add(label1);
+
+            foreach (NAUType type in types)
+            {
+                foreach (Practice practice in practices)
+                {
+                    Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
+                    doc.Pages.Add(page);
+                    string labelText = $"{practice.PracticeName} {type.TypeName}";
+                    Label label = new Label(labelText, 0, 0, 504, 100, Font.Helvetica, 18, TextAlign.Center);
+                    page.Elements.Add(label);
+                    TextArea textArea = new TextArea("", 100, 100, 400, 30, ceTe.DynamicPDF.Font.HelveticaBoldOblique, 18);
+                    foreach (Price price in prices)
+                    {
+                        if (price.Offer.Type == type && price.Offer.Practice == practice)
+                        {
+                            textArea.Text = textArea.Text + price.Offer.County + ": " + price.ExpectedIndexValue + "\n";
+                        }
+
+                    }
+                    page.Elements.Add(textArea);
+                }
+            }
+
             doc.Draw(GetPath("PDFOutput/CreatePDF.pdf")); ;
         }
 
