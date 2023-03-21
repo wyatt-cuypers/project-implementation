@@ -95,61 +95,57 @@ namespace NAUCountryA
         public static void GeneratePDF(State state, Commodity commodity, int year)
         {
             Document doc = new Document();
+            Page page1 = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
+            string labelText1 = $"{state.StateName} {commodity.CommodityName} {year}";
+            Label label1 = new Label(labelText1, 0, 0, 504, 100, Font.Helvetica, 18, TextAlign.Center);
+            page1.Elements.Add(label1);
+            doc.Pages.Add(page1);
 
-            ICollection<Price> prices = new List<Price>();
+            List<PageGroup> pages = new List<PageGroup>();
+
             foreach (Price price in PriceEntries.Values)
             {
                 if (price.Offer.County.State == state && price.Offer.Type.Commodity == commodity && price.Offer.Year == year)
                 {
-                    prices.Add(price);
-                }
-            }
-            ICollection<NAUType> types = new List<NAUType>();
-            foreach (Price price in prices)
-            {
-                if (!types.Contains(price.Offer.Type))
-                {
-                    types.Add(price.Offer.Type);
-                }
-            }
-            ICollection<Practice> practices = new List<Practice>();
-            foreach (Price price in prices)
-            {
-                if (!practices.Contains(price.Offer.Practice))
-                {
-                    practices.Add(price.Offer.Practice);
-                }
-            }
+                    NAUType type = price.Offer.Type;
+                    Practice practice = price.Offer.Practice;
 
-            Page page1 = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
-            doc.Pages.Add(page1);
-            string labelText1 = $"{state.StateName} {commodity.CommodityName} {year}";
-            Label label1 = new Label(labelText1, 0, 0, 504, 100, Font.Helvetica, 18, TextAlign.Center);
-            page1.Elements.Add(label1);
-
-            foreach (NAUType type in types)
-            {
-                foreach (Practice practice in practices)
-                {
-                    Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
-                    doc.Pages.Add(page);
-                    string labelText = $"{practice.PracticeName} {type.TypeName}";
-                    Label label = new Label(labelText, 0, 0, 504, 100, Font.Helvetica, 18, TextAlign.Center);
-                    page.Elements.Add(label);
-                    TextArea textArea = new TextArea("", 100, 100, 400, 30, ceTe.DynamicPDF.Font.HelveticaBoldOblique, 18);
-                    foreach (Price price in prices)
+                    PageGroup pg = new PageGroup(practice, type);
+                    bool exists = false;
+                    foreach (PageGroup pg2 in pages)
                     {
-                        if (price.Offer.Type == type && price.Offer.Practice == practice)
+                        if (pg2.Equals(pg))
                         {
-                            textArea.Text = textArea.Text + price.Offer.County + ": " + price.ExpectedIndexValue + "\n";
+                            pg2.Prices.Add(price);
+                            exists = true;
+                            break;
                         }
-
                     }
-                    page.Elements.Add(textArea);
+                    if (!exists)
+                    {
+                        pg.Prices.Add(price);
+                        pages.Add(pg);
+                    }
                 }
             }
 
-            doc.Draw(GetPath("PDFOutput/CreatePDF.pdf")); ;
+            foreach (PageGroup pg in pages)
+            {
+                Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
+                string labelText = $"{pg.Practice.PracticeName} {pg.Type.TypeName}";
+                Label label = new Label(labelText, 0, 0, 504, 100, Font.Helvetica, 18, TextAlign.Center);
+                page.Elements.Add(label);
+
+                TextArea textArea = new TextArea("", 100, 100, 400, 30, ceTe.DynamicPDF.Font.HelveticaBoldOblique, 18);
+                foreach (Price price in pg.Prices)
+                {
+                    textArea.Text = textArea.Text + price.Offer.County + ": " + price.ExpectedIndexValue + "\n";
+                }
+
+                page.Elements.Add(textArea);
+                doc.Pages.Add(page);
+            }
+            doc.Draw(GetPath("PDFOutput/" + state.StateName + "_" + commodity.CommodityName + "_" + year + "_PDF.pdf")); ;
         }
 
         public static string GetPath(string filePath)
