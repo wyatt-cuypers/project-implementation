@@ -7,9 +7,10 @@ namespace NAUCountryA.Tables
     public class OfferTable : IReadOnlyDictionary<int, Offer>
     {
         // Assigned to Miranda Ryan
+        private readonly IDictionary<int, Offer> offerEntries;
         public OfferTable()
         {
-            ConstructTable();
+            offerEntries = new Dictionary<int, Offer>();
             TrimEntries();
             AddEntries();
         }
@@ -18,7 +19,7 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                return Table.Rows.Count;
+                return offerEntries.Count;
             }
         }
 
@@ -26,13 +27,7 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                string sqlCommand = $"SELECT * FROM public.\"Offer\" WHERE \"ADM_INSURANCE_OFFER_ID\" = {offerID};";
-                DataTable table = Service.GetDataTable(sqlCommand);
-                if (table.Rows.Count == 0)
-                {
-                    throw new KeyNotFoundException($"The ADM_INSURANCE_OFFER_ID: {offerID} doesn't exist.");
-                }
-                return new Offer(table.Rows[0]);
+                return offerEntries[offerCode];
             }
         }
 
@@ -40,12 +35,7 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                ICollection<int> keys = new HashSet<int>();
-                foreach (KeyValuePair<int, Offer> pair in this)
-                {
-                    keys.Add(pair.Key);
-                }
-                return keys;
+                return offerEntries.Keys;
             }
         }
 
@@ -53,32 +43,18 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                ICollection<Offer> values = new List<Offer>();
-                foreach (KeyValuePair<int, Offer> pair in this)
-                {
-                    values.Add(pair.Value);
-                }
-                return values;
+                return offerEntries.Values;
             }
         }
 
         public bool ContainsKey(int offerID)
         {
-            string sqlCommand = $"SELECT * FROM public.\"Offer\" WHERE \"ADM_INSURANCE_OFFER_ID\" = {offerID};";
-            DataTable table = Service.GetDataTable(sqlCommand);
-            return table.Rows.Count >= 1;
+            return offerEntries.ContainsKey(offerID);
         }
 
         public IEnumerator<KeyValuePair<int, Offer>> GetEnumerator()
         {
-            ICollection<KeyValuePair<int, Offer>> pairs = new HashSet<KeyValuePair<int, Offer>>();
-            DataTable table = Table;
-            foreach (DataRow row in table.Rows)
-            {
-                Offer offer = new Offer(row);
-                pairs.Add(offer.Pair);
-            }
-            return pairs.GetEnumerator();
+            return offerEntries.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -88,8 +64,7 @@ namespace NAUCountryA.Tables
 
         public bool TryGetValue(int offerID, [MaybeNullWhen(false)] out Offer value)
         {
-            value = null;
-            return ContainsKey(offerID);
+            return offerEntries.TryGetValue(offerCode, out value);
         }
 
         private IEnumerable<KeyValuePair<int, IEnumerable<string>>> CsvContents
@@ -103,97 +78,46 @@ namespace NAUCountryA.Tables
             }
         }
 
-        private DataTable Table
-        {
-            get
-            {
-                string sqlCommand = "SELECT * FROM public.\"Offer\";";
-                return Service.GetDataTable(sqlCommand);
-            }
-        }
 
         private void AddEntries()
         {
-            foreach (KeyValuePair<int, IEnumerable<string>> pair in CsvContents)
+            IEnumerator<string> lines = CsvContents.GetEnumerator();
+            if (lines.MoveNext())
             {
-                IEnumerator<string> lines = pair.Value.GetEnumerator();
-                Console.WriteLine("Reading Headers");
-                if (lines.MoveNext())
+                string headerLine = lines.Current;
+                string[] headers = headerLine.Split(',');
+                while (lines.MoveNext())
                 {
-                    string headerLine = lines.Current;
-                    string[] headers = headerLine.Split(',');
-                    Console.WriteLine("Reading Values");
-                    int lineNumber = 2;
-                    while (lines.MoveNext())
+                    Offer current = new Offer(lines.Current);
+                    if (!offerEntries.ContainsKey(current.Pair.Key))
                     {
-                        Console.WriteLine($"Line Number: {lineNumber++}");
-                        string line = lines.Current;
-                        Console.WriteLine(line);
-                        string[] values = line.Split(',');
-                        int offerID = (int)Service.ExpressValue(values[0]);
-                        Console.WriteLine(offerID);
-                        int practiceCode = (int)Service.ExpressValue(values[4]);
-                        Console.WriteLine(practiceCode);
-                        int countyCode = (int)Service.ExpressValue(values[2]);
-                        Console.WriteLine(countyCode);
-                        int typeCode = (int)Service.ExpressValue(values[3]);
-                        Console.WriteLine(typeCode);
-                        int irrigationPracticeCode = (int)Service.ExpressValue(values[5]);
-                        Console.WriteLine(irrigationPracticeCode);
-                        Console.WriteLine(pair.Key);
-                        if (!ContainsKey(offerID))
-                        {
-                            string sqlCommand = $"INSERT INTO public.\"Offer\" ({headers[0]}," +
-                            $"{headers[4]},{headers[2]},{headers[3]},{headers[5]},\"YEAR\") VALUES (" +
-                            $"{offerID},{practiceCode},{countyCode},{typeCode}," +
-                            $"{irrigationPracticeCode},{pair.Key});";
-                            Console.WriteLine($"Executing: {sqlCommand}");
-                            Service.GetDataTable(sqlCommand);
-                            Console.WriteLine($"{sqlCommand} executed");
-                        }
+                        offerEntries.Add(current.Pair);
                     }
                 }
             }
         }
 
-        private void ConstructTable()
-        {
-            Console.WriteLine("Constructing Offer Table...");
-            string sqlCommand = Service.GetCreateTableSQLCommand("offer");
-            NpgsqlCommand cmd = new NpgsqlCommand(sqlCommand, Service.User.Connection);
-            cmd.Connection.Open();
-            cmd.ExecuteNonQuery();
-            cmd.Connection.Close();
-            Console.WriteLine("Constructed Offer Table");
-        }
-
         private void TrimEntries()
         {
-            ICollection<string> contents = new HashSet<string>();
-            foreach (KeyValuePair<int, IEnumerable<string>> pair in CsvContents)
+            ICollection<string> currentCSVContents = new HashSet<string>();
+            foreach (string line in CsvContents)
             {
-                foreach (string line in pair.Value)
-                {
-                    string[] values = line.Split(',');
-                    contents.Add($"{values[0]},{values[4]},{values[2]},{values[3]},{values[5]},{pair.Key}");
-                }
+                string[] values = line.Split(',');
+                currentCSVContents.Add($"{values[0]},{values[4]},{values[2]},{values[3]},{values[5]},{pair.Key}");
             }
             int position = 0;
-            while (position < Count)
+            while (position < CurrentContents.Count)
             {
-                Offer offer = new Offer(Table.Rows[position]);
-                if (!contents.Contains(offer.ToString()))
+                if (!currentCSVContents.Contains(CurrentContents[position].Value.ToString()))
                 {
-                    string sqlCommand = $"DELETE FROM public.\"Offer\" WHERE \"ADM_INSURANCE_OFFER_ID\" = {offer.OfferID};";
-                    Console.WriteLine($"Excuting: {sqlCommand}" );
-                    Service.GetDataTable(sqlCommand);
-                    Console.WriteLine($"{sqlCommand} excuted successfully");
+                    offerEntries.Remove(CurrentContents[position]);
                 }
                 else
                 {
                     position++;
                 }
             }
+
         }
     }
 }

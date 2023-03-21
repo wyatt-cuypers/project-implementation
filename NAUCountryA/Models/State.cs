@@ -14,9 +14,13 @@ namespace NAUCountryA.Models
 
         }
 
-        public State(DataRow row)
-        : this((int)row["STATE_CODE"], (string)row["STATE_NAME"], (string)row["STATE_ABBREVIATION"], (string)row["RECORD_TYPE_CODE"])
+        public State(string line)
         {
+            string[] values = line.Split(',');
+            StateCode = (int)Service.ExpressValue(values[3]);
+            StateName = (string)Service.ExpressValue(values[4]);
+            StateAbbreviation = (string)Service.ExpressValue(values[5]);
+            RecordType = Service.RecordTypeEntries[(string)Service.ExpressValue(values[0])];
         }
 
         public int StateCode

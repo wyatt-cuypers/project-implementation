@@ -15,9 +15,14 @@ namespace NAUCountryA.Models
             Year = year;
         }
 
-        public Offer(DataRow row)
-        : this((int)row["ADM_INSURANCE_OFFER_ID"], (int)row["PRACTICE_CODE"], (int)row["COUNTY_CODE"], (int)row["TYPE_CODE"], (int)row["IRRIGATION_PRACTICE_CODE"], (int)row["YEAR"])
+        public Offer(string line)
         {
+            string[] values = line.Split(',');
+            OfferID = (int)Service.ExpressValue(values[3]);
+            Practice = Service.PracticeEntries[(int)Service.ExpressValue(values[4])];
+            County = Service.CountyEntries[(int)Service.ExpressValue(values[4])];
+            Type = Service.TypeEntries[(int)Service.ExpressValue(values[4])];
+            IrrigationPracticeCode = (int)Service.ExpressValue(values[5]);
         }
 
         public int OfferID
