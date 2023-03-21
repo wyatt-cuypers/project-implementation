@@ -16,9 +16,14 @@ namespace NAUCountryA.Models
             RecordType = Service.RecordTypeEntries[recordTypeCode];
         }
 
-        public NAUType(DataRow row)
-        :this((int)row["TYPE_CODE"], (string)row["TYPE_NAME"], (string)row["TYPE_ABBREVIATION"], (int)row["COMMODITY_CODE"], Service.ToDateTime(row["RELEASED_DATE"].ToString()), (string)row["RECORD_TYPE_CODE"])
-        {
+        public NAUType(string line){
+            string[] values = line.Split(',');
+            TypeCode = (int)Service.ExpressValue(values[1]);
+            TypeName = (string)Service.ExpressValue(values[2]);
+            TypeAbbreviation = (string)Service.ExpressValue(values[3]);
+            Commodity = Service.CommodityEntries[(int)Service.ExpressValue(values[4])];
+            ReleasedDate = (DateTime)Service.ExpressValue(values[5]);
+            RecordType = Service.RecordTypeEntries[(string)Service.ExpressValue(values[0])];
         }
 
 

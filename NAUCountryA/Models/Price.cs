@@ -11,9 +11,12 @@ namespace NAUCountryA.Models
             ExpectedIndexValue = expectedIndexValue;
         }
         
-        public Price(DataRow row)
-        :this((int)row["ADM_INSURANCE_OFFER_ID"], (double)row["EXPECTED_INDEX_VALUE"])
+        public Price(string line)
         {
+            string[] values = line.Split(',');
+            Offer = Service.OfferEntries[(int)Service.ExpressValue(values[0])];
+            ExpectedIndexValue = (double)Service.ExpressValue(values[1]);
+
         }
 
         public Offer Offer

@@ -183,13 +183,13 @@ namespace NAUCountryA
             // Console.WriteLine("State Table Loaded");
             // CountyEntries = new CountyTable();
             // Console.WriteLine("County Table Loaded");
-            // TypeEntries = new NauTypeTable();
+            TypeEntries = new NauTypeTable();
             // Console.WriteLine("Type Table Loaded");
             // PracticeEntries = new PracticeTable();
             // Console.WriteLine("Practice Table Loaded");
             // OfferEntries = new OfferTable();
             // Console.WriteLine("Offer Table Loaded");
-            // PriceEntries = new PriceTable();
+             PriceEntries = new PriceTable();
             // Console.WriteLine("Price Table Loaded");
         }
 
