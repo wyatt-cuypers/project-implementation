@@ -6,10 +6,11 @@ namespace NAUCountryA.Tables
 {
     public class PriceTable : IReadOnlyDictionary<Offer, Price>
     {
+        private readonly IDictionary<Offer, Price> priceEntries;
         // Assigned to Katelyn Runsvold
         public PriceTable()
         {
-            ConstructTable();
+            priceEntries = new Dictionary<Offer, Price>();
             TrimEntries();
             AddEntries();
         }
@@ -18,7 +19,7 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                return Table.Rows.Count;
+                return priceEntries.Count;
             }
         }
 
@@ -26,13 +27,7 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                string sqlCommand = $"SELECT * FROM public.\"Price\" WHERE \"ADM_INSURANCE_OFFER_ID\" = {offer.OfferID};";
-                DataTable table = Service.GetDataTable(sqlCommand);
-                if (table.Rows.Count == 0)
-                {
-                    throw new KeyNotFoundException($"The ADM_INSURANCE_OFFER_ID: {offer.OfferID} doesn't exist.");
-                }
-                return new Price(table.Rows[0]);
+                return priceEntries[offer];
             }
         }
 
@@ -40,12 +35,7 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                ICollection<Offer> keys = new HashSet<Offer>();
-                foreach (KeyValuePair<Offer, Price> pair in this)
-                {
-                    keys.Add(pair.Key);
-                }
-                return keys;
+                return priceEntries.Keys;
             }
         }
 
@@ -53,32 +43,18 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                ICollection<Price> values = new List<Price>();
-                foreach (KeyValuePair<Offer, Price> pair in this)
-                {
-                    values.Add(pair.Value);
-                }
-                return values;
+                return priceEntries.Values;
             }
         }
 
         public bool ContainsKey(Offer offer)
         {
-            string sqlCommand = $"SELECT * FROM public.\"Price\" WHERE \"ADM_INSURANCE_OFFER_ID\" = {offer.OfferID};";
-            DataTable table = Service.GetDataTable(sqlCommand);
-            return table.Rows.Count >= 1;
+            return priceEntries.ContainsKey(offer);
         }
 
         public IEnumerator<KeyValuePair<Offer, Price>> GetEnumerator()
         {
-            ICollection<KeyValuePair<Offer, Price>> pairs = new HashSet<KeyValuePair<Offer, Price>>();
-            DataTable table = Table;
-            foreach (DataRow row in table.Rows)
-            {
-                Price price = new Price(row);
-                pairs.Add(price.Pair);
-            }
-            return pairs.GetEnumerator();
+            return priceEntries.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -88,8 +64,7 @@ namespace NAUCountryA.Tables
 
         public bool TryGetValue(Offer offer, [MaybeNullWhen(false)] out Price value)
         {
-            value = null;
-            return ContainsKey(offer);
+            return priceEntries.TryGetValue(offer, out value);
         }
 
         private ICollection<ICollection<string>> CsvContents
@@ -102,72 +77,56 @@ namespace NAUCountryA.Tables
                 return contents;
             }
         }
-        private DataTable Table
+
+        private IList<KeyValuePair<Offer, Price>> CurrentContents
         {
             get
             {
-                string sqlCommand = "SELECT * FROM public.\"Price\";";
-                return Service.GetDataTable(sqlCommand);
+                IList<KeyValuePair<Offer, Price>> currentEntries = new List<KeyValuePair<Offer, Price>>();
+                foreach (KeyValuePair<Offer,Price> pair in this)
+                {
+                    currentEntries.Add(pair);
+                }
+                return currentEntries;
             }
+
         }
 
         private void AddEntries()
         {
-            foreach (ICollection<string> contents in CsvContents)
-            {
-                IEnumerator<string> lines = contents.GetEnumerator();
+                IEnumerator<string> lines = Csvcontents.GetEnumerator();
                 if (lines.MoveNext())
                 {
                     string headerLine = lines.Current;
                     string[] headers = headerLine.Split(',');
                     while (lines.MoveNext())
                     {
-                        string line = lines.Current;
-                        string[] values = line.Split(",");
-                        int offerID = (int)Service.ExpressValue(values[0]);
-                        double expectedIndexValue = (double)Service.ExpressValue(values[1]);
-                        IReadOnlyDictionary<int,Offer> offerEntries = new OfferTable();
-                        if(!ContainsKey(offerEntries[offerID]))
-                        {
-                            string sqlCommand = $"INSERT INTO public.\"Price\" ({headers[0]},{headers[1]}) VALUES " +
-                                $"({offerID},{expectedIndexValue});";
-                            Service.GetDataTable(sqlCommand);
-
+                        Price current = new Price(lines.Current);
+                        if(!priceEntries.ContainsKey(current.Pair.Key)){
+                            priceEntries.Add(current.Pair);
                         }
+
                     }
                 }
-            }
-
         }
 
-        private void ConstructTable()
-        {
-            string sqlCommand = Service.GetCreateTableSQLCommand("price");
-            NpgsqlCommand cmd = new NpgsqlCommand(sqlCommand, Service.User.Connection);
-            cmd.Connection.Open();
-            cmd.ExecuteNonQuery();
-            cmd.Connection.Close();
-        }
 
         private void TrimEntries()
         {
-            ICollection<string> contents = new HashSet<string>();
-            foreach (ICollection<string> contents1 in CsvContents)
+            ICollection<string> currentCSVContents = new HashSet<string>();
+            foreach (string line in CsvContents)
             {
-                foreach (string line in contents1)
-                {
-                    string[] values = line.Split(',');
-                    contents.Add($"{values[0]},{values[1]}");
-                }
+                
+                string[] values = line.Split(',');
+                currentCSVContents.Add($"{values[0]},{values[1]}");
+    
             }
             int position = 0;
-            while(position < Count)
-            {
-                Price price = new Price(Table.Rows[position]);
-                if(!contents.Contains(price.ToString()))
+            while(position < CurrentContents.Count)
+            {;
+                if(!currentCSVContents.Contains(CurrentContents[position].Value.ToString()))
                 {
-                    string sqlCommand = $"DELETE FROM public.\"Price\" WHERE \"ADM_INSURACE_OFFER_ID\" = {price.Offer.OfferID};";
-                    Service.GetDataTable(sqlCommand);
+                    priceEntries.Remove(CurrentContents[position]);
                 }
                 else
                 {
