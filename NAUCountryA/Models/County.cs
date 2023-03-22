@@ -1,3 +1,4 @@
+using System.ComponentModel.Design;
 
 
 namespace NAUCountryA.Models
@@ -13,9 +14,13 @@ namespace NAUCountryA.Models
             RecordType = Service.RecordTypeEntries[recordTypeCode];
         }
 
-        public County(DataRow row)
-        :this((int)row["COUNTY_CODE"], (int)row["STATE_CODE"], (string)row["COUNTY_NAME"], (string)row["RECORD_TYPE_CODE"])
+        public County(string line)
         {
+            string[] values = line.Split(',');
+            CountyCode = (int)Service.ExpressValue(values[4]);
+            State = ServiceContainer.StateEntries[(int)Service.ExpressValue(values[3])];
+            CountyName = (string)Service.ExpressValue(values[5]);
+            RecordType = Service.RecordTypeEntries[(string)Service.ExpressValue(values[0])];
         }
 
         public int CountyCode

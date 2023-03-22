@@ -15,10 +15,17 @@ namespace NAUCountryA.Models
             RecordType = Service.RecordTypeEntries[recordTypeCode];
         }
 
-        public Practice(DataRow row)
-        :this((int)row["PRACTICE_CODE"], (string)row["PRACTICE_NAME"], (string)row["PRACTICE_ABBREVIATION"], (int)row["COMMODITY_CODE"], Service.ToDateTime(row["RELEASED_DATE"].ToString()), (string)row["RECORD_TYPE_CODE"])
+        public Practice(string line)
         {
+            string[] values = line.Split(',');
+            PracticeCode = (int)Service.ExpressValue(values[4]);
+            PracticeName = (string)Service.ExpressValue(values[5]);
+            PracticeAbbreviation = (string)Service.ExpressValue(values[6]);
+            Commodity = Service.CommodityEntries[(int)Service.ExpressValue(values[3])];
+            ReleasedDate = (DateTime)Service.ExpressValue(values[8]);
+            RecordType = Service.RecordTypeEntries[(string)Service.ExpressValue(values[0])];
         }
+
 
         public int PracticeCode
         {
