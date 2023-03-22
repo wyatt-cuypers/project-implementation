@@ -11,7 +11,6 @@ namespace NAUCountryA.Tables
         public PriceTable()
         {
             priceEntries = new Dictionary<Offer, Price>();
-            TrimEntries();
             AddEntries();
         }
 
@@ -67,7 +66,7 @@ namespace NAUCountryA.Tables
             return priceEntries.TryGetValue(offer, out value);
         }
 
-        private ICollection<ICollection<string>> CsvContents
+        private IEnumerable<IEnumerable<string>> CsvContents
         {
             get
             {
@@ -78,59 +77,25 @@ namespace NAUCountryA.Tables
             }
         }
 
-        private IList<KeyValuePair<Offer, Price>> CurrentContents
-        {
-            get
-            {
-                IList<KeyValuePair<Offer, Price>> currentEntries = new List<KeyValuePair<Offer, Price>>();
-                foreach (KeyValuePair<Offer,Price> pair in this)
-                {
-                    currentEntries.Add(pair);
-                }
-                return currentEntries;
-            }
-
-        }
-
         private void AddEntries()
         {
-                IEnumerator<string> lines = Csvcontents.GetEnumerator();
-                if (lines.MoveNext())
+            foreach (IEnumerable<string> contents in CsvContents)
+            {
+                bool isHeader = true;
+                foreach (string line in contents)
                 {
-                    string headerLine = lines.Current;
-                    string[] headers = headerLine.Split(',');
-                    while (lines.MoveNext())
+                    if (isHeader)
                     {
-                        Price current = new Price(lines.Current);
-                        if(!priceEntries.ContainsKey(current.Pair.Key)){
+                        isHeader = !isHeader;
+                    }
+                    else
+                    {
+                        Price current = new Price(line);
+                        if(!priceEntries.ContainsKey(current.Pair.Key))
+                        {
                             priceEntries.Add(current.Pair);
                         }
-
                     }
-                }
-        }
-
-
-        private void TrimEntries()
-        {
-            ICollection<string> currentCSVContents = new HashSet<string>();
-            foreach (string line in CsvContents)
-            {
-                
-                string[] values = line.Split(',');
-                currentCSVContents.Add($"{values[0]},{values[1]}");
-    
-            }
-            int position = 0;
-            while(position < CurrentContents.Count)
-            {;
-                if(!currentCSVContents.Contains(CurrentContents[position].Value.ToString()))
-                {
-                    priceEntries.Remove(CurrentContents[position]);
-                }
-                else
-                {
-                    position++;
                 }
             }
         }

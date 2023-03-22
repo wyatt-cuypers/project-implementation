@@ -11,7 +11,6 @@ namespace NAUCountryA.Tables
         public NAUTypeTable()
         {
             nautypeEntries = new Dictionary<int, NAUType>();
-            TrimEntries();
             AddEntries();
         }
 
@@ -74,69 +73,25 @@ namespace NAUCountryA.Tables
                 return Service.ToCollection("A23_TYPE");
             }
         }
-
-        private IList<KeyValuePair<int,NAUType>> CurrentContents
-        {
-            get
-            {
-                IList<KeyValuePair<int,NAUType>> currentEntries = new List<KeyValuePair<int,Commodity>>();
-                foreach (KeyValuePair<int,NAUType> pair in this)
-                {
-                    currentEntries.Add(pair);
-                }
-                return currentEntries;
-            }
-        }
           
-
         private void AddEntries()
         {
-            IEnumerator<string> lines = CsvContents.GetEnumerator();
-            if(lines.MoveNext())
+            bool isHeader = true;
+            foreach (string line in CsvContents)
             {
-                string headerLine = lines.Current;
-                string[] headers = headerLine.Split(',');
-                while (lines.MoveNext())
+                if (isHeader)
                 {
-                    string line = lines.Current;
-                    string[] values = line.Split(",");
-                    int typeCode = (int)Service.ExpressValue(values[4]);
-                    string typeName = (string)Service.ExpressValue(values[5]);
-                    string typeAbbreviation = (string)Service.ExpressValue(values[6]);
-                    int commodityCode = (int)Service.ExpressValue(values[3]); 
-                    DateTime releasedDate = (DateTime)Service.ExpressValue(values[8]);
-                    string recordTypeCode = (string)Service.ExpressValue(values[0]);
-                    if(!nautypeEntries.ContainsKey(typeCode))
+                    isHeader = !isHeader;
+                }
+                else
+                {
+                    NAUType entry = new NAUType(line);
+                    if (!nautypeEntries.ContainsKey(entry.Pair.Key))
                     {
-                        nautypeEntries.Add(typeCode.Pair);
+                        nautypeEntries.Add(entry.Pair);
                     }
                 }
             }
         }
-
-
-        private void TrimEntries()
-        {
-            ICollection<string> currentCSVContents = new HashSet<string>();
-            foreach (string line in CsvContents)
-            {
-                string[] values = line.Split(',');
-                currentCSVContents.Add($"{values[4]},{values[5]},{values[6]},{values[3]},{values[8]},{values[0]}");
-            }
-            int position = 0;
-            while (position < CurrentContents.Count)
-            {
-                if(!currentCSVContents.Contains(CurrentContents[position].Value.ToString()))
-                {
-                    nautypeEntries.Remove(CurrentContents[position]);
-                }
-                else
-                {
-                    position++;
-                }
-            }
-
-        }
-
     }
 }
