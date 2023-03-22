@@ -7,9 +7,10 @@ namespace NAUCountryA.Tables
     public class NAUTypeTable : IReadOnlyDictionary<int, NAUType>
     {
         // Assigned to Katelyn Runsvold
+        private readonly IDictionary<int, NAUType> nautypeEntries;
         public NAUTypeTable()
         {
-            ConstructTable();
+            nautypeEntries = new Dictionary<int, NAUType>();
             TrimEntries();
             AddEntries();
         }
@@ -18,7 +19,7 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                return Table.Rows.Count;
+                return nautypeEntries.Count;
             }
         }
 
@@ -26,13 +27,7 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                string sqlCommand = $"SELECT * FROM public.\"Type\" WHERE \"TYPE_CODE\" = {typeCode};";
-                DataTable table = Service.GetDataTable(sqlCommand);
-                if (table.Rows.Count == 0)
-                {
-                    throw new KeyNotFoundException($"The TYPE_CODE: {typeCode} doesn't exist.");
-                }
-                return new NAUType(table.Rows[0]);
+                return nautypeEntries[typeCode];
             }
         }
 
@@ -40,12 +35,7 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                ICollection<int> keys = new HashSet<int>();
-                foreach (KeyValuePair<int, NAUType> pair in this)
-                {
-                    keys.Add(pair.Key);
-                }
-                return keys;
+                return nautypeEntries.Keys;
             }
         }
 
@@ -53,32 +43,18 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                ICollection<NAUType> values = new List<NAUType>();
-                foreach (KeyValuePair<int, NAUType> pair in this)
-                {
-                    values.Add(pair.Value);
-                }
-                return values;
+                return nautypeEntries.Values;
             }
         }
 
         public bool ContainsKey(int typeCode)
         {
-            string sqlCommand = $"SELECT * FROM public.\"Type\" WHERE \"TYPE_CODE\" = {typeCode};";
-            DataTable table = Service.GetDataTable(sqlCommand);
-            return table.Rows.Count >= 1;
+            return nautypeEntries.ContainsKey(typeCode);
         }
 
         public IEnumerator<KeyValuePair<int, NAUType>> GetEnumerator()
         {
-            ICollection<KeyValuePair<int, NAUType>> pairs = new HashSet<KeyValuePair<int, NAUType>>();
-            DataTable table = Table;
-            foreach (DataRow row in table.Rows)
-            {
-                NAUType type = new NAUType(row);
-                pairs.Add(type.Pair);
-            }
-            return pairs.GetEnumerator();
+            return nautypeEntries.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -88,8 +64,7 @@ namespace NAUCountryA.Tables
 
         public bool TryGetValue(int typeCode, [MaybeNullWhen(false)] out NAUType value)
         {
-            value = null;
-            return ContainsKey(typeCode);
+            return nautypeEntries.TryGetValue(typeCode, out value);
         }
 
         private IEnumerable<string> CsvContents
@@ -100,14 +75,19 @@ namespace NAUCountryA.Tables
             }
         }
 
-        private DataTable Table
+        private IList<KeyValuePair<int,NAUType>> CurrentContents
         {
             get
             {
-                string sqlCommand = "SELECT * FROM public.\"Type\";";
-                return Service.GetDataTable(sqlCommand);
+                IList<KeyValuePair<int,NAUType>> currentEntries = new List<KeyValuePair<int,Commodity>>();
+                foreach (KeyValuePair<int,NAUType> pair in this)
+                {
+                    currentEntries.Add(pair);
+                }
+                return currentEntries;
             }
         }
+          
 
         private void AddEntries()
         {
@@ -126,43 +106,29 @@ namespace NAUCountryA.Tables
                     int commodityCode = (int)Service.ExpressValue(values[3]); 
                     DateTime releasedDate = (DateTime)Service.ExpressValue(values[8]);
                     string recordTypeCode = (string)Service.ExpressValue(values[0]);
-                    if(!ContainsKey(typeCode))
+                    if(!nautypeEntries.ContainsKey(typeCode))
                     {
-                        string sqlCommand = $"INSERT INTO public.\"Type\" ({headers[4]},{headers[5]}," + 
-                            $"{headers[6]},{headers[3]},{headers[8]},{headers[0]}) VALUES ({typeCode}," +
-                            $"'{typeName}','{typeAbbreviation}',{commodityCode},'{Service.ToString(releasedDate)}'" +
-                            $",'{recordTypeCode}');";
-                        Service.GetDataTable(sqlCommand);
+                        nautypeEntries.Add(typeCode.Pair);
                     }
                 }
             }
         }
 
-        private void ConstructTable()
-        {
-            string sqlCommand = Service.GetCreateTableSQLCommand("type");
-            NpgsqlCommand cmd = new NpgsqlCommand(sqlCommand, Service.User.Connection);
-            cmd.Connection.Open();
-            cmd.ExecuteNonQuery();
-            cmd.Connection.Close();
-        }
 
         private void TrimEntries()
         {
-            ICollection<string> contents = new HashSet<string>();
+            ICollection<string> currentCSVContents = new HashSet<string>();
             foreach (string line in CsvContents)
             {
                 string[] values = line.Split(',');
-                contents.Add($"{values[4]},{values[5]},{values[6]},{values[3]},{values[8]},{values[0]}");
+                currentCSVContents.Add($"{values[4]},{values[5]},{values[6]},{values[3]},{values[8]},{values[0]}");
             }
             int position = 0;
-            while (position < Count)
+            while (position < CurrentContents.Count)
             {
-                NAUType type = new NAUType(Table.Rows[position]);
-                if(!contents.Contains(type.ToString()))
+                if(!currentCSVContents.Contains(CurrentContents[position].Value.ToString()))
                 {
-                    string sqlCommand = $"DELETE FROM public.\"Type\" WHERE \"TYPE_CODE\" = {type.TypeCode};";
-                    Service.GetDataTable(sqlCommand);
+                    nautypeEntries.Remove(CurrentContents[position]);
                 }
                 else
                 {
