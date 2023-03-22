@@ -1,4 +1,4 @@
-using System.ComponentModel.Design;
+
 
 
 namespace NAUCountryA.Models
@@ -18,7 +18,7 @@ namespace NAUCountryA.Models
         {
             string[] values = line.Split(',');
             CountyCode = (int)Service.ExpressValue(values[4]);
-            State = ServiceContainer.StateEntries[(int)Service.ExpressValue(values[3])];
+            State = Service.StateEntries[(int)Service.ExpressValue(values[3])];
             CountyName = (string)Service.ExpressValue(values[5]);
             RecordType = Service.RecordTypeEntries[(string)Service.ExpressValue(values[0])];
         }
