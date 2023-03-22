@@ -74,14 +74,16 @@ namespace NAUCountryA.Tables
 
         private void AddEntries()
         {
-            IEnumerator<string> lines = CsvContents.GetEnumerator();
-            if (lines.MoveNext())
+            bool isHeader = true;
+            foreach (string line in CsvContents)
             {
-                string headerLine = lines.Current;
-                string[] headers = headerLine.Split(',');
-                while (lines.MoveNext())
+                if (isHeader)
                 {
-                    Commodity current = new Commodity(lines.Current);
+                    isHeader = !isHeader;
+                }
+                else
+                {
+                    Commodity current = new Commodity(line);
                     if (!commodityEntries.ContainsKey(current.Pair.Key))
                     {
                         commodityEntries.Add(current.Pair);

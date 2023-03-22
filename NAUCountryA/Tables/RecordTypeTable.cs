@@ -65,7 +65,7 @@ namespace NAUCountryA.Tables
             return recordTypeEntries.TryGetValue(recordTypeCode, out value);
         }
 
-        private ICollection<ICollection<string>> CsvContents
+        private IEnumerable<IEnumerable<string>> CsvContents
         {
             get
             {
@@ -81,23 +81,19 @@ namespace NAUCountryA.Tables
 
         private void AddEntries()
         {
-            ICollection<ICollection<string>> csvContents = CsvContents;
-            foreach (ICollection<string> contents in csvContents)
+            foreach (IEnumerable<string> contents in CsvContents)
             {
-                IEnumerator<string> lines = contents.GetEnumerator();
-                if (lines.MoveNext())
+                bool isHeader = true;
+                foreach (string line in contents)
                 {
-                    string headerLine = lines.Current;
-                    string[] headers = headerLine.Split(',');
-                    while (lines.MoveNext())
+                    if (isHeader)
                     {
-                        string line = lines.Current;
-                        string[] values = line.Split(',');
-                        string recordTypeCode = (string)Service.ExpressValue(values[0]);
-                        int recordCategoryCode = (int)Service.ExpressValue(values[1]);
-                        int reinsuranceYear = (int)Service.ExpressValue(values[2]);
-                        RecordType recordType = new RecordType(recordTypeCode, recordCategoryCode, reinsuranceYear);
-                        if (!recordTypeEntries.ContainsKey(recordTypeCode))
+                        isHeader = !isHeader;
+                    }
+                    else
+                    {
+                        RecordType recordType = new RecordType(line);
+                        if (!recordTypeEntries.ContainsKey(recordType.Pair.Key))
                         {
                             recordTypeEntries.Add(recordType.Pair);
                         }
