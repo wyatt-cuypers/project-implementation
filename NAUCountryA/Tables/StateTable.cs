@@ -11,7 +11,6 @@ namespace NAUCountryA.Tables
         public StateTable()
         {
             stateEntries = new Dictionary<int, State>();
-            TrimEntries();
             AddEntries();
         }
 
@@ -75,19 +74,6 @@ namespace NAUCountryA.Tables
             }
         }
 
-        private IList<KeyValuePair<int, State>> CurrentContents
-        {
-            get
-            {
-                IList<KeyValuePair<int, State>> currentEntries = new List<KeyValuePair<int, State>>();
-                foreach (KeyValuePair<int, State> pair in this)
-                {
-                    currentEntries.Add(pair);
-                }
-                return currentEntries;
-            }
-        }
-
         private void AddEntries()
         {
             IEnumerator<string> lines = CsvContents.GetEnumerator();
@@ -105,27 +91,5 @@ namespace NAUCountryA.Tables
                 }
             }
         }
-        private void TrimEntries()
-        {
-            ICollection<string> currentCSVContents = new HashSet<string>();
-            foreach (string line in CsvContents)
-            {
-                string[] values = line.Split(',');
-                currentCSVContents.Add($"{values[3]},{values[4]},{values[5]},{values[0]}");
-            }
-            int position = 0;
-            while (position < CurrentContents.Count)
-            {
-                if (!currentCSVContents.Contains(CurrentContents[position].Value.ToString()))
-                {
-                    stateEntries.Remove(CurrentContents[position]);
-                }
-                else
-                {
-                    position++;
-                }
-            }
-        }
-       
     }
 }
