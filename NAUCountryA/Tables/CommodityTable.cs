@@ -10,7 +10,6 @@ namespace NAUCountryA.Tables
         public CommodityTable()
         {
             commodityEntries = new Dictionary<int,Commodity>();
-            TrimEntries();
             AddEntries();
         }
 
@@ -73,19 +72,6 @@ namespace NAUCountryA.Tables
             }
         }
 
-        private IList<KeyValuePair<int,Commodity>> CurrentContents
-        {
-            get
-            {
-                IList<KeyValuePair<int,Commodity>> currentEntries = new List<KeyValuePair<int,Commodity>>();
-                foreach (KeyValuePair<int,Commodity> pair in this)
-                {
-                    currentEntries.Add(pair);
-                }
-                return currentEntries;
-            }
-        }
-
         private void AddEntries()
         {
             IEnumerator<string> lines = CsvContents.GetEnumerator();
@@ -100,28 +86,6 @@ namespace NAUCountryA.Tables
                     {
                         commodityEntries.Add(current.Pair);
                     }
-                }
-            }
-        }
-
-        private void TrimEntries()
-        {
-            ICollection<string> currentCSVContents = new HashSet<string>();
-            foreach(string line in CsvContents)
-            {
-                string[] values = line.Split(',');
-                currentCSVContents.Add($"{values[4]},{values[5]},{values[6]},{values[7]},{values[3]},{values[9]},{values[0]}");
-            }
-            int position = 0;
-            while (position < CurrentContents.Count)
-            {
-                if (!currentCSVContents.Contains(CurrentContents[position].Value.ToString()))
-                {
-                    commodityEntries.Remove(CurrentContents[position]);
-                }
-                else
-                {
-                    position++;
                 }
             }
         }

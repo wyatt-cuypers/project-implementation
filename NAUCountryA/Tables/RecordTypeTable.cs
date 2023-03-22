@@ -10,7 +10,6 @@ namespace NAUCountryA.Tables
         public RecordTypeTable()
         {
             recordTypeEntries = new Dictionary<string,RecordType>();
-            TrimEntries();
             AddEntries();
         }
 
@@ -80,19 +79,6 @@ namespace NAUCountryA.Tables
             }
         }
 
-        private IList<KeyValuePair<string,RecordType>> CurrentContents
-        {
-            get
-            {
-                IList<KeyValuePair<string,RecordType>> currentEntries = new List<KeyValuePair<string,RecordType>>();
-                foreach (KeyValuePair<string,RecordType> pair in this)
-                {
-                    currentEntries.Add(pair);
-                }
-                return currentEntries;
-            }
-        }
-
         private void AddEntries()
         {
             ICollection<ICollection<string>> csvContents = CsvContents;
@@ -116,31 +102,6 @@ namespace NAUCountryA.Tables
                             recordTypeEntries.Add(recordType.Pair);
                         }
                     }
-                }
-            }
-        }
-
-        private void TrimEntries()
-        {
-            ICollection<string> currentCSVContents = new HashSet<string>();
-            foreach (ICollection<string> contents in CsvContents)
-            {
-                foreach(string line in contents)
-                {
-                    string[] values = line.Split(',');
-                    currentCSVContents.Add($"{values[0]},{values[1]},{values[2]}");
-                }
-            }
-            int position = 0;
-            while (position < CurrentContents.Count)
-            {
-                if (!currentCSVContents.Contains(CurrentContents[position].Value.ToString()))
-                {
-                    recordTypeEntries.Remove(CurrentContents[position]);
-                }
-                else
-                {
-                    position++;
                 }
             }
         }
