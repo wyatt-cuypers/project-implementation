@@ -172,14 +172,14 @@ namespace NAUCountryA
         public static void LoadTables()
         {
             RecordTypeEntries = new RecordTypeTable();
-            // Console.WriteLine("Record Type Table Loaded");
+            Console.WriteLine("Record Type Table Loaded");
             CommodityEntries = new CommodityTable();
-            // Console.WriteLine("Commodity Table Loaded");
-            // StateEntries = new StateTable();
-            // Console.WriteLine("State Table Loaded");
+            Console.WriteLine("Commodity Table Loaded");
+            StateEntries = new StateTable();
+            Console.WriteLine("State Table Loaded");
             // CountyEntries = new CountyTable();
             // Console.WriteLine("County Table Loaded");
-            TypeEntries = new NauTypeTable();
+            TypeEntries = new NAUTypeTable();
             // Console.WriteLine("Type Table Loaded");
             // PracticeEntries = new PracticeTable();
             // Console.WriteLine("Practice Table Loaded");
