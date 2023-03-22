@@ -17,14 +17,7 @@ namespace NAUCountryATest.Tables
         [SetUp]
         public void Setup()
         {
-            try
-            {
-                tableMockup = new StateTable();
-            }
-            catch (NullReferenceException)
-            {
-                Service.InitializeUserTo(new NAUUser("localhost", 2023, "postgres", "naucountrydev"));
-            }
+            Service.LoadTables();
         }
 
         [Test]
