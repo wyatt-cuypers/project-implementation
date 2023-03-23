@@ -5,7 +5,7 @@ namespace NAUCountryA.Models
     public class NAUType : IEquatable<NAUType>
     {
         // Assigned to Katelyn Runsvold
-        public NAUType(int typeCode, string typeName, string typeAbbreviation, 
+        public NAUType(int typeCode, string typeName, string typeAbbreviation,
             int commodityCode, DateTime releasedDate, string recordTypeCode)
         {
             TypeCode = typeCode;
@@ -16,13 +16,14 @@ namespace NAUCountryA.Models
             RecordType = Service.RecordTypeEntries[recordTypeCode];
         }
 
-        public NAUType(string line){
+        public NAUType(string line)
+        {
             string[] values = line.Split(',');
-            TypeCode = (int)Service.ExpressValue(values[1]);
-            TypeName = (string)Service.ExpressValue(values[2]);
-            TypeAbbreviation = (string)Service.ExpressValue(values[3]);
-            Commodity = Service.CommodityEntries[(int)Service.ExpressValue(values[4])];
-            ReleasedDate = (DateTime)Service.ExpressValue(values[5]);
+            TypeCode = (int)Service.ExpressValue(values[4]);
+            TypeName = (string)Service.ExpressValue(values[5]);
+            TypeAbbreviation = (string)Service.ExpressValue(values[6]);
+            Commodity = Service.CommodityEntries[(int)Service.ExpressValue(values[3])];
+            ReleasedDate = (DateTime)Service.ExpressValue(values[8]);
             RecordType = Service.RecordTypeEntries[(string)Service.ExpressValue(values[0])];
         }
 
@@ -67,7 +68,7 @@ namespace NAUCountryA.Models
         {
             get
             {
-                return new KeyValuePair<int,NAUType>(TypeCode, this);
+                return new KeyValuePair<int, NAUType>(TypeCode, this);
             }
         }
 

@@ -15,14 +15,15 @@ namespace NAUCountryA.Models
             Year = year;
         }
 
-        public Offer(string line)
+        public Offer(string line, int year)
         {
             string[] values = line.Split(',');
-            OfferID = (int)Service.ExpressValue(values[3]);
+            OfferID = (int)Service.ExpressValue(values[0]);
             Practice = Service.PracticeEntries[(int)Service.ExpressValue(values[4])];
-            County = Service.CountyEntries[(int)Service.ExpressValue(values[4])];
-            Type = Service.TypeEntries[(int)Service.ExpressValue(values[4])];
+            County = Service.CountyEntries[(int)Service.ExpressValue(values[2])];
+            Type = Service.TypeEntries[(int)Service.ExpressValue(values[3])];
             IrrigationPracticeCode = (int)Service.ExpressValue(values[5]);
+            Year = year;
         }
 
         public int OfferID

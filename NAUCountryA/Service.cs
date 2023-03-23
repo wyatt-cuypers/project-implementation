@@ -101,10 +101,7 @@ namespace NAUCountryA
             page1.Elements.Add(label1);
             doc.Pages.Add(page1);
 
-            // Consider
-            ICollection<PageGroup> pages = new HashSet<PageGroup>();
-            // Rather Than
-            //List<PageGroup> pages = new List<PageGroup>()
+            List<PageGroup> pages = new List<PageGroup>();
             foreach (Price price in PriceEntries.Values)
             {
                 if (price.Offer.County.State == state && price.Offer.Type.Commodity == commodity && price.Offer.Year == year)
@@ -112,11 +109,7 @@ namespace NAUCountryA
                     NAUType type = price.Offer.Type;
                     Practice practice = price.Offer.Practice;
                     PageGroup pg = new PageGroup(practice, type);
-                    // Consider
-                    pages.Add(pg);
-                    pg.Prices.Add(price);
-                    // Rather Than
-                    /*bool exists = false;
+                    bool exists = false;
                     foreach (PageGroup pg2 in pages)
                     {
                         if (pg2.Equals(pg))
@@ -130,7 +123,7 @@ namespace NAUCountryA
                     {
                         pg.Prices.Add(price);
                         pages.Add(pg);
-                    }*/
+                    }
                 }
             }
 
@@ -182,16 +175,16 @@ namespace NAUCountryA
             Console.WriteLine("Commodity Table Loaded");
             StateEntries = new StateTable();
             Console.WriteLine("State Table Loaded");
-            // CountyEntries = new CountyTable();
-            // Console.WriteLine("County Table Loaded");
+            CountyEntries = new CountyTable();
+            Console.WriteLine("County Table Loaded");
             TypeEntries = new NAUTypeTable();
-            // Console.WriteLine("Type Table Loaded");
-            // PracticeEntries = new PracticeTable();
-            // Console.WriteLine("Practice Table Loaded");
-            // OfferEntries = new OfferTable();
-            // Console.WriteLine("Offer Table Loaded");
-             PriceEntries = new PriceTable();
-            // Console.WriteLine("Price Table Loaded");
+            Console.WriteLine("Type Table Loaded");
+            PracticeEntries = new PracticeTable();
+            Console.WriteLine("Practice Table Loaded");
+            OfferEntries = new OfferTable();
+            Console.WriteLine("Offer Table Loaded");
+            PriceEntries = new PriceTable();
+            Console.WriteLine("Price Table Loaded");
         }
 
         public static ICollection<string> ToCollection(string csvFileName)

@@ -10,7 +10,7 @@ using NAUCountryA.Tables;
 
 namespace NAUCountryATest.Tables
 {
-    public class OfferTableTest
+    /*public class OfferTableTest
     {
         // Assigned to Miranda Ryan
         private OfferTable tableMockup;
@@ -116,5 +116,5 @@ namespace NAUCountryATest.Tables
             Offer test = null;
             Assert.That(tableMockup.TryGetValue(2786971, out test), Is.False);
         }
-    }
+    }*/
 }

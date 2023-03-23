@@ -4,7 +4,10 @@ using Microsoft.VisualBasic.FileIO;
 using NAUCountryA;
 using NAUCountryA.Models;
 using NAUCountryA.Tables;
-using Npgsql;
+
+Service.LoadTables();
+Price testPrice = Service.PriceEntries.First().Value;
+Service.GeneratePDF(testPrice.Offer.County.State, testPrice.Offer.Practice.Commodity, 2023);
 //CreatePDF.Run();
 //Service.ConstructUser();
 // ICollection<string> commodityDataSet = Service.ToCollection("A23_Commodity");

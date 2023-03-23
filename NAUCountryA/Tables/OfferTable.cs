@@ -80,7 +80,7 @@ namespace NAUCountryA.Tables
 
         private void AddEntries()
         {
-            bool isHeader = true;
+            /*bool isHeader = true;
             foreach (KeyValuePair<int, IEnumerable<string>> pair in CsvContents)
             {
                 foreach ()
@@ -98,11 +98,45 @@ namespace NAUCountryA.Tables
                         }
                     }
                 }
+            }*/
+
+            bool isHeader = true;
+            IEnumerable<string> contents_22 = CsvContents.ElementAt(0).Value;
+            IEnumerable<string> contents_23 = CsvContents.ElementAt(1).Value;
+            foreach (string line in contents_22)
+            {
+                if (isHeader)
+                {
+                    isHeader = !isHeader;
+                }
+                else
+                {
+                    Offer current = new Offer(line, 2022);
+                    if (!offerEntries.ContainsKey(current.Pair.Key))
+                    {
+                        offerEntries.Add(current.Pair);
+                    }
+                }
+            }
+            foreach (string line in contents_23)
+            {
+                if (isHeader)
+                {
+                    isHeader = !isHeader;
+                }
+                else
+                {
+                    Offer current = new Offer(line, 2023);
+                    if (!offerEntries.ContainsKey(current.Pair.Key))
+                    {
+                        offerEntries.Add(current.Pair);
+                    }
+                }
             }
         }
 
-    
 
-    
+
+
     }
 }
