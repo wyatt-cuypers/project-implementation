@@ -11,7 +11,6 @@ namespace NAUCountryA.Tables
         public OfferTable()
         {
             offerEntries = new Dictionary<int, Offer>();
-            TrimEntries();
             AddEntries();
         }
 
@@ -27,7 +26,7 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                return offerEntries[offerCode];
+                return offerEntries[offerID];
             }
         }
 
@@ -64,7 +63,7 @@ namespace NAUCountryA.Tables
 
         public bool TryGetValue(int offerID, [MaybeNullWhen(false)] out Offer value)
         {
-            return offerEntries.TryGetValue(offerCode, out value);
+            return offerEntries.TryGetValue(offerID, out value);
         }
 
         private IEnumerable<KeyValuePair<int, IEnumerable<string>>> CsvContents
@@ -81,43 +80,29 @@ namespace NAUCountryA.Tables
 
         private void AddEntries()
         {
-            IEnumerator<string> lines = CsvContents.GetEnumerator();
-            if (lines.MoveNext())
+            bool isHeader = true;
+            foreach (KeyValuePair<int, IEnumerable<string>> pair in CsvContents)
             {
-                string headerLine = lines.Current;
-                string[] headers = headerLine.Split(',');
-                while (lines.MoveNext())
+                foreach ()
                 {
-                    Offer current = new Offer(lines.Current);
-                    if (!offerEntries.ContainsKey(current.Pair.Key))
+                    if (isHeader)
                     {
-                        offerEntries.Add(current.Pair);
+                        isHeader = !isHeader;
+                    }
+                    else
+                    {
+                        Offer current = new Offer(line);
+                        if (!offerEntries.ContainsKey(current.Pair.Key))
+                        {
+                            offerEntries.Add(current.Pair);
+                        }
                     }
                 }
             }
         }
 
-        private void TrimEntries()
-        {
-            ICollection<string> currentCSVContents = new HashSet<string>();
-            foreach (string line in CsvContents)
-            {
-                string[] values = line.Split(',');
-                currentCSVContents.Add($"{values[0]},{values[4]},{values[2]},{values[3]},{values[5]},{pair.Key}");
-            }
-            int position = 0;
-            while (position < CurrentContents.Count)
-            {
-                if (!currentCSVContents.Contains(CurrentContents[position].Value.ToString()))
-                {
-                    offerEntries.Remove(CurrentContents[position]);
-                }
-                else
-                {
-                    position++;
-                }
-            }
+    
 
-        }
+    
     }
 }
