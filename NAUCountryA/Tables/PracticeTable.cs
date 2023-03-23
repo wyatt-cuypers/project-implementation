@@ -7,9 +7,10 @@ namespace NAUCountryA.Tables
     public class PracticeTable : IReadOnlyDictionary<int, Practice>
     {
         // Assigned to Wyatt Cuypers
+        private readonly IDictionary<int,Practice> practiceEntries;
         public PracticeTable()
         {
-            ConstructTable();
+            practiceEntries = new Dictionary<int,Practice>();
             TrimEntries();
             AddEntries();
         }
@@ -26,13 +27,7 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                string sqlCommand = $"SELECT * FROM public.\"Practice\" WHERE \"PRACTICE_CODE\" = {practiceCode};";
-                DataTable table = Service.GetDataTable(sqlCommand);
-                if (table.Rows.Count == 0)
-                {
-                    throw new KeyNotFoundException($"The PRACTICE_CODE: {practiceCode} doesn't exist.");
-                }
-                return new Practice(table.Rows[0]);
+                return practiceEntries[practiceCode];
             }
         }
 
@@ -40,12 +35,7 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                ICollection<int> keys = new HashSet<int>();
-                foreach (KeyValuePair<int,Practice> pair in this)
-                {
-                    keys.Add(pair.Key);
-                }
-                return keys;
+                return practiceEntries.Keys;
             }
         }
 
@@ -53,32 +43,18 @@ namespace NAUCountryA.Tables
         {
             get
             {
-                ICollection<Practice> values = new List<Practice>();
-                foreach (KeyValuePair<int,Practice> pair in this)
-                {
-                    values.Add(pair.Value);
-                }
-                return values;
+                return practiceEntries.Values;
             }
         }
 
         public bool ContainsKey(int practiceCode)
         {
-            string sqlCommand = $"SELECT * FROM public.\"Practice\" WHERE \"PRACTICE_CODE\" = {practiceCode};";
-            DataTable table = Service.GetDataTable(sqlCommand);
-            return table.Rows.Count >= 1;
+            return practiceEntries.ContainsKey(practiceCode);
         }
 
         public IEnumerator<KeyValuePair<int,Practice>> GetEnumerator()
         {
-            ICollection<KeyValuePair<int,Practice>> pairs = new HashSet<KeyValuePair<int,Practice>>();
-            DataTable table = Table;
-            foreach (DataRow row in table.Rows)
-            {
-                Practice practice = new Practice(row);
-                pairs.Add(practice.Pair);
-            }
-            return pairs.GetEnumerator();
+            return practiceEntries.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -88,8 +64,7 @@ namespace NAUCountryA.Tables
 
         public bool TryGetValue(int practiceCode, [MaybeNullWhen(false)] out Practice value)
         {
-            value = null;
-            return ContainsKey(practiceCode);
+            return practiceEntries.TryGetValue(practiceCode, out value);
         }
         private IEnumerable<string> CsvContents
         {
@@ -99,12 +74,16 @@ namespace NAUCountryA.Tables
             }
         }
 
-        private DataTable Table
+        private IList<KeyValuePair<int,Practice>> CurrentContents
         {
             get
             {
-                string sqlCommand = "SELECT * FROM public.\"Practice\";";
-                return Service.GetDataTable(sqlCommand);
+                IList<KeyValuePair<int,Practice>> currentEntries = new List<KeyValuePair<int,Practice>>();
+                foreach (KeyValuePair<int,Practice> pair in this)
+                {
+                    currentEntries.Add(pair);
+                }
+                return currentEntries;
             }
         }
 
@@ -117,52 +96,29 @@ namespace NAUCountryA.Tables
                 string[] headers = headerLine.Split(',');
                 while (lines.MoveNext())
                 {
-                    string line = lines.Current;
-                    string[] values = line.Split(',');
-                    int practiceCode = (int)Service.ExpressValue(values[4]);
-                    string practiceName = (string)Service.ExpressValue(values[5]);
-                    string practiceAbbreviation = (string)Service.ExpressValue(values[6]);
-                    int commodityCode = (int)Service.ExpressValue(values[3]);
-                    DateTime releasedDate = (DateTime)Service.ExpressValue(values[8]);
-                    string recordTypeCode = (string)Service.ExpressValue(values[0]);
-                    if (!ContainsKey(practiceCode))
+                    Practice current = new Practice(lines.Current);
+                    if (!practiceEntries.ContainsKey(current.Pair.Key))
                     {
-                        string sqlCommand = $"INSERT INTO public.\"Practice\" ({headers[4]},{headers[5]}," +
-                        $"{headers[6]},{headers[3]},{headers[8]},{headers[0]}) VALUES ({practiceCode}," + 
-                        $"'{practiceName}','{practiceAbbreviation}',{commodityCode},'{Service.ToString(releasedDate)}'," +
-                        $"'{recordTypeCode}');";
-                        Service.GetDataTable(sqlCommand);
+                        practiceEntries.Add(current.Pair);
                     }
                 }
             }
         }
 
-        private void ConstructTable()
-        {
-            string sqlCommand = Service.GetCreateTableSQLCommand("practice");
-            NpgsqlCommand cmd = new NpgsqlCommand(sqlCommand, Service.User.Connection);
-            cmd.Connection.Open();
-            cmd.ExecuteNonQuery();
-            cmd.Connection.Close();
-        }
-
         private void TrimEntries()
         {
-            ICollection<string> contents = new HashSet<string>();
+            ICollection<string> currentCSVContents = new HashSet<string>();
             foreach(string line in CsvContents)
             {
                 string[] values = line.Split(',');
-                contents.Add($"{values[4]},{values[5]},{values[6]},{values[3]},{values[8]},{values[0]}");
+                currentCSVContents.Add($"{values[4]},{values[5]},{values[6]},{values[3]},{values[8]},{values[0]}");
             }
             int position = 0;
-            while (position < Count)
+            while (position < CurrentContents.Count)
             {
-                Practice practice = new Practice(Table.Rows[position]);
-                if (!contents.Contains(practice.ToString()))
+                if (!currentCSVContents.Contains(CurrentContents[position].Value.ToString()))
                 {
-                    string sqlCommand = "DELETE FROM public.\"Practice\" WHERE \"PRACTICE_CODE\" = " + 
-                        practice.PracticeCode + ";";
-                    Service.GetDataTable(sqlCommand);
+                    practiceEntries.Remove(CurrentContents[position]);
                 }
                 else
                 {
