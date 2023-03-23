@@ -12,7 +12,6 @@ namespace NAUCountryA.Tables
         public CountyTable()
         {
             countyEntries = new Dictionary<int, County>();
-            TrimEntries();
             AddEntries();
         }
 
@@ -74,55 +73,22 @@ namespace NAUCountryA.Tables
             }
         }
 
-        private IList<KeyValuePair<int, County>> CurrentContents
-        {
-            get
-            {
-                IList<KeyValuePair<int, County>> currentEntries = new List<KeyValuePair<int, County>>();
-                foreach (KeyValuePair<int, County> pair in this)
-                {
-                    currentEntries.Add(pair);
-                }
-                return currentEntries;
-            }
-        }
-
         private void AddEntries()
         {
-            IEnumerator<string> lines = CsvContents.GetEnumerator();
-            if (lines.MoveNext())
+            bool isHeader = true;
+            foreach (string line in CsvContents)
             {
-                string headerLine = lines.Current;
-                string[] headers = headerLine.Split(',');
-                while (lines.MoveNext())
+                if (isHeader)
                 {
-                    County current = new County(lines.Current);
+                    isHeader = !isHeader;
+                }
+                else
+                {
+                    County current = new County(line);
                     if (!countyEntries.ContainsKey(current.Pair.Key))
                     {
                         countyEntries.Add(current.Pair);
                     }
-                }
-            }
-        }
-
-        private void TrimEntries()
-        {
-            ICollection<string> currentCSVContents = new HashSet<string>();
-            foreach (string line in CsvContents)
-            {
-                string[] values = line.Split(',');
-                currentCSVContents.Add($"{values[4]},{values[3]},{values[5]},{values[0]}");
-            }
-            int position = 0;
-            while (position < CurrentContents.Count)
-            {
-                if (!currentCSVContents.Contains(CurrentContents[position].Value.ToString()))
-                {
-                    countyEntries.Remove(CurrentContents[position]);
-                }
-                else
-                {
-                    position++;
                 }
             }
         }

@@ -11,7 +11,6 @@ namespace NAUCountryA.Tables
         public PracticeTable()
         {
             practiceEntries = new Dictionary<int, Practice>();
-            TrimEntries();
             AddEntries();
         }
 
@@ -74,55 +73,22 @@ namespace NAUCountryA.Tables
             }
         }
 
-        private IList<KeyValuePair<int, Practice>> CurrentContents
-        {
-            get
-            {
-                IList<KeyValuePair<int, Practice>> currentEntries = new List<KeyValuePair<int, Practice>>();
-                foreach (KeyValuePair<int, Practice> pair in this)
-                {
-                    currentEntries.Add(pair);
-                }
-                return currentEntries;
-            }
-        }
-
         private void AddEntries()
         {
-            IEnumerator<string> lines = CsvContents.GetEnumerator();
-            if (lines.MoveNext())
+            bool isHeader = true;
+            foreach (string line in CsvContents)
             {
-                string headerLine = lines.Current;
-                string[] headers = headerLine.Split(',');
-                while (lines.MoveNext())
+                if (isHeader)
                 {
-                    Practice current = new Practice(lines.Current);
+                    isHeader = !isHeader;
+                }
+                else
+                {
+                    Practice current = new Practice(line);
                     if (!practiceEntries.ContainsKey(current.Pair.Key))
                     {
                         practiceEntries.Add(current.Pair);
                     }
-                }
-            }
-        }
-
-        private void TrimEntries()
-        {
-            ICollection<string> currentCSVContents = new HashSet<string>();
-            foreach (string line in CsvContents)
-            {
-                string[] values = line.Split(',');
-                currentCSVContents.Add($"{values[4]},{values[5]},{values[6]},{values[3]},{values[8]},{values[0]}");
-            }
-            int position = 0;
-            while (position < CurrentContents.Count)
-            {
-                if (!currentCSVContents.Contains(CurrentContents[position].Value.ToString()))
-                {
-                    practiceEntries.Remove(CurrentContents[position]);
-                }
-                else
-                {
-                    position++;
                 }
             }
         }
