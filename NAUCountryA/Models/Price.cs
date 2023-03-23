@@ -2,7 +2,7 @@
 
 namespace NAUCountryA.Models
 {
-    public class Price : IEquatable<Price> 
+    public class Price : IEquatable<Price>
     {
         // Assigned to Katelyn Runsvold
         public Price(int offerID, double expectedIndexValue)
@@ -10,7 +10,7 @@ namespace NAUCountryA.Models
             Offer = Service.OfferEntries[offerID];
             ExpectedIndexValue = expectedIndexValue;
         }
-        
+
         public Price(string line)
         {
             string[] values = line.Split(',');
@@ -31,26 +31,26 @@ namespace NAUCountryA.Models
             private set;
         }
 
-        public KeyValuePair<Offer,Price> Pair
+        public KeyValuePair<Offer, Price> Pair
         {
             get
             {
-                return new KeyValuePair<Offer,Price>(Offer, this);
+                return new KeyValuePair<Offer, Price>(Offer, this);
             }
         }
 
         public bool Equals(Price other)
         {
-            return Offer == other.Offer && ExpectedIndexValue== other.ExpectedIndexValue;
+            return Offer == other.Offer && ExpectedIndexValue == other.ExpectedIndexValue;
         }
 
         public override bool Equals(object obj)
         {
-           if(!(obj is Price))
+            if (!(obj is Price))
             {
                 return false;
             }
-           return Equals((Price)obj);
+            return Equals((Price)obj);
         }
 
         public override int GetHashCode()
