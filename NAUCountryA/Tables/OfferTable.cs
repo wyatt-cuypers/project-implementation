@@ -82,7 +82,22 @@ namespace NAUCountryA.Tables
         {
             foreach (KeyValuePair<int,IEnumerable<string>> pair in CsvContents)
             {
-                
+                bool isHeader = true;
+                foreach (string line in pair.Value)
+                {
+                    if (isHeader)
+                    {
+                        isHeader = !isHeader;
+                    }
+                    else
+                    {
+                        Offer current = new Offer($"{line},{pair.Key}");
+                        if (!offerEntries.ContainsKey(current.Pair.Key))
+                        {
+                            offerEntries.Add(current.Pair);
+                        }
+                    }
+                }
             }
         }
     }
