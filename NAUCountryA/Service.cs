@@ -101,17 +101,22 @@ namespace NAUCountryA
             page1.Elements.Add(label1);
             doc.Pages.Add(page1);
 
-            List<PageGroup> pages = new List<PageGroup>();
-
+            // Consider
+            ICollection<PageGroup> pages = new HashSet<PageGroup>();
+            // Rather Than
+            //List<PageGroup> pages = new List<PageGroup>()
             foreach (Price price in PriceEntries.Values)
             {
                 if (price.Offer.County.State == state && price.Offer.Type.Commodity == commodity && price.Offer.Year == year)
                 {
                     NAUType type = price.Offer.Type;
                     Practice practice = price.Offer.Practice;
-
                     PageGroup pg = new PageGroup(practice, type);
-                    bool exists = false;
+                    // Consider
+                    pages.Add(pg);
+                    pg.Prices.Add(price);
+                    // Rather Than
+                    /*bool exists = false;
                     foreach (PageGroup pg2 in pages)
                     {
                         if (pg2.Equals(pg))
@@ -125,7 +130,7 @@ namespace NAUCountryA
                     {
                         pg.Prices.Add(price);
                         pages.Add(pg);
-                    }
+                    }*/
                 }
             }
 
@@ -172,14 +177,14 @@ namespace NAUCountryA
         public static void LoadTables()
         {
             RecordTypeEntries = new RecordTypeTable();
-            // Console.WriteLine("Record Type Table Loaded");
+            Console.WriteLine("Record Type Table Loaded");
             CommodityEntries = new CommodityTable();
-            // Console.WriteLine("Commodity Table Loaded");
-            // StateEntries = new StateTable();
-            // Console.WriteLine("State Table Loaded");
+            Console.WriteLine("Commodity Table Loaded");
+            StateEntries = new StateTable();
+            Console.WriteLine("State Table Loaded");
             // CountyEntries = new CountyTable();
             // Console.WriteLine("County Table Loaded");
-            TypeEntries = new NauTypeTable();
+            TypeEntries = new NAUTypeTable();
             // Console.WriteLine("Type Table Loaded");
             // PracticeEntries = new PracticeTable();
             // Console.WriteLine("Practice Table Loaded");

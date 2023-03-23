@@ -6,25 +6,34 @@ namespace NAUCountryA.Models
         {
             Practice = practice;
             Type = type;
-            Prices = new List<Price>();
+            // Consider (Since duplicates aren't allowed and order doesn't matter, choose a set to result less lines of code)
+            Prices = new HashSet<Price>();
+            // Rather Than
+            // Prices = new List<Price>();
         }
 
         public Practice Practice
         {
             get;
-            set;
+            private set;
         }
         public NAUType Type
         {
             get;
-            set;
+            private set;
         }
 
-        public List<Price> Prices
+        public ICollection<Price> Prices
         {
             get;
-            set;
+            private set;
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null || !(obj is PageGroup))
@@ -38,9 +47,9 @@ namespace NAUCountryA.Models
             }
         }
 
-        public override int GetHashCode()
+        public override string ToString()
         {
-            throw new NotImplementedException();
+            return $"{Practice.ToString()}\n{Type.ToString()}";
         }
     }
 }
