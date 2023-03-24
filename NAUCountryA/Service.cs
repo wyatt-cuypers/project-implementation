@@ -241,30 +241,8 @@ namespace NAUCountryA
             }
         }
 
-        private static bool IsDouble(string value)
-        {
-            try
-            {
-                Convert.ToDouble(value);
-                return true;
-            }
-            catch (FormatException)
-            {
-                return false;
-            }
-        }
+        private static bool IsDouble(string value) => double.TryParse(value, out _);
 
-        private static bool IsInt(string value)
-        {
-            try
-            {
-                Convert.ToInt32(value);
-                return true;
-            }
-            catch (FormatException)
-            {
-                return false;
-            }
-        }
+        private static bool IsInt(string value) => int.TryParse(value, out _);
     }
 }
