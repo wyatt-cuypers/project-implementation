@@ -216,28 +216,7 @@ namespace NAUCountryA
             return date.Month + "/" + date.Day + "/" + date.Year;
         }
 
-        public static string ToString(double number)
-        {
-            if (number == 0.0)
-            {
-                return "";
-            }
-            try
-            {
-                string temp = number.ToString().Split('.')[1];
-                switch (temp.Length)
-                {
-                    case 1: return $"{number.ToString()}000";
-                    case 2: return $"{number.ToString()}00";
-                    case 3: return $"{number.ToString()}0";
-                }
-                return $"'{number.ToString()}'";
-            }
-            catch (IndexOutOfRangeException)
-            {
-                return $"{number.ToString()}.0000";
-            }
-        }
+        public static string ToString(double number) => number.ToString("0.0000");
 
         private static string GetInitialPathLocation(string currentLocation)
         {
