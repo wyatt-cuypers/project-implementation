@@ -63,11 +63,11 @@ namespace NAUCountryA.Models
             private set;
         }
 
-        public KeyValuePair<int,Practice> Pair
+        public KeyValuePair<int, Practice> Pair
         {
             get
             {
-                return new KeyValuePair<int,Practice>(PracticeCode, this);
+                return new KeyValuePair<int, Practice>(PracticeCode, this);
             }
         }
 
@@ -107,16 +107,16 @@ namespace NAUCountryA.Models
 
         public override string ToString()
         {
-            return $"{FormatPracticeCode()},\"{PracticeName}\",\"{PracticeAbbreviation}\"," + 
+            return $"{FormatPracticeCode()},\"{PracticeName}\",\"{PracticeAbbreviation}\"," +
                 $"{Commodity.FormatCommodityCode()},\"{Service.ToString(ReleasedDate)}\",\"{RecordType.RecordTypeCode}\"";
         }
 
-        public static bool operator== (Practice a, Practice b)
+        public static bool operator ==(Practice a, Practice b)
         {
             return a.Equals(b);
         }
 
-        public static bool operator!= (Practice a, Practice b)
+        public static bool operator !=(Practice a, Practice b)
         {
             return !a.Equals(b);
         }

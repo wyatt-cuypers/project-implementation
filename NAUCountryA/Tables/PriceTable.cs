@@ -90,10 +90,17 @@ namespace NAUCountryA.Tables
                     }
                     else
                     {
-                        Price current = new Price(line);
-                        if(!priceEntries.ContainsKey(current.Pair.Key))
+                        try
                         {
-                            priceEntries.Add(current.Pair);
+                            Price current = new Price(line);
+                            if (!priceEntries.ContainsKey(current.Pair.Key))
+                            {
+                                priceEntries.Add(current.Pair);
+                            }
+                        }
+                        catch (KeyNotFoundException ex)
+                        {
+                            Console.WriteLine(ex.Message);
                         }
                     }
                 }

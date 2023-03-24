@@ -80,7 +80,7 @@ namespace NAUCountryA.Tables
 
         private void AddEntries()
         {
-            foreach (KeyValuePair<int,IEnumerable<string>> pair in CsvContents)
+            foreach (KeyValuePair<int, IEnumerable<string>> pair in CsvContents)
             {
                 bool isHeader = true;
                 foreach (string line in pair.Value)
@@ -91,10 +91,17 @@ namespace NAUCountryA.Tables
                     }
                     else
                     {
-                        Offer current = new Offer($"{line},{pair.Key}");
-                        if (!offerEntries.ContainsKey(current.Pair.Key))
+                        try
                         {
-                            offerEntries.Add(current.Pair);
+                            Offer current = new Offer($"{line},{pair.Key}");
+                            if (!offerEntries.ContainsKey(current.Pair.Key))
+                            {
+                                offerEntries.Add(current.Pair);
+                            }
+                        }
+                        catch (KeyNotFoundException ex)
+                        {
+                            Console.WriteLine(ex.Message);
                         }
                     }
                 }

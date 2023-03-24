@@ -143,7 +143,8 @@ namespace NAUCountryA
                 page.Elements.Add(textArea);
                 doc.Pages.Add(page);
             }
-            doc.Draw(GetPath("PDFOutput/" + state.StateName + "_" + commodity.CommodityName + "_" + year + "_PDF.pdf")); ;
+            //doc.Draw(GetPath("PDFOutput/" + state.StateName + "_" + commodity.CommodityName + "_" + year + "_PDF.pdf"));
+            doc.Draw(GetPath("PDFOutput/TestPDF.pdf"));
         }
 
         public static string GetPath(string filePath)
@@ -185,6 +186,7 @@ namespace NAUCountryA
             Console.WriteLine("Offer Table Loaded");
             PriceEntries = new PriceTable();
             Console.WriteLine("Price Table Loaded");
+
         }
 
         public static ICollection<string> ToCollection(string csvFileName)
