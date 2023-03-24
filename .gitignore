@@ -3,4 +3,7 @@
 /NAUCountryATest/obj
 /NAUCountryA/bin
 /NAUCountryA/obj
+/ESRIMapQueryExample/TestingESRIAPI/bin
+/ESRIMapQueryExample/TestingESRIAPI/obj
+/ESRIMapQueryExample/*.vs
 /*.vscode
