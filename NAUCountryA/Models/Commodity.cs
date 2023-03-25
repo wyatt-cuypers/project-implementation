@@ -69,20 +69,17 @@ namespace NAUCountryA.Models
             private set;
         }
 
-        public KeyValuePair<int,Commodity> Pair
+        public KeyValuePair<int, Commodity> Pair
         {
             get
             {
-                return new KeyValuePair<int,Commodity>(CommodityCode, this);
+                return new KeyValuePair<int, Commodity>(CommodityCode, this);
             }
         }
 
         public bool Equals(Commodity other)
         {
-            return CommodityCode == other.CommodityCode && CommodityName == other.CommodityName &&
-            CommodityAbbreviation == other.CommodityAbbreviation && AnnualPlantingCode == other.AnnualPlantingCode &&
-            CommodityYear == other.CommodityYear && Service.DateTimeEquals(ReleasedDate, other.ReleasedDate) &&
-            RecordType == other.RecordType;
+            return CommodityCode == other.CommodityCode;
         }
 
         public override bool Equals(object obj)
@@ -123,12 +120,12 @@ namespace NAUCountryA.Models
                 $"\"{RecordType.RecordTypeCode}\"";
         }
 
-        public static bool operator== (Commodity a, Commodity b)
+        public static bool operator ==(Commodity a, Commodity b)
         {
             return a.Equals(b);
         }
 
-        public static bool operator!= (Commodity a, Commodity b)
+        public static bool operator !=(Commodity a, Commodity b)
         {
             return !a.Equals(b);
         }

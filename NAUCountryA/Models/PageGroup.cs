@@ -11,7 +11,10 @@ namespace NAUCountryA.Models
             // Rather Than
             // Prices = new List<Price>();
         }
-
+        public void addPrice(Price price)
+        {
+            Prices.Add(price);
+        }
         public Practice Practice
         {
             get;
@@ -43,8 +46,12 @@ namespace NAUCountryA.Models
             else
             {
                 PageGroup pt = (PageGroup)obj;
-                return pt.Practice == this.Practice && pt.Type == this.Type;
+                return this.Equals(pt);
             }
+        }
+        public bool Equals(PageGroup p)
+        {
+            return this.Practice.Equals(p.Practice) && this.Type.Equals(p.Type);
         }
 
         public override string ToString()

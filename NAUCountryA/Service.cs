@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using NAUCountryA.Models;
 using NAUCountryA.Tables;
+using System.Text.RegularExpressions;
 using ceTe.DynamicPDF;
 using ceTe.DynamicPDF.PageElements;
-using System.Text.RegularExpressions;
 
 namespace NAUCountryA
 {
@@ -94,57 +94,53 @@ namespace NAUCountryA
 
         public static void GeneratePDF(State state, Commodity commodity, int year)
         {
-            Document doc = new Document();
+            Document document = new Document();
             Page page1 = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
+            document.Pages.Add(page1);
             string labelText1 = $"{state.StateName} {commodity.CommodityName} {year}";
-            Label label1 = new Label(labelText1, 0, 0, 504, 100, Font.Helvetica, 18, TextAlign.Center);
+            Label label1 = new Label(labelText1, 0, 0, 504, 100, Font.TimesBold, 20, TextAlign.Center);
             page1.Elements.Add(label1);
-            doc.Pages.Add(page1);
+
 
             List<PageGroup> pages = new List<PageGroup>();
             foreach (Price price in PriceEntries.Values)
             {
-                if (price.Offer.County.State == state && price.Offer.Type.Commodity == commodity && price.Offer.Year == year)
+                if (price.Offer.County.State.Equals(state) && price.Offer.Type.Commodity.Equals(commodity) && price.Offer.Year == year)
                 {
                     NAUType type = price.Offer.Type;
                     Practice practice = price.Offer.Practice;
                     PageGroup pg = new PageGroup(practice, type);
-                    bool exists = false;
-                    foreach (PageGroup pg2 in pages)
+                    foreach (PageGroup p in pages)
                     {
-                        if (pg2.Equals(pg))
+                        if (p.Equals(pg))
                         {
-                            pg2.Prices.Add(price);
-                            exists = true;
+                            pages.Remove(p);
+                            pg = p;
                             break;
                         }
                     }
-                    if (!exists)
-                    {
-                        pg.Prices.Add(price);
-                        pages.Add(pg);
-                    }
+                    pg.addPrice(price);
+                    pages.Add(pg);
                 }
             }
 
             foreach (PageGroup pg in pages)
             {
                 Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
+                document.Pages.Add(page);
                 string labelText = $"{pg.Practice.PracticeName} {pg.Type.TypeName}";
-                Label label = new Label(labelText, 0, 0, 504, 100, Font.Helvetica, 18, TextAlign.Center);
+                Label label = new Label(labelText, 0, 0, 504, 100, Font.TimesBold, 18, TextAlign.Center);
                 page.Elements.Add(label);
-
-                TextArea textArea = new TextArea("", 100, 100, 400, 30, ceTe.DynamicPDF.Font.HelveticaBoldOblique, 18);
+                TextArea textArea = new TextArea("", 0, 50, 550, 800, ceTe.DynamicPDF.Font.TimesRoman, 12, TextAlign.Left);
                 foreach (Price price in pg.Prices)
                 {
-                    textArea.Text = textArea.Text + price.Offer.County + ": " + price.ExpectedIndexValue + "\n";
+                    textArea.Text = textArea.Text + price.Offer.County.CountyName + ": " + price.ExpectedIndexValue + ";\t";
                 }
 
                 page.Elements.Add(textArea);
-                doc.Pages.Add(page);
+
             }
-            //doc.Draw(GetPath("PDFOutput/" + state.StateName + "_" + commodity.CommodityName + "_" + year + "_PDF.pdf"));
-            doc.Draw(GetPath("PDFOutput/TestPDF.pdf"));
+            document.Draw(GetPath("PDFOutput/" + state.StateName + "_" + commodity.CommodityName + "_" + year + "_PDF.pdf"));
         }
 
         public static string GetPath(string filePath)

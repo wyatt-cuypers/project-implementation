@@ -5,7 +5,7 @@ namespace NAUCountryA.Models
     public class State : IEquatable<State>
     {
         // Assigned to Miranda Ryan
-        public State(int stateCode, string stateName, string stateAbbreviation, string recordTypeCode) 
+        public State(int stateCode, string stateName, string stateAbbreviation, string recordTypeCode)
         {
             StateCode = stateCode;
             StateName = stateName;
@@ -56,8 +56,7 @@ namespace NAUCountryA.Models
 
         public bool Equals(State other)
         {
-            return StateCode == other.StateCode && StateName == other.StateName &&
-            StateAbbreviation == other.StateAbbreviation && RecordType == other.RecordType;
+            return StateCode == other.StateCode;
         }
 
         public override bool Equals(object obj)
