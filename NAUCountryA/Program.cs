@@ -28,7 +28,7 @@ Service.GeneratePDF(testPrice.Offer.County.State, testPrice.Offer.Practice.Commo
 // System.Data.DataTable table = Service.GetDataTable(sqlCommand);
 // Service.GeneratePDF(new State(table.Rows[0]));
 
-Console.WriteLine("Hello World");
+Console.WriteLine("PDF Generated.");
 // Price testPrice = Service.PriceEntries.Values.First();
 // Service.GeneratePDF(testPrice.Offer.State, testPrice.Offer.Practice, testPrice.Offer.Type);
 
