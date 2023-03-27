@@ -84,7 +84,7 @@ namespace NAUCountryA.Tables
                 else
                 {
                     Commodity current = new Commodity(line);
-                    if (!commodityEntries.ContainsKey(current.Pair.Key))
+                    if (current.Valid && !commodityEntries.ContainsKey(current.Pair.Key))
                     {
                         commodityEntries.Add(current.Pair);
                     }
