@@ -91,17 +91,10 @@ namespace NAUCountryA.Tables
                     }
                     else
                     {
-                        try
+                        Offer current = new Offer($"{line},{pair.Key}");
+                        if (current.Valid && !offerEntries.ContainsKey(current.Pair.Key))
                         {
-                            Offer current = new Offer($"{line},{pair.Key}");
-                            if (!offerEntries.ContainsKey(current.Pair.Key))
-                            {
-                                offerEntries.Add(current.Pair);
-                            }
-                        }
-                        catch (KeyNotFoundException ex)
-                        {
-                            Console.WriteLine(ex.Message);
+                            offerEntries.Add(current.Pair);
                         }
                     }
                 }
