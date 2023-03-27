@@ -178,10 +178,10 @@ namespace NAUCountryA
             Console.WriteLine("Type Table Loaded");
             PracticeEntries = new PracticeTable();
             Console.WriteLine("Practice Table Loaded");
-            /*OfferEntries = new OfferTable();
+            OfferEntries = new OfferTable();
             Console.WriteLine("Offer Table Loaded");
             PriceEntries = new PriceTable();
-            Console.WriteLine("Price Table Loaded");*/
+            Console.WriteLine("Price Table Loaded");
 
         }
 
