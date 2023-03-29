@@ -86,7 +86,7 @@ namespace NAUCountryA.Tables
                 else
                 {
                     NAUType entry = new NAUType(line);
-                    if (!nautypeEntries.ContainsKey(entry.Pair.Key))
+                    if (entry.Valid && !nautypeEntries.ContainsKey(entry.Pair.Key))
                     {
                         nautypeEntries.Add(entry.Pair);
                     }

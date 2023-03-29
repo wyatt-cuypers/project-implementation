@@ -11,16 +11,24 @@ namespace NAUCountryA.Models
             StateName = stateName;
             StateAbbreviation = stateAbbreviation;
             RecordType = Service.RecordTypeEntries[recordTypeCode];
-
         }
 
         public State(string line)
         {
             string[] values = line.Split(',');
-            StateCode = (int)Service.ExpressValue(values[3]);
-            StateName = (string)Service.ExpressValue(values[4]);
-            StateAbbreviation = (string)Service.ExpressValue(values[5]);
-            RecordType = Service.RecordTypeEntries[(string)Service.ExpressValue(values[0])];
+            string recordTypeCode = (string)Service.ExpressValue(values[0]);
+            Valid = Service.RecordTypeEntries.ContainsKey(recordTypeCode);
+            if (Valid)
+            {
+                StateCode = (int)Service.ExpressValue(values[3]);
+                StateName = (string)Service.ExpressValue(values[4]);
+                StateAbbreviation = (string)Service.ExpressValue(values[5]);
+                RecordType = Service.RecordTypeEntries[recordTypeCode];
+            }
+            else
+            {
+                Console.WriteLine($"Record Type Code {recordTypeCode} doesn't exist.");
+            }
         }
 
         public int StateCode
@@ -52,6 +60,12 @@ namespace NAUCountryA.Models
             {
                 return new KeyValuePair<int, State>(StateCode, this);
             }
+        }
+
+        public bool Valid
+        {
+            get;
+            private set;
         }
 
         public bool Equals(State other)

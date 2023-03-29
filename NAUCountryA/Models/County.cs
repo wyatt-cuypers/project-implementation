@@ -17,10 +17,16 @@ namespace NAUCountryA.Models
         public County(string line)
         {
             string[] values = line.Split(',');
-            CountyCode = (int)Service.ExpressValue(values[4]);
-            State = Service.StateEntries[(int)Service.ExpressValue(values[3])];
-            CountyName = (string)Service.ExpressValue(values[5]);
-            RecordType = Service.RecordTypeEntries[(string)Service.ExpressValue(values[0])];
+            int stateCode = (int)Service.ExpressValue(values[3]);
+            string recordTypeCode = (string)Service.ExpressValue(values[0]);
+            Valid = ValidCounty(stateCode, recordTypeCode);
+            if (Valid)
+            {
+                CountyCode = (int)Service.ExpressValue(values[4]);
+                State = Service.StateEntries[stateCode];
+                CountyName = (string)Service.ExpressValue(values[5]);
+                RecordType = Service.RecordTypeEntries[recordTypeCode];
+            }
         }
 
         public int CountyCode
@@ -53,6 +59,12 @@ namespace NAUCountryA.Models
             {
                 return new KeyValuePair<int,County>(CountyCode, this);
             }
+        }
+
+        public bool Valid
+        {
+            get;
+            private set;
         }
 
         public bool Equals(County other)
@@ -101,6 +113,21 @@ namespace NAUCountryA.Models
         public static bool operator!= (County a, County b)
         {
             return !a.Equals(b);
+        }
+
+        private bool ValidCounty(int stateCode, string recordTypeCode)
+        {
+            if (!Service.RecordTypeEntries.ContainsKey(recordTypeCode))
+            {
+                Console.WriteLine($"Record Type Code {recordTypeCode} doesn't exist.");
+                return false;
+            }
+            else if (!Service.StateEntries.ContainsKey(stateCode))
+            {
+                Console.WriteLine($"State Code {stateCode} doesn't exist");
+                return false;
+            }
+            return true;
         }
     }
 }

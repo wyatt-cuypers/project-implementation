@@ -85,7 +85,7 @@ namespace NAUCountryA.Tables
                 else
                 {
                     Practice current = new Practice(line);
-                    if (!practiceEntries.ContainsKey(current.Pair.Key))
+                    if (current.Valid && !practiceEntries.ContainsKey(current.Pair.Key))
                     {
                         practiceEntries.Add(current.Pair);
                     }

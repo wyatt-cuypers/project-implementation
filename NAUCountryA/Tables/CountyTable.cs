@@ -85,7 +85,7 @@ namespace NAUCountryA.Tables
                 else
                 {
                     County current = new County(line);
-                    if (!countyEntries.ContainsKey(current.Pair.Key))
+                    if (current.Valid && !countyEntries.ContainsKey(current.Pair.Key))
                     {
                         countyEntries.Add(current.Pair);
                     }
