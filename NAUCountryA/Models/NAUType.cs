@@ -19,12 +19,18 @@ namespace NAUCountryA.Models
         public NAUType(string line)
         {
             string[] values = line.Split(',');
-            TypeCode = (int)Service.ExpressValue(values[4]);
-            TypeName = (string)Service.ExpressValue(values[5]);
-            TypeAbbreviation = (string)Service.ExpressValue(values[6]);
-            Commodity = Service.CommodityEntries[(int)Service.ExpressValue(values[3])];
-            ReleasedDate = (DateTime)Service.ExpressValue(values[8]);
-            RecordType = Service.RecordTypeEntries[(string)Service.ExpressValue(values[0])];
+            string recordTypeCode = (string)Service.ExpressValue(values[0]);
+            int commodityCode = (int)Service.ExpressValue(values[3]);
+            Valid = ValidType(recordTypeCode, commodityCode);
+            if (Valid)
+            {
+                TypeCode = (int)Service.ExpressValue(values[4]);
+                TypeName = (string)Service.ExpressValue(values[5]);
+                TypeAbbreviation = (string)Service.ExpressValue(values[6]);
+                Commodity = Service.CommodityEntries[commodityCode];
+                ReleasedDate = (DateTime)Service.ExpressValue(values[8]);
+                RecordType = Service.RecordTypeEntries[recordTypeCode];
+            }
         }
 
 
@@ -70,6 +76,12 @@ namespace NAUCountryA.Models
             {
                 return new KeyValuePair<int, NAUType>(TypeCode, this);
             }
+        }
+
+        public bool Valid
+        {
+            get;
+            private set;
         }
 
         public bool Equals(NAUType other)
@@ -123,6 +135,21 @@ namespace NAUCountryA.Models
         public static bool operator !=(NAUType a, NAUType b)
         {
             return !a.Equals(b);
+        }
+
+        private bool ValidType(string recordTypeCode, int commodityCode)
+        {
+            if (!Service.RecordTypeEntries.ContainsKey(recordTypeCode))
+            {
+                Console.WriteLine($"Record Type Code {recordTypeCode} doesn't exist.");
+                return false;
+            }
+            else if (!Service.CommodityEntries.ContainsKey(commodityCode))
+            {
+                Console.WriteLine($"Commodity Code {commodityCode} doesn't exist.");
+                return false;
+            }
+            return true;
         }
     }
 }

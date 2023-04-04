@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using NAUCountryA.Models;
 using NAUCountryA.Tables;
+using System.Text.RegularExpressions;
 using ceTe.DynamicPDF;
 using ceTe.DynamicPDF.PageElements;
-using System.Text.RegularExpressions;
 
 namespace NAUCountryA
 {
@@ -94,58 +94,86 @@ namespace NAUCountryA
 
         public static void GeneratePDF(State state, Commodity commodity, int year)
         {
-            Document doc = new Document();
+            Document document = new Document();
             Page page1 = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
+            document.Pages.Add(page1);
             string labelText1 = $"{state.StateName} {commodity.CommodityName} {year}";
-            Label label1 = new Label(labelText1, 0, 0, 504, 100, Font.Helvetica, 18, TextAlign.Center);
+            Label label1 = new Label(labelText1, 0, 0, 504, 100, Font.TimesBold, 20, TextAlign.Center);
             page1.Elements.Add(label1);
-            doc.Pages.Add(page1);
+
 
             List<PageGroup> pages = new List<PageGroup>();
             foreach (Price price in PriceEntries.Values)
             {
-                if (price.Offer.County.State == state && price.Offer.Type.Commodity == commodity && price.Offer.Year == year)
+                if (price.Offer.County.State.Equals(state) && price.Offer.Type.Commodity.Equals(commodity) && price.Offer.Year == year)
                 {
                     NAUType type = price.Offer.Type;
                     Practice practice = price.Offer.Practice;
                     PageGroup pg = new PageGroup(practice, type);
-                    bool exists = false;
-                    foreach (PageGroup pg2 in pages)
+                    foreach (PageGroup p in pages)
                     {
-                        if (pg2.Equals(pg))
+                        if (p.Equals(pg))
                         {
-                            pg2.Prices.Add(price);
-                            exists = true;
+                            pages.Remove(p);
+                            pg = p;
                             break;
                         }
                     }
-                    if (!exists)
-                    {
-                        pg.Prices.Add(price);
-                        pages.Add(pg);
-                    }
+                    pg.addPrice(price);
+                    pages.Add(pg);
                 }
             }
 
             foreach (PageGroup pg in pages)
             {
                 Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
+                document.Pages.Add(page);
                 string labelText = $"{pg.Practice.PracticeName} {pg.Type.TypeName}";
-                Label label = new Label(labelText, 0, 0, 504, 100, Font.Helvetica, 18, TextAlign.Center);
+                Label label = new Label(labelText, 0, 0, 504, 100, Font.TimesBold, 18, TextAlign.Center);
                 page.Elements.Add(label);
-
-                TextArea textArea = new TextArea("", 100, 100, 400, 30, ceTe.DynamicPDF.Font.HelveticaBoldOblique, 18);
+                TextArea textArea = new TextArea("", 0, 50, 550, 800, ceTe.DynamicPDF.Font.TimesRoman, 12, TextAlign.Left);
                 foreach (Price price in pg.Prices)
                 {
-                    textArea.Text = textArea.Text + price.Offer.County + ": " + price.ExpectedIndexValue + "\n";
+                    textArea.Text = textArea.Text + price.Offer.County.CountyName + ": " + price.ExpectedIndexValue + ";\n";
                 }
 
                 page.Elements.Add(textArea);
-                doc.Pages.Add(page);
-            }
-            doc.Draw(GetPath("PDFOutput/" + state.StateName + "_" + commodity.CommodityName + "_" + year + "_PDF.pdf")); ;
-        }
+                ContentArea legend = GetLegend();
+                page.Elements.Add(legend);
 
+            }
+            document.Draw(GetPath("PDFOutput/" + state.StateName + "_" + commodity.CommodityName + "_" + year + "_PDF.pdf"));
+        }
+        public static ContentArea GetLegend()
+        {
+            ContentArea legend = new ContentArea(400, 300, 200, 200);
+            legend.Add(new Label("Percent Change", 0, 0, 200, 20, Font.TimesBold, 14, TextAlign.Left));
+            legend.Add(new Rectangle(0, 25, 20, 20, RgbColor.Gray, RgbColor.Red, 2, LineStyle.Solid));
+            legend.Add(new Label("< -4%", 30, 25, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
+            legend.Add(new Rectangle(0, 45, 20, 20, RgbColor.Gray, RgbColor.Coral, 2, LineStyle.Solid));
+            legend.Add(new Label("-4% to -2%", 30, 45, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
+            legend.Add(new Rectangle(0, 65, 20, 20, RgbColor.Gray, RgbColor.LightPink, 2, LineStyle.Solid));
+            legend.Add(new Label("-2% to 0%", 30, 65, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
+            legend.Add(new Rectangle(0, 85, 20, 20, RgbColor.Gray, RgbColor.AntiqueWhite, 2, LineStyle.Solid));
+            legend.Add(new Label("No Change", 30, 85, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
+            legend.Add(new Rectangle(0, 105, 20, 20, RgbColor.Gray, RgbColor.DarkSeaGreen, 2, LineStyle.Solid));
+            legend.Add(new Label("0% to 2%", 30, 105, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
+            legend.Add(new Rectangle(0, 125, 20, 20, RgbColor.Gray, RgbColor.SeaGreen, 2, LineStyle.Solid));
+            legend.Add(new Label("2% to 4%", 30, 125, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
+            legend.Add(new Rectangle(0, 145, 20, 20, RgbColor.Gray, RgbColor.DarkGreen, 2, LineStyle.Solid));
+            legend.Add(new Label("> 4%", 30, 145, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
+            return legend;
+        }
+        public static void TestLegend()
+        {
+            Document document = new Document();
+            Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
+            document.Pages.Add(page);
+            ContentArea legend = GetLegend();
+            page.Elements.Add(legend);
+            document.Draw(GetPath("PDFOutput/TestLegend.pdf"));
+
+        }
         public static string GetPath(string filePath)
         {
             var exePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -185,6 +213,7 @@ namespace NAUCountryA
             Console.WriteLine("Offer Table Loaded");
             PriceEntries = new PriceTable();
             Console.WriteLine("Price Table Loaded");
+
         }
 
         public static ICollection<string> ToCollection(string csvFileName)

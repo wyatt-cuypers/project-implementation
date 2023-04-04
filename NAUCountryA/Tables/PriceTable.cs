@@ -91,7 +91,7 @@ namespace NAUCountryA.Tables
                     else
                     {
                         Price current = new Price(line);
-                        if(!priceEntries.ContainsKey(current.Pair.Key))
+                        if (current.Valid && !priceEntries.ContainsKey(current.Pair.Key))
                         {
                             priceEntries.Add(current.Pair);
                         }

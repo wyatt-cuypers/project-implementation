@@ -18,12 +18,19 @@ namespace NAUCountryA.Models
         public Offer(string line)
         {
             string[] values = line.Split(',');
-            OfferID = (int)Service.ExpressValue(values[0]);
-            Practice = Service.PracticeEntries[(int)Service.ExpressValue(values[4])];
-            County = Service.CountyEntries[(int)Service.ExpressValue(values[2])];
-            Type = Service.TypeEntries[(int)Service.ExpressValue(values[3])];
-            IrrigationPracticeCode = (int)Service.ExpressValue(values[5]);
-            Year = Convert.ToInt32(values[6]);
+            int practiceCode = (int)Service.ExpressValue(values[4]);
+            int countyCode = (int)Service.ExpressValue(values[2]);
+            int typeCode = (int)Service.ExpressValue(values[3]);
+            Valid = ValidOffer(practiceCode, countyCode, typeCode);
+            if (Valid)
+            {
+                OfferID = (int)Service.ExpressValue(values[0]);
+                Practice = Service.PracticeEntries[(int)Service.ExpressValue(values[4])];
+                County = Service.CountyEntries[(int)Service.ExpressValue(values[2])];
+                Type = Service.TypeEntries[(int)Service.ExpressValue(values[3])];
+                IrrigationPracticeCode = (int)Service.ExpressValue(values[5]);
+                Year = Convert.ToInt32(values[6]);
+            }
         }
 
         public int OfferID
@@ -62,7 +69,11 @@ namespace NAUCountryA.Models
             private set;
         }
 
-
+        public bool Valid
+        {
+            get;
+            private set;
+        }
         public KeyValuePair<int, Offer> Pair
         {
             get
@@ -140,6 +151,26 @@ namespace NAUCountryA.Models
         public static bool operator !=(Offer a, Offer b)
         {
             return !a.Equals(b);
+        }
+
+        private bool ValidOffer(int practiceCode, int countyCode, int typeCode)
+        {
+            if (!Service.PracticeEntries.ContainsKey(practiceCode))
+            {
+                Console.WriteLine($"Practice Code #{practiceCode} doesn't exist.");
+                return false;
+            }
+            else if (!Service.CountyEntries.ContainsKey(countyCode))
+            {
+                Console.WriteLine($"County Code #{countyCode} doesn't exist.");
+                return false;
+            }
+            else if (!Service.TypeEntries.ContainsKey(typeCode))
+            {
+                Console.WriteLine($"Type Code #{typeCode} doesn't exist.");
+                return false;
+            }
+            return true;
         }
     }
 }

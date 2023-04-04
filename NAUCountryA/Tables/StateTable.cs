@@ -86,7 +86,7 @@ namespace NAUCountryA.Tables
                 else
                 {
                     State current = new State(line);
-                    if (!stateEntries.ContainsKey(current.Pair.Key))
+                    if (current.Valid && !stateEntries.ContainsKey(current.Pair.Key))
                     {
                         stateEntries.Add(current.Pair);
                     }

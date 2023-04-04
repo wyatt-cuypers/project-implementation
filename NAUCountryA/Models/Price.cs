@@ -14,9 +14,17 @@ namespace NAUCountryA.Models
         public Price(string line)
         {
             string[] values = line.Split(',');
-            Offer = Service.OfferEntries[(int)Service.ExpressValue(values[0])];
-            ExpectedIndexValue = (double)Service.ExpressValue(values[1]);
-
+            int offerId = (int)Service.ExpressValue(values[0]);
+            Valid = Service.OfferEntries.ContainsKey(offerId);
+            if (Valid)
+            {
+                Offer = Service.OfferEntries[offerId];
+                ExpectedIndexValue = (double)Service.ExpressValue(values[1]);
+            }
+            else
+            {
+                Console.WriteLine($"Offer ID {offerId} doesn't exist.");
+            }
         }
 
         public Offer Offer
@@ -37,6 +45,12 @@ namespace NAUCountryA.Models
             {
                 return new KeyValuePair<Offer, Price>(Offer, this);
             }
+        }
+
+        public bool Valid
+        {
+            get;
+            private set;
         }
 
         public bool Equals(Price other)

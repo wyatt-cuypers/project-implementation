@@ -18,13 +18,22 @@ namespace NAUCountryA.Models
         public Commodity(string line)
         {
             string[] values = line.Split(',');
-            CommodityCode = (int)Service.ExpressValue(values[4]);
-            CommodityName = (string)Service.ExpressValue(values[5]);
-            CommodityAbbreviation = (string)Service.ExpressValue(values[6]);
-            AnnualPlantingCode = ((string)Service.ExpressValue(values[7]))[0];
-            CommodityYear = (int)Service.ExpressValue(values[3]);
-            ReleasedDate = (DateTime)Service.ExpressValue(values[9]);
-            RecordType = Service.RecordTypeEntries[(string)Service.ExpressValue(values[0])];
+            string recordTypeCode = (string)Service.ExpressValue(values[0]);
+            Valid = Service.RecordTypeEntries.ContainsKey(recordTypeCode);
+            if (Valid)
+            {
+                CommodityCode = (int)Service.ExpressValue(values[4]);
+                CommodityName = (string)Service.ExpressValue(values[5]);
+                CommodityAbbreviation = (string)Service.ExpressValue(values[6]);
+                AnnualPlantingCode = ((string)Service.ExpressValue(values[7]))[0];
+                CommodityYear = (int)Service.ExpressValue(values[3]);
+                ReleasedDate = (DateTime)Service.ExpressValue(values[9]);
+                RecordType = Service.RecordTypeEntries[recordTypeCode];
+            }
+            else
+            {
+                Console.WriteLine($"Record Type Code {recordTypeCode} doesn't exist");
+            }
         }
 
         public int CommodityCode
@@ -69,20 +78,23 @@ namespace NAUCountryA.Models
             private set;
         }
 
-        public KeyValuePair<int,Commodity> Pair
+        public KeyValuePair<int, Commodity> Pair
         {
             get
             {
-                return new KeyValuePair<int,Commodity>(CommodityCode, this);
+                return new KeyValuePair<int, Commodity>(CommodityCode, this);
             }
+        }
+
+        public bool Valid
+        {
+            get;
+            private set;
         }
 
         public bool Equals(Commodity other)
         {
-            return CommodityCode == other.CommodityCode && CommodityName == other.CommodityName &&
-            CommodityAbbreviation == other.CommodityAbbreviation && AnnualPlantingCode == other.AnnualPlantingCode &&
-            CommodityYear == other.CommodityYear && Service.DateTimeEquals(ReleasedDate, other.ReleasedDate) &&
-            RecordType == other.RecordType;
+            return CommodityCode == other.CommodityCode;
         }
 
         public override bool Equals(object obj)
@@ -123,12 +135,12 @@ namespace NAUCountryA.Models
                 $"\"{RecordType.RecordTypeCode}\"";
         }
 
-        public static bool operator== (Commodity a, Commodity b)
+        public static bool operator ==(Commodity a, Commodity b)
         {
             return a.Equals(b);
         }
 
-        public static bool operator!= (Commodity a, Commodity b)
+        public static bool operator !=(Commodity a, Commodity b)
         {
             return !a.Equals(b);
         }
