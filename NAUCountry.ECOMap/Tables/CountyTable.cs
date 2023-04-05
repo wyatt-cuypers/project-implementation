@@ -1,17 +1,24 @@
-using NAUCountryA.Models;
+using NAUCountry.ECOMap.Models;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
 
-namespace NAUCountryA.Tables
+namespace NAUCountry.ECOMap.Tables
 {
     public class CountyTable : IReadOnlyDictionary<int, County>
     {
         // Assigned to Wyatt Cuypers
         private readonly IDictionary<int, County> countyEntries;
-        public CountyTable()
+        private ECODataService ECODataService { get; }
+		private IEnumerable<string> CsvContents { get; }
+
+		public CountyTable(ECODataService service, IEnumerable<string> csvContents)
         {
-            countyEntries = new Dictionary<int, County>();
+            CsvContents = csvContents;
+
+			ECODataService = service;
+
+			countyEntries = new Dictionary<int, County>();
             AddEntries();
         }
 
@@ -61,19 +68,14 @@ namespace NAUCountryA.Tables
             return GetEnumerator();
         }
 
-        public bool TryGetValue(int countyCode, [MaybeNullWhen(false)] out County value)
+		// CODE REVIEW: Parsing logic could exist outside DTO
+		public bool TryGetValue(int countyCode, [MaybeNullWhen(false)] out County value)
         {
             return countyEntries.TryGetValue(countyCode, out value);
         }
-        private IEnumerable<string> CsvContents
-        {
-            get
-            {
-                return Service.ToCollection("A23_County");
-            }
-        }
 
-        private void AddEntries()
+		// CODE REVIEW: Parsing logic could exist outside DTO
+		private void AddEntries()
         {
             bool isHeader = true;
             foreach (string line in CsvContents)
@@ -84,7 +86,7 @@ namespace NAUCountryA.Tables
                 }
                 else
                 {
-                    County current = new County(line);
+                    County current = new County(ECODataService, line);
                     if (current.Valid && !countyEntries.ContainsKey(current.Pair.Key))
                     {
                         countyEntries.Add(current.Pair);

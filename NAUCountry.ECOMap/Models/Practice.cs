@@ -1,40 +1,44 @@
 
 
-namespace NAUCountryA.Models
+namespace NAUCountry.ECOMap.Models
 {
     public class Practice : IEquatable<Practice>
     {
         // Assigned to Wyatt Cuypers
-        public Practice(int practiceCode, string practiceName, string practiceAbbreviation, int commodityCode, DateTime releasedDate, string recordTypeCode)
+        public Practice(int practiceCode, string practiceName, string practiceAbbreviation, int commodityCode,
+            DateTime releasedDate, string recordTypeCode, Commodity commodity, RecordType recordType)
         {
             PracticeCode = practiceCode;
             PracticeName = practiceName;
             PracticeAbbreviation = practiceAbbreviation;
-            Commodity = Service.CommodityEntries[commodityCode];
+            Commodity = commodity; // Service.CommodityEntries[commodityCode];
             ReleasedDate = releasedDate;
-            RecordType = Service.RecordTypeEntries[recordTypeCode];
+            RecordType = recordType; // Service.RecordTypeEntries[recordTypeCode];
         }
 
-        public Practice(string line)
+        public Practice(ECODataService service, string line)
         {
-            string[] values = line.Split(',');
-            string recordTypeCode = (string)Service.ExpressValue(values[0]);
-            int commodityCode = (int)Service.ExpressValue(values[3]);
+            ECODataService = service;
+
+			string[] values = line.Split(',');
+            string recordTypeCode = (string)CsvUtility.ExpressValue(values[0]);
+            int commodityCode = (int)CsvUtility.ExpressValue(values[3]);
             Valid = ValidPractice(recordTypeCode, commodityCode);
             if (Valid)
             {
-                PracticeCode = (int)Service.ExpressValue(values[4]);
-                PracticeName = (string)Service.ExpressValue(values[5]);
-                PracticeAbbreviation = (string)Service.ExpressValue(values[6]);
-                Commodity = Service.CommodityEntries[commodityCode];
-                ReleasedDate = (DateTime)Service.ExpressValue(values[8]);
-                RecordType = Service.RecordTypeEntries[recordTypeCode];
+                PracticeCode = (int)CsvUtility.ExpressValue(values[4]);
+                PracticeName = (string)CsvUtility.ExpressValue(values[5]);
+                PracticeAbbreviation = (string)CsvUtility.ExpressValue(values[6]);
+                Commodity = service.CommodityEntries[commodityCode];
+                ReleasedDate = (DateTime)CsvUtility.ExpressValue(values[8]);
+                RecordType = service.RecordTypeEntries[recordTypeCode];
             }
             
         }
 
+        private ECODataService ECODataService { get; }
 
-        public int PracticeCode
+		public int PracticeCode
         {
             get;
             private set;
@@ -88,7 +92,7 @@ namespace NAUCountryA.Models
         {
             return PracticeCode == other.PracticeCode && PracticeName == other.PracticeName &&
             PracticeAbbreviation == other.PracticeAbbreviation && Commodity == other.Commodity &&
-            Service.DateTimeEquals(ReleasedDate, other.ReleasedDate) && RecordType == other.RecordType;
+			CsvUtility.DateTimeEquals(ReleasedDate, other.ReleasedDate) && RecordType == other.RecordType;
         }
 
         public override bool Equals(object obj)
@@ -121,7 +125,7 @@ namespace NAUCountryA.Models
         public override string ToString()
         {
             return $"{FormatPracticeCode()},\"{PracticeName}\",\"{PracticeAbbreviation}\"," +
-                $"{Commodity.FormatCommodityCode()},\"{Service.ToString(ReleasedDate)}\",\"{RecordType.RecordTypeCode}\"";
+                $"{Commodity.FormatCommodityCode()},\"{CsvUtility.ToString(ReleasedDate)}\",\"{RecordType.RecordTypeCode}\"";
         }
 
         public static bool operator ==(Practice a, Practice b)
@@ -136,12 +140,12 @@ namespace NAUCountryA.Models
 
         private bool ValidPractice(string recordTypeCode, int commodityCode)
         {
-            if (!Service.RecordTypeEntries.ContainsKey(recordTypeCode))
+            if (!ECODataService.RecordTypeEntries.ContainsKey(recordTypeCode))
             {
                 Console.WriteLine($"Record Type Code {recordTypeCode} doesn't exist.");
                 return false;
             }
-            else if (!Service.CommodityEntries.ContainsKey(commodityCode))
+            else if (!ECODataService.CommodityEntries.ContainsKey(commodityCode))
             {
                 Console.WriteLine($"Commodity Code {commodityCode} doesn't exist.");
                 return false;

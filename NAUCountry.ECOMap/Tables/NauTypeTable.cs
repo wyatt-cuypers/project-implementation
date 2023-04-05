@@ -1,16 +1,22 @@
-using NAUCountryA.Models;
+using NAUCountry.ECOMap.Models;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
-namespace NAUCountryA.Tables
+namespace NAUCountry.ECOMap.Tables
 {
     public class NAUTypeTable : IReadOnlyDictionary<int, NAUType>
     {
         // Assigned to Katelyn Runsvold
         private readonly IDictionary<int, NAUType> nautypeEntries;
-        public NAUTypeTable()
+        private ECODataService ECODataService { get; }
+		private IEnumerable<string> CsvContents { get; }
+
+		public NAUTypeTable(ECODataService service, IEnumerable<string> csvContents)
         {
-            nautypeEntries = new Dictionary<int, NAUType>();
+            CsvContents = csvContents;
+			ECODataService = service;
+
+			nautypeEntries = new Dictionary<int, NAUType>();
             AddEntries();
         }
 
@@ -61,20 +67,14 @@ namespace NAUCountryA.Tables
             return GetEnumerator();
         }
 
-        public bool TryGetValue(int typeCode, [MaybeNullWhen(false)] out NAUType value)
+		// CODE REVIEW: Parsing logic could exist outside DTO
+		public bool TryGetValue(int typeCode, [MaybeNullWhen(false)] out NAUType value)
         {
             return nautypeEntries.TryGetValue(typeCode, out value);
         }
 
-        private IEnumerable<string> CsvContents
-        {
-            get
-            {
-                return Service.ToCollection("A23_TYPE");
-            }
-        }
-          
-        private void AddEntries()
+		// CODE REVIEW: Parsing logic could exist outside DTO
+		private void AddEntries()
         {
             bool isHeader = true;
             foreach (string line in CsvContents)
@@ -85,7 +85,7 @@ namespace NAUCountryA.Tables
                 }
                 else
                 {
-                    NAUType entry = new NAUType(line);
+                    NAUType entry = new NAUType(ECODataService, line);
                     if (entry.Valid && !nautypeEntries.ContainsKey(entry.Pair.Key))
                     {
                         nautypeEntries.Add(entry.Pair);

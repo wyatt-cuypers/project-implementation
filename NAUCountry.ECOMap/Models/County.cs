@@ -1,35 +1,39 @@
 
 
 
-namespace NAUCountryA.Models
+namespace NAUCountry.ECOMap.Models
 {
     public class County : IEquatable<County>
     {
         // Assigned to Wyatt Cuypers
-        public County(int countyCode, int stateCode, string countyName, string recordTypeCode)
+        public County(int countyCode, int stateCode, string countyName, string recordTypeCode, State state, RecordType recordType)
         {
             CountyCode = countyCode;
-            State = Service.StateEntries[stateCode];
+            State = state; // Service.StateEntries[stateCode];
             CountyName = countyName;
-            RecordType = Service.RecordTypeEntries[recordTypeCode];
+            RecordType = recordType; // Service.RecordTypeEntries[recordTypeCode];
         }
 
-        public County(string line)
+        public County(ECODataService service, string line)
         {
-            string[] values = line.Split(',');
-            int stateCode = (int)Service.ExpressValue(values[3]);
-            string recordTypeCode = (string)Service.ExpressValue(values[0]);
+            ECODataService = service;
+
+			string[] values = line.Split(',');
+            int stateCode = (int)CsvUtility.ExpressValue(values[3]);
+            string recordTypeCode = (string)CsvUtility.ExpressValue(values[0]);
             Valid = ValidCounty(stateCode, recordTypeCode);
             if (Valid)
             {
-                CountyCode = (int)Service.ExpressValue(values[4]);
-                State = Service.StateEntries[stateCode];
-                CountyName = (string)Service.ExpressValue(values[5]);
-                RecordType = Service.RecordTypeEntries[recordTypeCode];
+                CountyCode = (int)CsvUtility.ExpressValue(values[4]);
+                State = service.StateEntries[stateCode];
+                CountyName = (string)CsvUtility.ExpressValue(values[5]);
+                RecordType = service.RecordTypeEntries[recordTypeCode];
             }
         }
 
-        public int CountyCode
+        private ECODataService ECODataService { get; }
+
+		public int CountyCode
         {
             get;
             private set;
@@ -117,12 +121,12 @@ namespace NAUCountryA.Models
 
         private bool ValidCounty(int stateCode, string recordTypeCode)
         {
-            if (!Service.RecordTypeEntries.ContainsKey(recordTypeCode))
+            if (!ECODataService.RecordTypeEntries.ContainsKey(recordTypeCode))
             {
                 Console.WriteLine($"Record Type Code {recordTypeCode} doesn't exist.");
                 return false;
             }
-            else if (!Service.StateEntries.ContainsKey(stateCode))
+            else if (!ECODataService.StateEntries.ContainsKey(stateCode))
             {
                 Console.WriteLine($"State Code {stateCode} doesn't exist");
                 return false;

@@ -1,15 +1,21 @@
-using NAUCountryA.Models;
+using NAUCountry.ECOMap.Models;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
-namespace NAUCountryA.Tables
+namespace NAUCountry.ECOMap.Tables
 {
     public class CommodityTable : IReadOnlyDictionary<int, Commodity>
     {
         private readonly IDictionary<int,Commodity> commodityEntries;
-        public CommodityTable()
+        private ECODataService ECODataService { get; }
+		private IEnumerable<string> CsvContents { get; }
+
+		public CommodityTable(ECODataService service, IEnumerable<string> csvContents)
         {
-            commodityEntries = new Dictionary<int,Commodity>();
+			ECODataService = service;
+            CsvContents = csvContents;
+
+			commodityEntries = new Dictionary<int,Commodity>();
             AddEntries();
         }
 
@@ -60,18 +66,13 @@ namespace NAUCountryA.Tables
             return GetEnumerator();
         }
 
-        public bool TryGetValue(int commodityCode, [MaybeNullWhen(false)] out Commodity value)
+		// CODE REVIEW: Parsing logic could exist outside DTO
+		public bool TryGetValue(int commodityCode, [MaybeNullWhen(false)] out Commodity value)
         {
             return commodityEntries.TryGetValue(commodityCode, out value);
         }
-        private IEnumerable<string> CsvContents
-        {
-            get
-            {
-                return Service.ToCollection("A23_Commodity");
-            }
-        }
 
+        // CODE REVIEW: Parsing logic could exist outside DTO
         private void AddEntries()
         {
             bool isHeader = true;
@@ -83,7 +84,7 @@ namespace NAUCountryA.Tables
                 }
                 else
                 {
-                    Commodity current = new Commodity(line);
+                    Commodity current = new Commodity(ECODataService, line);
                     if (current.Valid && !commodityEntries.ContainsKey(current.Pair.Key))
                     {
                         commodityEntries.Add(current.Pair);

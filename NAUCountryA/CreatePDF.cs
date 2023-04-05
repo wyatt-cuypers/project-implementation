@@ -1,15 +1,11 @@
-﻿using System;
-using Microsoft.VisualBasic.FileIO;
-using NAUCountryA.Models;
-//using Npgsql;
-using System.Data;
-using System.Data.Common;
-using System.Text.RegularExpressions;
-using ceTe.DynamicPDF;
-using ceTe.DynamicPDF.PageElements;
+﻿
 
 namespace NAUCountryA
 {
+    // Code Review:  Depending on if you need this code or not always good practice to take a little time to
+    // clean up old code no longer used like possibly deleting this file.  This helps keep your workspace clean
+    // and easy to follow with less files.
+    // Consider deleting this file if it is not needed or used or adding a comment that it is commented out and to be used in what situation.
     public class CreatePDF
     {
         /*

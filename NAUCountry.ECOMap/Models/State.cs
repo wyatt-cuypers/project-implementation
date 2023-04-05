@@ -1,29 +1,30 @@
 
 
-namespace NAUCountryA.Models
+namespace NAUCountry.ECOMap.Models
 {
     public class State : IEquatable<State>
     {
+
         // Assigned to Miranda Ryan
-        public State(int stateCode, string stateName, string stateAbbreviation, string recordTypeCode)
+        public State(int stateCode, string stateName, string stateAbbreviation, string recordTypeCode, RecordType recordType)
         {
             StateCode = stateCode;
             StateName = stateName;
             StateAbbreviation = stateAbbreviation;
-            RecordType = Service.RecordTypeEntries[recordTypeCode];
+            RecordType = recordType; // Service.RecordTypeEntries[recordTypeCode];
         }
 
-        public State(string line)
+        public State(ECODataService service, string line)
         {
             string[] values = line.Split(',');
-            string recordTypeCode = (string)Service.ExpressValue(values[0]);
-            Valid = Service.RecordTypeEntries.ContainsKey(recordTypeCode);
+            string recordTypeCode = (string)CsvUtility.ExpressValue(values[0]);
+            Valid = service.RecordTypeEntries.ContainsKey(recordTypeCode);
             if (Valid)
             {
-                StateCode = (int)Service.ExpressValue(values[3]);
-                StateName = (string)Service.ExpressValue(values[4]);
-                StateAbbreviation = (string)Service.ExpressValue(values[5]);
-                RecordType = Service.RecordTypeEntries[recordTypeCode];
+                StateCode = (int)CsvUtility.ExpressValue(values[3]);
+                StateName = (string)CsvUtility.ExpressValue(values[4]);
+                StateAbbreviation = (string)CsvUtility.ExpressValue(values[5]);
+                RecordType = service.RecordTypeEntries[recordTypeCode];
             }
             else
             {

@@ -1,16 +1,22 @@
-using NAUCountryA.Models;
+using NAUCountry.ECOMap.Models;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
-namespace NAUCountryA.Tables
+namespace NAUCountry.ECOMap.Tables
 {
     public class PriceTable : IReadOnlyDictionary<Offer, Price>
     {
         private readonly IDictionary<Offer, Price> priceEntries;
-        // Assigned to Katelyn Runsvold
-        public PriceTable()
+        private ECODataService ECODataService { get; }
+		private IEnumerable<IEnumerable<string>> CsvContents { get; }
+
+		// Assigned to Katelyn Runsvold
+		public PriceTable(ECODataService service, IEnumerable<IEnumerable<string>> csvContents)
         {
-            priceEntries = new Dictionary<Offer, Price>();
+            CsvContents = csvContents;
+			ECODataService = service;
+
+			priceEntries = new Dictionary<Offer, Price>();
             AddEntries();
         }
 
@@ -61,23 +67,14 @@ namespace NAUCountryA.Tables
             return GetEnumerator();
         }
 
-        public bool TryGetValue(Offer offer, [MaybeNullWhen(false)] out Price value)
+		// CODE REVIEW: Parsing logic could exist outside DTO
+		public bool TryGetValue(Offer offer, [MaybeNullWhen(false)] out Price value)
         {
             return priceEntries.TryGetValue(offer, out value);
         }
 
-        private IEnumerable<IEnumerable<string>> CsvContents
-        {
-            get
-            {
-                ICollection<ICollection<string>> contents = new List<ICollection<string>>();
-                contents.Add(Service.ToCollection("A22_PRICE"));
-                contents.Add(Service.ToCollection("A23_Price"));
-                return contents;
-            }
-        }
-
-        private void AddEntries()
+		// CODE REVIEW: Parsing logic could exist outside DTO
+		private void AddEntries()
         {
             foreach (IEnumerable<string> contents in CsvContents)
             {
@@ -90,7 +87,7 @@ namespace NAUCountryA.Tables
                     }
                     else
                     {
-                        Price current = new Price(line);
+                        Price current = new Price(ECODataService, line);
                         if (current.Valid && !priceEntries.ContainsKey(current.Pair.Key))
                         {
                             priceEntries.Add(current.Pair);

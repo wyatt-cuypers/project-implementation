@@ -1,42 +1,44 @@
-using NAUCountryA;
-using NAUCountryA.Models;
-using NAUCountryA.Tables;
+using NAUCountry.ECOMap;
+using NAUCountry.ECOMap.Models;
+using NAUCountry.ECOMap.Tests;
 
 namespace NAUCountryATest.Tables
 {
     public class RecordTypeTableTest
     {
-        [SetUp]
-        public void Setup()
+        private ECODataService ECODataService { get; set;  }
+
+		[SetUp]
+        public async Task Setup()
         {
-            Service.LoadTables();
-        }
+			ECODataService = await CachedData.GetECODataService();
+		}
 
         [Test]
         public void TestContainsKey1()
         {
-            bool actual = Service.RecordTypeEntries.ContainsKey("A00420");
+            bool actual = ECODataService.RecordTypeEntries.ContainsKey("A00420");
             Assert.That(actual, Is.True);
         }
 
         [Test]
         public void TestContainsKey2()
         {
-            bool actual = Service.RecordTypeEntries.ContainsKey("A0042");
+            bool actual = ECODataService.RecordTypeEntries.ContainsKey("A0042");
             Assert.That(actual, Is.False);
         }
 
         [Test]
         public void TestCount()
         {
-            Assert.That(Service.RecordTypeEntries.Count, Is.EqualTo(5));
+            Assert.That(ECODataService.RecordTypeEntries.Count, Is.EqualTo(5));
         }
 
         [Test]
         public void TestGetRecordTypeByKeyValid()
         {
             RecordType expected = new RecordType("A00440", 1, 2023);
-            RecordType actual = Service.RecordTypeEntries["A00440"];
+            RecordType actual = ECODataService.RecordTypeEntries["A00440"];
             Assert.That(actual, Is.EqualTo(expected));
         }
 
@@ -48,14 +50,14 @@ namespace NAUCountryATest.Tables
 
         private void ToDelegate(string key)
         {
-            RecordType type = Service.RecordTypeEntries[key];
+            RecordType type = ECODataService.RecordTypeEntries[key];
         }
 
         [Test]
         public void TestGetKeys()
         {
             IEnumerable<string> expected = new string[]{"A00420", "A00440", "A00510", "A00520", "A00540"}.AsEnumerable();
-            IEnumerable<string> actual = Service.RecordTypeEntries.Keys;
+            IEnumerable<string> actual = ECODataService.RecordTypeEntries.Keys;
             Assert.That(actual, Is.EqualTo(expected));
         }
         [Test]
@@ -67,7 +69,7 @@ namespace NAUCountryATest.Tables
             new RecordType("A00510", 1, 2023),
             new RecordType("A00520", 1, 2023),
             new RecordType("A00540", 1, 2023)};
-            IEnumerable<RecordType> actual = Service.RecordTypeEntries.Values;
+            IEnumerable<RecordType> actual = ECODataService.RecordTypeEntries.Values;
             Assert.That(actual, Is.EqualTo(expected));
         }
 
@@ -81,7 +83,7 @@ namespace NAUCountryATest.Tables
             expected.Add(new KeyValuePair<string, RecordType>("A00520", new RecordType("A00520", 1, 2023)));
             expected.Add(new KeyValuePair<string, RecordType>("A00540", new RecordType("A00540", 1, 2023)));
             ICollection<KeyValuePair<string,RecordType>> actual = new HashSet<KeyValuePair<string,RecordType>>();
-            foreach (KeyValuePair<string,RecordType> pair in Service.RecordTypeEntries)
+            foreach (KeyValuePair<string,RecordType> pair in ECODataService.RecordTypeEntries)
             {
                 actual.Add(pair);
             }
@@ -89,17 +91,9 @@ namespace NAUCountryATest.Tables
         }
 
         [Test]
-        public void TestTryGet1()
-        {
-            RecordType test = null;
-            Assert.That(Service.RecordTypeEntries.TryGetValue("A00420", out test), Is.True);
-        }
+        public void TestTryGet1() => Assert.That(ECODataService.RecordTypeEntries.TryGetValue("A00420", out _), Is.True);
 
         [Test]
-        public void TestTryGet2()
-        {
-            RecordType test = null;
-            Assert.That(Service.RecordTypeEntries.TryGetValue("A0042", out test), Is.False);
-        }
+        public void TestTryGet2() => Assert.That(ECODataService.RecordTypeEntries.TryGetValue("A0042", out _), Is.False);
     }
 }

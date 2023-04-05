@@ -1,16 +1,21 @@
-using NAUCountryA.Models;
+using NAUCountry.ECOMap.Models;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
-namespace NAUCountryA.Tables
+namespace NAUCountry.ECOMap.Tables
 {
     public class StateTable : IReadOnlyDictionary<int, State>
     {
         // Assigned to Miranda Ryan
         private readonly IDictionary<int, State> stateEntries;
-        public StateTable()
+        private ECODataService ECODataService  { get; }
+		private IEnumerable<string> CsvContents { get; }
+
+		public StateTable(ECODataService service, IEnumerable<string> csvContents)
         {
-            stateEntries = new Dictionary<int, State>();
+            CsvContents = csvContents;
+			ECODataService = service;
+			stateEntries = new Dictionary<int, State>();
             AddEntries();
         }
 
@@ -61,20 +66,14 @@ namespace NAUCountryA.Tables
             return GetEnumerator();
         }
 
-        public bool TryGetValue(int stateCode, [MaybeNullWhen(false)] out State value)
+		// CODE REVIEW: Parsing logic could exist outside DTO
+		public bool TryGetValue(int stateCode, [MaybeNullWhen(false)] out State value)
         {
             return stateEntries.TryGetValue(stateCode, out value);
         }
 
-        private IEnumerable<string> CsvContents
-        {
-            get
-            {
-                return Service.ToCollection("A23_STATE");
-            }
-        }
-
-        private void AddEntries()
+		// CODE REVIEW: Parsing logic could exist outside DTO
+		private void AddEntries()
         {
             bool isHeader = true;
             foreach (string line in CsvContents)
@@ -85,7 +84,7 @@ namespace NAUCountryA.Tables
                 }
                 else
                 {
-                    State current = new State(line);
+                    State current = new State(ECODataService, line);
                     if (current.Valid && !stateEntries.ContainsKey(current.Pair.Key))
                     {
                         stateEntries.Add(current.Pair);

@@ -1,16 +1,22 @@
-using NAUCountryA.Models;
+using NAUCountry.ECOMap.Models;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
-namespace NAUCountryA.Tables
+namespace NAUCountry.ECOMap.Tables
 {
     public class OfferTable : IReadOnlyDictionary<int, Offer>
     {
         // Assigned to Miranda Ryan
         private readonly IDictionary<int, Offer> offerEntries;
-        public OfferTable()
+        private ECODataService ECODataService { get; }
+		private IEnumerable<KeyValuePair<int, IEnumerable<string>>> CsvContents { get; }
+
+		public OfferTable(ECODataService service, IEnumerable<KeyValuePair<int, IEnumerable<string>>> csvContents)
         {
-            offerEntries = new Dictionary<int, Offer>();
+            CsvContents = csvContents;
+			ECODataService = service;
+
+			offerEntries = new Dictionary<int, Offer>();
             AddEntries();
         }
 
@@ -61,24 +67,14 @@ namespace NAUCountryA.Tables
             return GetEnumerator();
         }
 
-        public bool TryGetValue(int offerID, [MaybeNullWhen(false)] out Offer value)
+		// CODE REVIEW: Parsing logic could exist outside DTO
+		public bool TryGetValue(int offerID, [MaybeNullWhen(false)] out Offer value)
         {
             return offerEntries.TryGetValue(offerID, out value);
         }
 
-        private IEnumerable<KeyValuePair<int, IEnumerable<string>>> CsvContents
-        {
-            get
-            {
-                IDictionary<int, IEnumerable<string>> contents = new Dictionary<int, IEnumerable<string>>();
-                contents.Add(2022, Service.ToCollection("A22_INSURANCE_OFFER"));
-                contents.Add(2023, Service.ToCollection("A23_INSURANCE_OFFER"));
-                return contents;
-            }
-        }
-
-
-        private void AddEntries()
+		// CODE REVIEW: Parsing logic could exist outside DTO
+		private void AddEntries()
         {
             foreach (KeyValuePair<int, IEnumerable<string>> pair in CsvContents)
             {
@@ -91,7 +87,7 @@ namespace NAUCountryA.Tables
                     }
                     else
                     {
-                        Offer current = new Offer($"{line},{pair.Key}");
+                        Offer current = new Offer(ECODataService, $"{line},{pair.Key}");
                         if (current.Valid && !offerEntries.ContainsKey(current.Pair.Key))
                         {
                             offerEntries.Add(current.Pair);

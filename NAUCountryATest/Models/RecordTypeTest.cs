@@ -1,4 +1,4 @@
-using NAUCountryA.Models;
+using NAUCountry.ECOMap.Models;
 
 namespace NAUCountryATest.Models
 {

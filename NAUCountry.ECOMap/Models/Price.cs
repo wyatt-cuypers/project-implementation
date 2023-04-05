@@ -1,25 +1,25 @@
 
 
-namespace NAUCountryA.Models
+namespace NAUCountry.ECOMap.Models
 {
     public class Price : IEquatable<Price>
     {
         // Assigned to Katelyn Runsvold
-        public Price(int offerID, double expectedIndexValue)
+        public Price(int offerID, double expectedIndexValue, Offer offer)
         {
-            Offer = Service.OfferEntries[offerID];
+            Offer = offer; // Service.OfferEntries[offerID];
             ExpectedIndexValue = expectedIndexValue;
         }
 
-        public Price(string line)
+        public Price(ECODataService service, string line)
         {
-            string[] values = line.Split(',');
-            int offerId = (int)Service.ExpressValue(values[0]);
-            Valid = Service.OfferEntries.ContainsKey(offerId);
+			string[] values = line.Split(',');
+            int offerId = (int)CsvUtility.ExpressValue(values[0]);
+            Valid = service.OfferEntries.ContainsKey(offerId);
             if (Valid)
             {
-                Offer = Service.OfferEntries[offerId];
-                ExpectedIndexValue = (double)Service.ExpressValue(values[1]);
+                Offer = service.OfferEntries[offerId];
+                ExpectedIndexValue = (double)CsvUtility.ExpressValue(values[1]);
             }
             else
             {
@@ -27,7 +27,7 @@ namespace NAUCountryA.Models
             }
         }
 
-        public Offer Offer
+		public Offer Offer
         {
             get;
             private set;
@@ -74,7 +74,7 @@ namespace NAUCountryA.Models
 
         public override string ToString()
         {
-            return $"{Offer.FormatOfferID()},\"{Service.ToString(ExpectedIndexValue)}\"";
+            return $"{Offer.FormatOfferID()},\"{CsvUtility.ToString(ExpectedIndexValue)}\"";
         }
 
         public static bool operator ==(Price a, Price b)

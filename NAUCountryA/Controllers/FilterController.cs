@@ -12,9 +12,9 @@ namespace NAUCountryA.Controllers
 
         private readonly ILogger<FilterController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public FilterController(ILogger<WeatherForecastController> logger)
         {
-            _logger = logger;
+            _logger = (ILogger<FilterController>)logger;
         }
 
         [HttpGet]
@@ -24,7 +24,7 @@ namespace NAUCountryA.Controllers
             {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+                //Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
         }

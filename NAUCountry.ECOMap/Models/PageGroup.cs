@@ -1,4 +1,4 @@
-namespace NAUCountryA.Models
+namespace NAUCountry.ECOMap.Models
 {
     public class PageGroup
     {

@@ -1,12 +1,7 @@
-using NAUCountryA;
-using NAUCountryA.Models;
-using NAUCountryA.Tables;
-using System;
-using System.IO.Pipes;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using NUnit.Framework;
+using NAUCountry.ECOMap;
+using NAUCountry.ECOMap.Models;
+using NAUCountry.ECOMap.Tables;
+using NAUCountry.ECOMap.Tests;
 
 namespace NAUCountryATest.Tables
 {
@@ -14,11 +9,13 @@ namespace NAUCountryATest.Tables
     {
         // Assigned to Miranda Ryan
         private StateTable tableMockup;
-        [SetUp]
-        public void Setup()
+        private ECODataService ECODataService { get; set; }
+
+		[SetUp]
+        public async Task Setup()
         {
-            Service.LoadTables();
-        }
+			ECODataService = await CachedData.GetECODataService();
+		}
 
         [Test]
         public void TestContainsKey1()
@@ -43,7 +40,7 @@ namespace NAUCountryATest.Tables
         [Test]
         public void TestGetStateByKeyValid()
         {
-            State expected = new State(01, "Alabama", "AL", "A00520");
+            State expected = new State(01, "Alabama", "AL", "A00520", ECODataService.RecordTypeEntries["A00520"]);
             State actual = tableMockup[01];
             Assert.That(actual, Is.EqualTo(expected));
         }
@@ -70,11 +67,11 @@ namespace NAUCountryATest.Tables
         public void TestGetValues()
         {
             IEnumerable<State> expected = new State[]
-            {new State(01, "Alabama", "AL", "A00520"),
-            new State(02, "Alaska", "AK", "A00520"),
-            new State(04, "Arizona", "AZ", "A00520"),
-            new State(05, "Arkansas", "AR", "A00520"),
-            new State(06, "California", "CA", "A00520")};
+            {new State(01, "Alabama", "AL", "A00520", ECODataService.RecordTypeEntries["A00520"]),
+            new State(02, "Alaska", "AK", "A00520", ECODataService.RecordTypeEntries["A00520"]),
+            new State(04, "Arizona", "AZ", "A00520", ECODataService.RecordTypeEntries["A00520"]),
+            new State(05, "Arkansas", "AR", "A00520", ECODataService.RecordTypeEntries["A00520"]),
+            new State(06, "California", "CA", "A00520", ECODataService.RecordTypeEntries["A00520"])};
             IEnumerable<State> actual = tableMockup.Values;
             Assert.That(actual, Is.EqualTo(expected));
         }
@@ -83,11 +80,11 @@ namespace NAUCountryATest.Tables
         public void TestGetEnumerator()
         {
             ICollection<KeyValuePair<int,State>> expected = new HashSet<KeyValuePair<int,State>>();
-            expected.Add(new KeyValuePair<int, State>(01, new State(01, "Alabama", "AL", "A00520")));
-            expected.Add(new KeyValuePair<int, State>(02, new State(02, "Alaska", "AK", "A00520")));
-            expected.Add(new KeyValuePair<int, State>(04, new State(04, "Arizona", "AZ", "A00520")));
-            expected.Add(new KeyValuePair<int, State>(05, new State(05, "Arkansas", "AR", "A00520")));
-            expected.Add(new KeyValuePair<int, State>(06, new State(06, "California", "CA", "A00520")));
+            expected.Add(new KeyValuePair<int, State>(01, new State(01, "Alabama", "AL", "A00520", ECODataService.RecordTypeEntries["A00520"])));
+            expected.Add(new KeyValuePair<int, State>(02, new State(02, "Alaska", "AK", "A00520", ECODataService.RecordTypeEntries["A00520"])));
+            expected.Add(new KeyValuePair<int, State>(04, new State(04, "Arizona", "AZ", "A00520", ECODataService.RecordTypeEntries["A00520"])));
+            expected.Add(new KeyValuePair<int, State>(05, new State(05, "Arkansas", "AR", "A00520", ECODataService.RecordTypeEntries["A00520"])));
+            expected.Add(new KeyValuePair<int, State>(06, new State(06, "California", "CA", "A00520", ECODataService.RecordTypeEntries["A00520"])));
             ICollection<KeyValuePair<int, State>> actual = new HashSet<KeyValuePair<int, State>>();
             foreach (KeyValuePair<int, State> pair in tableMockup)
             {
@@ -99,15 +96,13 @@ namespace NAUCountryATest.Tables
         [Test]
         public void TestTryGet1()
         {
-            State test = null;
-            Assert.That(tableMockup.TryGetValue(01, out test), Is.True);
+            Assert.That(tableMockup.TryGetValue(01, out _), Is.True);
         }
 
         [Test]
         public void TestTryGet2()
         {
-            State test = null;
-            Assert.That(tableMockup.TryGetValue(60, out test), Is.False);
+            Assert.That(tableMockup.TryGetValue(60, out _), Is.False);
         }
     }
 }
