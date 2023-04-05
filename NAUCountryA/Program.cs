@@ -8,30 +8,8 @@ using NAUCountryA.Tables;
 Service.LoadTables();
 Price testPrice = Service.PriceEntries.First().Value;
 Service.GeneratePDF(testPrice.Offer.County.State, testPrice.Offer.Practice.Commodity, 2023);
-//CreatePDF.Run();
-//Service.ConstructUser();
-// ICollection<string> commodityDataSet = Service.ToCollection("A23_Commodity");
-// Console.WriteLine(commodityDataSet.Count);
-// ICollection<int> commodityIds = new HashSet<int>();
-// IEnumerator<string> commodityEnum = commodityDataSet.GetEnumerator();
-// if (commodityEnum.MoveNext())
-// {
-//     string[] headers = commodityEnum.Current.Split(',');
-//     while (commodityEnum.MoveNext())
-//     {
-//         string[] values = commodityEnum.Current.Split(',');
-//         commodityIds.Add(Convert.ToInt32(values[4]));
-//     }
-//     Console.WriteLine(commodityIds.Count);
-// }
-// string sqlCommand = $"SELECT * FROM public.\"State\" WHERE \"STATE_CODE\" = 01;";
-// System.Data.DataTable table = Service.GetDataTable(sqlCommand);
-// Service.GeneratePDF(new State(table.Rows[0]));
 
 Console.WriteLine("PDF Generated.");
-// Price testPrice = Service.PriceEntries.Values.First();
-// Service.GeneratePDF(testPrice.Offer.State, testPrice.Offer.Practice, testPrice.Offer.Type);
-
 
 /*var builder = WebApplication.CreateBuilder(args);
 
