@@ -134,15 +134,46 @@ namespace NAUCountryA
                 TextArea textArea = new TextArea("", 0, 50, 550, 800, ceTe.DynamicPDF.Font.TimesRoman, 12, TextAlign.Left);
                 foreach (Price price in pg.Prices)
                 {
-                    textArea.Text = textArea.Text + price.Offer.County.CountyName + ": " + price.ExpectedIndexValue + ";\t";
+                    textArea.Text = textArea.Text + price.Offer.County.CountyName + ": " + price.ExpectedIndexValue + ";\n";
                 }
 
                 page.Elements.Add(textArea);
+                ContentArea legend = GetLegend();
+                page.Elements.Add(legend);
 
             }
             document.Draw(GetPath("PDFOutput/" + state.StateName + "_" + commodity.CommodityName + "_" + year + "_PDF.pdf"));
         }
+        public static ContentArea GetLegend()
+        {
+            ContentArea legend = new ContentArea(400, 300, 200, 200);
+            legend.Add(new Label("Percent Change", 0, 0, 200, 20, Font.TimesBold, 14, TextAlign.Left));
+            legend.Add(new Rectangle(0, 25, 20, 20, RgbColor.Gray, RgbColor.Red, 2, LineStyle.Solid));
+            legend.Add(new Label("< -4%", 30, 25, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
+            legend.Add(new Rectangle(0, 45, 20, 20, RgbColor.Gray, RgbColor.Coral, 2, LineStyle.Solid));
+            legend.Add(new Label("-4% to -2%", 30, 45, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
+            legend.Add(new Rectangle(0, 65, 20, 20, RgbColor.Gray, RgbColor.LightPink, 2, LineStyle.Solid));
+            legend.Add(new Label("-2% to 0%", 30, 65, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
+            legend.Add(new Rectangle(0, 85, 20, 20, RgbColor.Gray, RgbColor.AntiqueWhite, 2, LineStyle.Solid));
+            legend.Add(new Label("No Change", 30, 85, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
+            legend.Add(new Rectangle(0, 105, 20, 20, RgbColor.Gray, RgbColor.DarkSeaGreen, 2, LineStyle.Solid));
+            legend.Add(new Label("0% to 2%", 30, 105, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
+            legend.Add(new Rectangle(0, 125, 20, 20, RgbColor.Gray, RgbColor.SeaGreen, 2, LineStyle.Solid));
+            legend.Add(new Label("2% to 4%", 30, 125, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
+            legend.Add(new Rectangle(0, 145, 20, 20, RgbColor.Gray, RgbColor.DarkGreen, 2, LineStyle.Solid));
+            legend.Add(new Label("> 4%", 30, 145, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
+            return legend;
+        }
+        public static void TestLegend()
+        {
+            Document document = new Document();
+            Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
+            document.Pages.Add(page);
+            ContentArea legend = GetLegend();
+            page.Elements.Add(legend);
+            document.Draw(GetPath("PDFOutput/TestLegend.pdf"));
 
+        }
         public static string GetPath(string filePath)
         {
             var exePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
