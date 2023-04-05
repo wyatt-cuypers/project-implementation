@@ -8,13 +8,12 @@ export const Header = () => {
         padding: '2%',
         backgroundColor: "lightblue",
         color: 'black',
-        textAlign: 'left'
+        textAlign: 'center'
     }
 
     return (
         <div style={headerStyle}>
-            <h1>Revenue Prices</h1>
-           
+            <h1>NAU Country PDF Generator</h1>
         </div>
 
     )

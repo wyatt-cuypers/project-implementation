@@ -24,9 +24,11 @@ export default class App extends Component {
         } else if (e.target.name === 'selectedYear') {
             selectedOptions.year = e.target.value;
         } else if (e.target.name === 'selectedType') {
-            selectedOptions = e.target.value;
+            selectedOptions.type = e.target.value;
         }
+        
         this.setState({ selectedOptions })
+        console.log(this.state);
     }
 
   render() {
