@@ -1,40 +1,43 @@
 
 
-namespace NAUCountryA.Models
+namespace NAUCountry.ECOMap.Models
 {
     public class NAUType : IEquatable<NAUType>
     {
         // Assigned to Katelyn Runsvold
         public NAUType(int typeCode, string typeName, string typeAbbreviation,
-            int commodityCode, DateTime releasedDate, string recordTypeCode)
+            int commodityCode, DateTime releasedDate, string recordTypeCode, Commodity commodity, RecordType recordType)
         {
             TypeCode = typeCode;
             TypeName = typeName;
             TypeAbbreviation = typeAbbreviation;
-            Commodity = Service.CommodityEntries[commodityCode];
+            Commodity = commodity;// Service.CommodityEntries[commodityCode];
             ReleasedDate = releasedDate;
-            RecordType = Service.RecordTypeEntries[recordTypeCode];
+            RecordType = recordType; // Service.RecordTypeEntries[recordTypeCode];
         }
 
-        public NAUType(string line)
+        public NAUType(ECODataService service, string line)
         {
-            string[] values = line.Split(',');
-            string recordTypeCode = (string)Service.ExpressValue(values[0]);
-            int commodityCode = (int)Service.ExpressValue(values[3]);
+            ECODataService = service;
+
+			string[] values = line.Split(',');
+            string recordTypeCode = (string)CsvUtility.ExpressValue(values[0]);
+            int commodityCode = (int)CsvUtility.ExpressValue(values[3]);
             Valid = ValidType(recordTypeCode, commodityCode);
             if (Valid)
             {
-                TypeCode = (int)Service.ExpressValue(values[4]);
-                TypeName = (string)Service.ExpressValue(values[5]);
-                TypeAbbreviation = (string)Service.ExpressValue(values[6]);
-                Commodity = Service.CommodityEntries[commodityCode];
-                ReleasedDate = (DateTime)Service.ExpressValue(values[8]);
-                RecordType = Service.RecordTypeEntries[recordTypeCode];
+                TypeCode = (int)CsvUtility.ExpressValue(values[4]);
+                TypeName = (string)CsvUtility.ExpressValue(values[5]);
+                TypeAbbreviation = (string)CsvUtility.ExpressValue(values[6]);
+                Commodity = service.CommodityEntries[commodityCode];
+                ReleasedDate = (DateTime)CsvUtility.ExpressValue(values[8]);
+                RecordType = service.RecordTypeEntries[recordTypeCode];
             }
         }
 
+        private ECODataService ECODataService { get; }
 
-        public int TypeCode
+		public int TypeCode
         {
             get;
             private set;
@@ -90,7 +93,7 @@ namespace NAUCountryA.Models
                 TypeName == other.TypeName &&
                 TypeAbbreviation == other.TypeAbbreviation &&
                 Commodity == other.Commodity &&
-                Service.DateTimeEquals(ReleasedDate, other.ReleasedDate) &&
+                CsvUtility.DateTimeEquals(ReleasedDate, other.ReleasedDate) &&
                 RecordType == other.RecordType;
         }
 
@@ -124,7 +127,7 @@ namespace NAUCountryA.Models
         public override string ToString()
         {
             return $"{FormatTypeCode()},\"{TypeName}\",\"{TypeAbbreviation}\",{Commodity.FormatCommodityCode()}" +
-                $"\"{Service.ToString(ReleasedDate)}\",\"{RecordType.RecordTypeCode}\"";
+                $"\"{CsvUtility.ToString(ReleasedDate)}\",\"{RecordType.RecordTypeCode}\"";
         }
 
         public static bool operator ==(NAUType a, NAUType b)
@@ -139,12 +142,12 @@ namespace NAUCountryA.Models
 
         private bool ValidType(string recordTypeCode, int commodityCode)
         {
-            if (!Service.RecordTypeEntries.ContainsKey(recordTypeCode))
+            if (!ECODataService.RecordTypeEntries.ContainsKey(recordTypeCode))
             {
                 Console.WriteLine($"Record Type Code {recordTypeCode} doesn't exist.");
                 return false;
             }
-            else if (!Service.CommodityEntries.ContainsKey(commodityCode))
+            else if (!ECODataService.CommodityEntries.ContainsKey(commodityCode))
             {
                 Console.WriteLine($"Commodity Code {commodityCode} doesn't exist.");
                 return false;

@@ -1,13 +1,3 @@
-using System;
-using System.IO.Pipes;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using NUnit.Framework;
-using NAUCountryA;
-using NAUCountryA.Models;
-using NAUCountryA.Tables;
-
 namespace NAUCountryATest.Tables
 {
     /*public class OfferTableTest

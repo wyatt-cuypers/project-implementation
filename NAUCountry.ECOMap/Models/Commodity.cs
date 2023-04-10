@@ -1,10 +1,10 @@
 
 
-namespace NAUCountryA.Models
+namespace NAUCountry.ECOMap.Models
 {
     public class Commodity : IEquatable<Commodity>
     {
-        public Commodity(int commodityCode, string commodityName, string commodityAbbreviation, char annualPlantingCode, int commodityYear, DateTime releasedDate, string recordTypeCode)
+        public Commodity(int commodityCode, string commodityName, string commodityAbbreviation, char annualPlantingCode, int commodityYear, DateTime releasedDate, string recordTypeCode, RecordType recordType)
         {
             CommodityCode = commodityCode;
             CommodityName = commodityName;
@@ -12,23 +12,23 @@ namespace NAUCountryA.Models
             AnnualPlantingCode = annualPlantingCode;
             CommodityYear = commodityYear;
             ReleasedDate = releasedDate;
-            RecordType = Service.RecordTypeEntries[recordTypeCode];
+            RecordType = recordType; // Service.RecordTypeEntries[recordTypeCode];
         }
 
-        public Commodity(string line)
+        public Commodity(ECODataService service, string line)
         {
             string[] values = line.Split(',');
-            string recordTypeCode = (string)Service.ExpressValue(values[0]);
-            Valid = Service.RecordTypeEntries.ContainsKey(recordTypeCode);
+            string recordTypeCode = (string)CsvUtility.ExpressValue(values[0]);
+            Valid = service.RecordTypeEntries.ContainsKey(recordTypeCode);
             if (Valid)
             {
-                CommodityCode = (int)Service.ExpressValue(values[4]);
-                CommodityName = (string)Service.ExpressValue(values[5]);
-                CommodityAbbreviation = (string)Service.ExpressValue(values[6]);
-                AnnualPlantingCode = ((string)Service.ExpressValue(values[7]))[0];
-                CommodityYear = (int)Service.ExpressValue(values[3]);
-                ReleasedDate = (DateTime)Service.ExpressValue(values[9]);
-                RecordType = Service.RecordTypeEntries[recordTypeCode];
+                CommodityCode = (int)CsvUtility.ExpressValue(values[4]);
+                CommodityName = (string)CsvUtility.ExpressValue(values[5]);
+                CommodityAbbreviation = (string)CsvUtility.ExpressValue(values[6]);
+                AnnualPlantingCode = ((string)CsvUtility.ExpressValue(values[7]))[0];
+                CommodityYear = (int)CsvUtility.ExpressValue(values[3]);
+                ReleasedDate = (DateTime)CsvUtility.ExpressValue(values[9]);
+                RecordType = service.RecordTypeEntries[recordTypeCode];
             }
             else
             {
@@ -131,7 +131,7 @@ namespace NAUCountryA.Models
         public override string ToString()
         {
             return $"{FormatCommodityCode()},\"{CommodityName}\",\"{CommodityAbbreviation}\",\"" +
-                $"{AnnualPlantingCode}\",\"{CommodityYear}\",\"{Service.ToString(ReleasedDate)}\"," +
+                $"{AnnualPlantingCode}\",\"{CommodityYear}\",\"{CsvUtility.ToString(ReleasedDate)}\"," +
                 $"\"{RecordType.RecordTypeCode}\"";
         }
 

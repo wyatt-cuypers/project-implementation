@@ -1,16 +1,22 @@
-using NAUCountryA.Models;
+using NAUCountry.ECOMap.Models;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
-namespace NAUCountryA.Tables
+namespace NAUCountry.ECOMap.Tables
 {
     public class PracticeTable : IReadOnlyDictionary<int, Practice>
     {
         // Assigned to Wyatt Cuypers
         private readonly IDictionary<int, Practice> practiceEntries;
-        public PracticeTable()
+        private ECODataService ECODataService { get; }
+		private IEnumerable<string> CsvContents { get; }
+
+		public PracticeTable(ECODataService service, IEnumerable<string> csvContents)
         {
-            practiceEntries = new Dictionary<int, Practice>();
+            CsvContents = csvContents;
+			ECODataService = service;
+
+			practiceEntries = new Dictionary<int, Practice>();
             AddEntries();
         }
 
@@ -61,19 +67,14 @@ namespace NAUCountryA.Tables
             return GetEnumerator();
         }
 
-        public bool TryGetValue(int practiceCode, [MaybeNullWhen(false)] out Practice value)
+		// CODE REVIEW: Parsing logic could exist outside DTO
+		public bool TryGetValue(int practiceCode, [MaybeNullWhen(false)] out Practice value)
         {
             return practiceEntries.TryGetValue(practiceCode, out value);
         }
-        private IEnumerable<string> CsvContents
-        {
-            get
-            {
-                return Service.ToCollection("A23_Practice");
-            }
-        }
 
-        private void AddEntries()
+		// CODE REVIEW: Parsing logic could exist outside DTO
+		private void AddEntries()
         {
             bool isHeader = true;
             foreach (string line in CsvContents)
@@ -84,7 +85,7 @@ namespace NAUCountryA.Tables
                 }
                 else
                 {
-                    Practice current = new Practice(line);
+                    Practice current = new Practice(ECODataService, line);
                     if (current.Valid && !practiceEntries.ContainsKey(current.Pair.Key))
                     {
                         practiceEntries.Add(current.Pair);

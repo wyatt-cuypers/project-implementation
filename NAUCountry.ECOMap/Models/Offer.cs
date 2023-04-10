@@ -1,39 +1,43 @@
 
 
-namespace NAUCountryA.Models
+namespace NAUCountry.ECOMap.Models
 {
     public class Offer : IEquatable<Offer>
     {
         // Assigned to Miranda Ryan
-        public Offer(int offerID, int practiceCode, int countyCode, int typeCode, int irrigationPracticeCode, int year)
+        public Offer(int offerID, int practiceCode, int countyCode, int typeCode, int irrigationPracticeCode, int year, Practice practice, County county, NAUType type)
         {
             OfferID = offerID;
-            Practice = Service.PracticeEntries[practiceCode];
-            County = Service.CountyEntries[countyCode];
-            Type = Service.TypeEntries[typeCode];
+            Practice = practice;// Service.PracticeEntries[practiceCode];
+            County = county;// Service.CountyEntries[countyCode];
+            Type = type; // Service.TypeEntries[typeCode];
             IrrigationPracticeCode = irrigationPracticeCode;
             Year = year;
         }
 
-        public Offer(string line)
+        public Offer(ECODataService service, string line)
         {
-            string[] values = line.Split(',');
-            int practiceCode = (int)Service.ExpressValue(values[4]);
-            int countyCode = (int)Service.ExpressValue(values[2]);
-            int typeCode = (int)Service.ExpressValue(values[3]);
+            ECODataService = service;
+
+			string[] values = line.Split(',');
+            int practiceCode = (int)CsvUtility.ExpressValue(values[4]);
+            int countyCode = (int)CsvUtility.ExpressValue(values[2]);
+            int typeCode = (int)CsvUtility.ExpressValue(values[3]);
             Valid = ValidOffer(practiceCode, countyCode, typeCode);
             if (Valid)
             {
-                OfferID = (int)Service.ExpressValue(values[0]);
-                Practice = Service.PracticeEntries[(int)Service.ExpressValue(values[4])];
-                County = Service.CountyEntries[(int)Service.ExpressValue(values[2])];
-                Type = Service.TypeEntries[(int)Service.ExpressValue(values[3])];
-                IrrigationPracticeCode = (int)Service.ExpressValue(values[5]);
+                OfferID = (int)CsvUtility.ExpressValue(values[0]);
+                Practice = service.PracticeEntries[(int)CsvUtility.ExpressValue(values[4])];
+                County = service.CountyEntries[(int)CsvUtility.ExpressValue(values[2])];
+                Type = service.TypeEntries[(int)CsvUtility.ExpressValue(values[3])];
+                IrrigationPracticeCode = (int)CsvUtility.ExpressValue(values[5]);
                 Year = Convert.ToInt32(values[6]);
             }
         }
 
-        public int OfferID
+        private ECODataService ECODataService { get; }
+
+		public int OfferID
         {
             get;
             private set;
@@ -155,17 +159,17 @@ namespace NAUCountryA.Models
 
         private bool ValidOffer(int practiceCode, int countyCode, int typeCode)
         {
-            if (!Service.PracticeEntries.ContainsKey(practiceCode))
+            if (!ECODataService.PracticeEntries.ContainsKey(practiceCode))
             {
                 Console.WriteLine($"Practice Code #{practiceCode} doesn't exist.");
                 return false;
             }
-            else if (!Service.CountyEntries.ContainsKey(countyCode))
+            else if (!ECODataService.CountyEntries.ContainsKey(countyCode))
             {
                 Console.WriteLine($"County Code #{countyCode} doesn't exist.");
                 return false;
             }
-            else if (!Service.TypeEntries.ContainsKey(typeCode))
+            else if (!ECODataService.TypeEntries.ContainsKey(typeCode))
             {
                 Console.WriteLine($"Type Code #{typeCode} doesn't exist.");
                 return false;

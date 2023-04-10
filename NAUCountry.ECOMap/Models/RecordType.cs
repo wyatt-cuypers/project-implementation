@@ -1,6 +1,6 @@
 
 
-namespace NAUCountryA.Models
+namespace NAUCountry.ECOMap.Models
 {
     public class RecordType : IEquatable<RecordType>
     {
@@ -14,9 +14,9 @@ namespace NAUCountryA.Models
         public RecordType (string line)
         {
             string[] values = line.Split(',');
-            RecordTypeCode = (string)Service.ExpressValue(values[0]);
-            RecordCategoryCode = (int)Service.ExpressValue(values[1]);
-            ReinsuranceYear = (int)Service.ExpressValue(values[2]);
+            RecordTypeCode = (string)CsvUtility.ExpressValue(values[0]);
+            RecordCategoryCode = (int)CsvUtility.ExpressValue(values[1]);
+            ReinsuranceYear = (int)CsvUtility.ExpressValue(values[2]);
         }
 
         public string RecordTypeCode

@@ -1,28 +1,31 @@
-using NAUCountryA;
-using NAUCountryA.Models;
+using NAUCountry.ECOMap;
+using NAUCountry.ECOMap.Models;
+using NAUCountry.ECOMap.Tests;
 
 namespace NAUCountryATest.Models
 {
     public class CommodityTest
     {
         private Commodity commodity;
-        [SetUp]
-        public void Setup()
+		private ECODataService ECODataService { get; set; }
+
+		[SetUp]
+        public async Task Setup()
         {
-            Service.LoadTables();
-        }
+            ECODataService = await CachedData.GetECODataService();
+		}
 
         [Test]
         public void TestEquals1()
         {
-            object other = new Commodity(37, "Raisins", "RAISINS", 'P', 2022, new DateTime(2022, 4, 7), "A00420");
+            object other = new Commodity(37, "Raisins", "RAISINS", 'P', 2022, new DateTime(2022, 4, 7), "A00420", ECODataService.RecordTypeEntries["A00420"]);
             Assert.That(commodity.Equals(other), Is.True);
         }
 
         [Test]
         public void TestEquals2()
         {
-            object other = new Commodity(3,"Raisins", "RAISINS", 'P', 2022, new DateTime(2022, 4, 7), "A00420");
+            object other = new Commodity(3,"Raisins", "RAISINS", 'P', 2022, new DateTime(2022, 4, 7), "A00420", ECODataService.RecordTypeEntries["A00420"]);
             Assert.That(commodity.Equals(other), Is.False);
         }
 

@@ -1,15 +1,18 @@
-using NAUCountryA.Models;
+using NAUCountry.ECOMap.Models;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
-namespace NAUCountryA.Tables
+namespace NAUCountry.ECOMap.Tables
 {
     public class RecordTypeTable : IReadOnlyDictionary<string, RecordType>
     {
         private readonly IDictionary<string,RecordType> recordTypeEntries;
-        public RecordTypeTable()
+		private IEnumerable<IEnumerable<string>> CsvContents { get; }
+
+		public RecordTypeTable(IEnumerable<IEnumerable<string>> csvContents)
         {
-            recordTypeEntries = new Dictionary<string,RecordType>();
+            CsvContents = csvContents;
+			recordTypeEntries = new Dictionary<string,RecordType>();
             AddEntries();
         }
 
@@ -60,26 +63,14 @@ namespace NAUCountryA.Tables
             return GetEnumerator();
         }
 
-        public bool TryGetValue(string recordTypeCode, [MaybeNullWhen(false)] out RecordType value)
+		// CODE REVIEW: Parsing logic could exist outside DTO
+		public bool TryGetValue(string recordTypeCode, [MaybeNullWhen(false)] out RecordType value)
         {
             return recordTypeEntries.TryGetValue(recordTypeCode, out value);
         }
 
-        private IEnumerable<IEnumerable<string>> CsvContents
-        {
-            get
-            {
-                ICollection<ICollection<string>> contents = new List<ICollection<string>>();
-                contents.Add(Service.ToCollection("A23_Commodity"));
-                contents.Add(Service.ToCollection("A23_County"));
-                contents.Add(Service.ToCollection("A23_Practice"));
-                contents.Add(Service.ToCollection("A23_STATE"));
-                contents.Add(Service.ToCollection("A23_Type"));
-                return contents;
-            }
-        }
-
-        private void AddEntries()
+		// CODE REVIEW: Parsing logic could exist outside DTO
+		private void AddEntries()
         {
             foreach (IEnumerable<string> contents in CsvContents)
             {
