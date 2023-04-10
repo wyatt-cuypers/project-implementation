@@ -3,6 +3,9 @@ import { Layout } from './components/Layout';
 import './custom.css';
 import { Header } from './components/Header';
 import { DownloadPDF } from './components/DownloadPDF'
+import { Route, Routes } from 'react-router-dom';
+import AppRoutes from './AppRoutes';
+import './custom.css';
 
 
 export default class App extends Component {
@@ -24,20 +27,30 @@ export default class App extends Component {
         } else if (e.target.name === 'selectedYear') {
             selectedOptions.year = e.target.value;
         } else if (e.target.name === 'selectedType') {
-            selectedOptions = e.target.value;
+            selectedOptions.type = e.target.value;
         }
+        
         this.setState({ selectedOptions })
+        console.log(this.state);
     }
 
   render() {
     return (
         <div className="App">
             <Header></Header>
-            <DownloadPDF
+            {/* <DownloadPDF
                 onChangeForm={this.onChangeForm}
                 downloadPDF={this.downloadPDF}
             >
-            </DownloadPDF>
+            </DownloadPDF> */}
+            <Layout>
+                <Routes>
+                {AppRoutes.map((route, index) => {
+                    const { element, ...rest } = route;
+                    return <Route key={index} {...rest} element={element} />;
+                })}
+                </Routes>
+            </Layout>
         </div>
       
     );

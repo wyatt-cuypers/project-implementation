@@ -17,17 +17,18 @@ var encodedContent = new FormUrlEncodedContent(new[]
 // Toggle to see output of encoded request
 //Console.WriteLine(await encodedContent.ReadAsStringAsync());
 
-var response = await client.PostAsync("[TODO: use your map URL]", encodedContent);
+var response = await client.PostAsync("https://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task", encodedContent);
 
 string content = await response.Content.ReadAsStringAsync();
 
 Console.WriteLine(content);
 
 var svgResult = JObject.Parse(content);
-
+Console.WriteLine("SVG Result: " + svgResult);
 Console.WriteLine(svgResult["results"]?[0]?["value"]?["url"]);
 
 var urlContent = svgResult["results"]?[0]?["value"]?["url"];
+Console.WriteLine("Url Content: " + urlContent);
 if (urlContent != null)
 {
 	await DownloadImage(urlContent.ToString());
