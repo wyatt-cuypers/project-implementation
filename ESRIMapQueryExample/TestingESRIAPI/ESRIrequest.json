@@ -1,7 +1,7 @@
 ﻿{
 	"operationalLayers": [
 		{
-			"url": "[TODO: Use Feature URL]",
+			"url": "https://services1.arcgis.com/cKbdtEbQArFDFlzV/arcgis/rest/services/COUNTY/FeatureServer",
 			"title": "County Outlines",
 			"opacity": 1,
 			"layerDefinition": {
