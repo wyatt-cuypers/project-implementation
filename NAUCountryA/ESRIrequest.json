@@ -1,7 +1,7 @@
-﻿{
+{
 	"operationalLayers": [
 		{
-			"url": "https://services1.arcgis.com/cKbdtEbQArFDFlzV/arcgis/rest/services/COUNTY/FeatureServer",
+			"url": "https://services3.arcgis.com/hDXM0jVzBTOKdR4i/arcgis/rest/services/NAUMap/FeatureServer/1",
 			"title": "County Outlines",
 			"opacity": 1,
 			"layerDefinition": {
