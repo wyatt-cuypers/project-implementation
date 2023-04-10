@@ -6,9 +6,9 @@ using NAUCountryA;
 using NAUCountryA.Models;
 using NAUCountryA.Tables;
 
-Service.LoadTables();
-Price testPrice = Service.PriceEntries.First().Value;
-Service.GeneratePDF(testPrice.Offer.County.State, testPrice.Offer.Practice.Commodity, 2023);
+// Service.LoadTables();
+// Price testPrice = Service.PriceEntries.First().Value;
+// Service.GeneratePDF(testPrice.Offer.County.State, testPrice.Offer.Practice.Commodity, 2023);
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -33,6 +33,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
 
-app.MapFallbackToFile("index.html");;
+app.MapFallbackToFile("index.html"); ;
 
 app.Run();
