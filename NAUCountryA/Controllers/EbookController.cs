@@ -1,79 +1,40 @@
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
+using System; 
+using System.IO; 
+using System.Net; 
+using System.Net.Http; 
+
 
 namespace NAUCountryA.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class EbookController : ControllerBase
     {
-        string bookPath_Pdf = @"C:\MyWorkSpace\SelfDev\UserAPI\UserAPI\Books\sample.pdf";
-        string bookPath_xls = @"C:\MyWorkSpace\SelfDev\UserAPI\UserAPI\Books\sample.xls";
-        string bookPath_doc = @"C:\MyWorkSpace\SelfDev\UserAPI\UserAPI\Books\sample.doc";
-        string bookPath_zip = @"C:\MyWorkSpace\SelfDev\UserAPI\UserAPI\Books\sample.zip";
-
-        [HttpGet]
-        [Route("Ebook/GetBookFor/{format}")]
-        public IHttpActionResult GetbookFor(string format)
+        [HttpGet("{filename}")]
+        public IActionResult DownloadPdf(string filename)
         {
-            string reqBook = format.ToLower() == "pdf" ? bookPath_Pdf : (format.ToLower() == "xls" ? bookPath_xls : (format.ToLower() == "doc" ? bookPath_doc : bookPath_zip));
-            string bookName = "sample." + format.ToLower();
+            try
+            {
+                // Check if the file exists
+                string filePath = Path.Combine(Directory.GetCurrentDirectory(), "PDFOutput", filename);
+                if (!System.IO.File.Exists(filePath))
+                {
+                    // Return 404 Not Found response if file doesn't exist
+                    return NotFound("The requested PDF file was not found.");
+                }
 
-            //converting Pdf file into bytes array
-            var dataBytes = File.ReadAllBytes(reqBook);
-            //adding bytes to memory stream 
-            var dataStream = new MemoryStream(dataBytes);
-            return new eBookResult(dataStream, Request, bookName);
-        }
-        [HttpGet]
-        [Route("Ebook/GetBookForHRM/{format}")]
-        public HttpResponseMessage GetBookForHRM(string format)
-        {
-            string reqBook = format.ToLower() == "pdf" ? bookPath_Pdf : (format.ToLower() == "xls" ? bookPath_xls : (format.ToLower() == "doc" ? bookPath_doc : bookPath_zip));
-            string bookName = "sample." + format.ToLower();
-            //converting Pdf file into bytes array
-            var dataBytes = File.ReadAllBytes(reqBook);
-            //adding bytes to memory stream 
-            var dataStream = new MemoryStream(dataBytes);
+                // Open the PDF file
+                FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
 
-            HttpResponseMessage httpResponseMessage = Request.CreateResponse(HttpStatusCode.OK);
-            httpResponseMessage.Content = new StreamContent(dataStream);
-            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
-            httpResponseMessage.Content.Headers.ContentDisposition.FileName = bookName;
-            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
-
-            return httpResponseMessage;
-        }
-    }
-
-    public class eBookResult : IHttpActionResult
-    {
-        MemoryStream bookStuff;
-        string PdfFileName;
-        HttpRequestMessage httpRequestMessage;
-        HttpResponseMessage httpResponseMessage;
-        public eBookResult(MemoryStream data, HttpRequestMessage request, string filename)
-        {
-            bookStuff = data;
-            httpRequestMessage = request;
-            PdfFileName = filename;
-        }
-        public System.Threading.Tasks.Task<HttpResponseMessage> ExecuteAsync(System.Threading.CancellationToken cancellationToken)
-        {
-            httpResponseMessage = httpRequestMessage.CreateResponse(HttpStatusCode.OK);
-            httpResponseMessage.Content = new StreamContent(bookStuff);
-            //httpResponseMessage.Content = new ByteArrayContent(bookStuff.ToArray());
-            httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
-            httpResponseMessage.Content.Headers.ContentDisposition.FileName = PdfFileName;
-            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
-
-            return System.Threading.Tasks.Task.FromResult(httpResponseMessage);
+                // Set the content type and content-disposition headers
+                return File(fs, "application/pdf", filename);
+            }
+            catch (Exception ex)
+            {
+                // Return 500 Internal Server Error response if there was an error
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }
