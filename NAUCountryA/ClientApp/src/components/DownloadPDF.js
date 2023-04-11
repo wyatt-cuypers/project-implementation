@@ -3,26 +3,51 @@ import { statesList } from "../statesList.js";
 import { cropsList } from "../cropsList.js";
 import { yearsList } from "../yearsList.js";
 
-export const DownloadPDF = ({ onChangeForm, downloadPDF }) => {
+export const DownloadPDF = (/*{ onChangeForm, downloadPDF }*/) => {
   const [selectedState, setSelectedState] = useState("");
   const [selectedCrop, setSelectedCrop] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
-  const styleSheet = {
-    dropStyle:{
-        margin: 10,
-        fontWeight: 'bold',
-        display: 'grid'
-    },
-    centerStyle:{
-        justifyContent: 'center',
-        textAlign: "center"
-    },
+  
+  function getCommodities() {
+    fetch('/api/Commodity')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log(data);
+      })
+      .catch(error => {
+        console.error('There was a problem fetching the commodities:', error);
+    });
+}
+
+  function getPDF() {
+    fetch('/api/Ebook//Alabama_Forage Seeding_2023_PDF.pdf')
+        .then(response => {
+        // Check if the response was successful
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        // Return the response as a blob (binary data)
+        return response.blob();
+        })
+        .then(data => {
+        // Create a URL for the blob data
+        const pdfUrl = URL.createObjectURL(data);
+        // Open the PDF file in a new window
+        window.open(pdfUrl);
+        })
+        .catch(error => {
+        console.error('There was a problem downloading the PDF file:', error);
+    });
+    //const data = await response.json();
+    //this.setState({ forecasts: data, loading: false });
   }
-  const contentStyle = {
-    margin: "2%",
-  };
   return (
-    <div style={contentStyle}>
+    <div style={styleSheet.contentStyle}>
       <div
         class="row"
         style={styleSheet.centerStyle}
@@ -35,7 +60,7 @@ export const DownloadPDF = ({ onChangeForm, downloadPDF }) => {
               value={selectedState}
               style={{textAlign: 'center'}}
               onChange={(e) => {
-                onChangeForm(e);
+                //onChangeForm(e);
                 setSelectedState(e.target.value);
               }}
               name="selectedState"
@@ -55,7 +80,7 @@ export const DownloadPDF = ({ onChangeForm, downloadPDF }) => {
               value={selectedCrop}
               style={{textAlign: 'center'}}
               onChange={(e) => {
-                onChangeForm(e);
+                //onChangeForm(e);
                 setSelectedCrop(e.target.value);
               }}
               name="selectedType"
@@ -75,7 +100,7 @@ export const DownloadPDF = ({ onChangeForm, downloadPDF }) => {
               value={selectedYear}
               style={{textAlign: 'center'}}
               onChange={(e) => {
-                onChangeForm(e);
+                //onChangeForm(e);
                 setSelectedYear(e.target.value);
               }}
               name="selectedYear"
@@ -92,10 +117,22 @@ export const DownloadPDF = ({ onChangeForm, downloadPDF }) => {
             <button
               style={{ marginTop: 10 }}
               type="button"
-              onClick={(e) => downloadPDF()}
+              onClick={(e) => {
+                console.log(selectedYear)
+                getPDF();
+                //setSelectedCrop(e.target.value);
+              }}
               className="btn btn-danger"
             >
               <b>Download</b>
+            </button>
+            <button
+            onClick={(e) => {
+                console.log(selectedYear)
+                getCommodities();
+                //setSelectedCrop(e.target.value);
+            }}>
+                Log Commodities
             </button>
           </div>
         </div>
@@ -103,3 +140,18 @@ export const DownloadPDF = ({ onChangeForm, downloadPDF }) => {
     </div>
   );
 };
+
+const styleSheet = {
+  dropStyle:{
+      margin: 10,
+      fontWeight: 'bold',
+      display: 'grid'
+  },
+  centerStyle:{
+      justifyContent: 'center',
+      textAlign: "center"
+  },
+  contentStyle:{
+    margin: "2%",
+  },
+}

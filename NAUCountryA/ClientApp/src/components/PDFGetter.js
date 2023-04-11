@@ -6,6 +6,12 @@ export class PDFGetter extends Component {
     super(props);
     this.state = { forecasts: [], loading: true };
   }
+
+getCommodities() {
+  const response = fetch('/api/Commodity');
+  const data = response.json();
+  console.log(data);
+}
   
 getPDF() {
     fetch('/api/Ebook//Alabama_Forage Seeding_2023_PDF.pdf')
@@ -40,6 +46,11 @@ getPDF() {
             onClick={this.getPDF}
         >
             Open PDF
+        </button>
+        <button
+            onClick={this.getPDF}
+        >
+            Log Commodities
         </button>
       </div>
     );

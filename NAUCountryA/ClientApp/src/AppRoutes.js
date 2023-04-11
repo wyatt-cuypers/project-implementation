@@ -1,7 +1,7 @@
 import { Counter } from "./components/Counter";
 import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
-import { PDFGetter } from "./components/PDFGetter";
+import { DownloadPDF } from "./components/DownloadPDF";
 
 const AppRoutes = [
   {
@@ -18,7 +18,7 @@ const AppRoutes = [
   },
   {
     path: '/get-pdf-data',
-    element: <PDFGetter />
+    element: <DownloadPDF />
   }
 ];
 
