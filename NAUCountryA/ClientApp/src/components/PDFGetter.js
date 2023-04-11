@@ -8,7 +8,7 @@ export class PDFGetter extends Component {
   }
   
 getPDF() {
-    fetch('/api/Ebook/TestPDF.pdf')
+    fetch('/api/Ebook//Alabama_Forage Seeding_2023_PDF.pdf')
         .then(response => {
         // Check if the response was successful
         if (!response.ok) {
