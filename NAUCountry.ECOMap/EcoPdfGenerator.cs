@@ -110,5 +110,30 @@ namespace NAUCountry.ECOMap
             }
             return counties;
         }
+
+        public static void GeneratePDFGroup(ECODataService service, State state, int year)
+        {
+            HashSet<Commodity> commodities = new HashSet<Commodity>();
+            foreach (Price price in service.PriceEntries.Values)
+            {
+                if (price.Offer.County.State.Equals(state) && price.Offer.Year == year && !commodities.Contains(price.Offer.Type.Commodity))
+                {
+                    commodities.Add(price.Offer.Type.Commodity);
+                }
+            }
+            Parallel.ForEach(commodities, commodity =>
+            {
+                GeneratePDF(service, state, commodity, year);
+            });
+        }
+
+        public static void GenerateAllPDFs(ECODataService service, int year)
+        {
+            Parallel.ForEach(service.StateEntries.Values, state =>
+            {
+                GeneratePDFGroup(service, state, year);
+                Console.WriteLine(state.StateName);
+            });
+        }
     }
 }
