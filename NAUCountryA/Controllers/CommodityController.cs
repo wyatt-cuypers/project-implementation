@@ -14,21 +14,18 @@ namespace NAUCountryA.Controllers
         public CommodityController()
         {
             LoadingProcessor loader = new LoadingProcessor(CsvUtility.InitialPathLocation);
-            _service = loader.LoadAll().GetAwaiter().GetResult();
-            Console.WriteLine(_service.CommodityEntries);
+            _service = loader.LoadCommodities().GetAwaiter().GetResult();
         }
 
         [HttpGet]
-        public IActionResult GetCommodities()
+        public List<string> GetCommodities()
         {
-            IReadOnlyDictionary<int, Commodity> commodities = _service?.CommodityEntries;
-
-            if (commodities == null || commodities.Count == 0)
-            {
-                return NotFound();
+            List<string> commodities = new List<string>();
+            for(int i = 0; i < _service.CommodityEntries.Count; i++) {
+                commodities.Add(_service.CommodityEntries.ElementAt(i).Value.CommodityName);
             }
 
-            return Ok(commodities);
+            return commodities;
         }
     }
 }

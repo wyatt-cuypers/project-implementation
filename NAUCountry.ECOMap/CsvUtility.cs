@@ -15,7 +15,7 @@ namespace NAUCountry.ECOMap
 		public static ICollection<string> ToCollection(string csvFileName)
 		{
 			ICollection<string> lines = new List<string>();
-			string filePath = InitialPathLocation + "\\NAUCountryA\\Resources\\" + csvFileName + ".csv";
+			string filePath = Path.Combine(InitialPathLocation, "NAUCountryA", "Resources", csvFileName + ".csv");
 			TextFieldParser csvParcer = new TextFieldParser(filePath);
 			csvParcer.TextFieldType = FieldType.Delimited;
 			while (!csvParcer.EndOfData)

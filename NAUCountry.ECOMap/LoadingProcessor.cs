@@ -58,6 +58,23 @@ namespace NAUCountry.ECOMap
 			return service;
 		}
 
+		public async Task<ECODataService> LoadCommodities()
+		{
+			var a23Commodity = LoadLinesFromCsv("A23_Commodity");
+
+			ECODataService service = new ECODataService();
+			service.RecordTypeEntries = new RecordTypeTable(new List<ICollection<string>>
+			{
+				await a23Commodity,
+			});
+
+			service.CommodityEntries = new CommodityTable(service, await a23Commodity);
+
+			Console.WriteLine("All commodities loaded");
+
+			return service;
+		}
+
 		public async Task<ICollection<string>> LoadLinesFromCsv(string csvFileName)
 		{
 			return await Task.Run(() =>
@@ -67,7 +84,7 @@ namespace NAUCountry.ECOMap
 
 				ICollection<string> lines = new List<string>();
 
-				string filePath = InitialPathLocation + "\\NAUCountryA\\Resources\\" + csvFileName + ".csv";
+				string filePath = Path.Combine(InitialPathLocation, "NAUCountryA", "Resources", csvFileName + ".csv");
 				Console.WriteLine($"Loading {filePath}");
 
 				TextFieldParser csvParcer = new TextFieldParser(filePath);

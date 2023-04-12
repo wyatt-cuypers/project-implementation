@@ -2,13 +2,14 @@ using System;
 using NAUCountry.ECOMap;
 using NAUCountry.ECOMap.Models;
 
-/*LoadingProcessor loader = new LoadingProcessor(CsvUtility.InitialPathLocation);
-ECODataService service = await loader.LoadAll();
+// LoadingProcessor loader = new LoadingProcessor(CsvUtility.InitialPathLocation);
+// ECODataService service = await loader.LoadAll();
+// for(int i = 0; i < service.CommodityEntries.Count; i++) {
+//     Console.WriteLine(service.CommodityEntries.ElementAt(i).Value.CommodityName);
+// }
+//EcoPdfGenerator.GeneratePDF(service, testPrice.Offer.County.State, testPrice.Offer.Practice.Commodity, 2023);
 
-Price testPrice = service.PriceEntries.First().Value;
-EcoPdfGenerator.GeneratePDF(service, testPrice.Offer.County.State, testPrice.Offer.Practice.Commodity, 2023);
-
-Console.WriteLine("PDF Generated.");*/
+//Console.WriteLine("PDF Generated.");
 
 
 var builder = WebApplication.CreateBuilder(args);
