@@ -16,7 +16,22 @@ export class DownloadPDF extends Component {
   }
 
   downloadSelectedPDFs() {
-    fetch(`/api/DownloadPdf/${this.state.selectedState}/${this.state.selectedAllYear}`, {
+    fetch(`/api/DownloadPdf/${this.state.selectedState}/${this.state.selectedGroupYear}`, {
+        method: "POST"})
+    .then((response) => {
+        // Check if the response was successful
+        if (!response.ok) {
+            console.log(response)
+          throw new Error("Network response was not ok");
+        }
+      })
+      .catch((error) => {
+        console.error("There was a problem generating the PDF files:", error);
+      });
+  }
+
+  downloadAllPDFs() {
+    fetch(`/api/DownloadPdf/${this.state.selectedAllYear}`, {
         method: "POST"})
     .then((response) => {
         // Check if the response was successful
@@ -34,6 +49,7 @@ export class DownloadPDF extends Component {
     return (
       <div style={styleSheet.contentStyle}>
         <div class="row" style={styleSheet.centerStyle}>
+          <text style={{fontSize: 30}}>By State</text>
           {/* <div class="col-md-3"> */}
             <div style={styleSheet.dropStyle}>
               <label htmlFor="state">
@@ -107,6 +123,7 @@ export class DownloadPDF extends Component {
           )}
         </div>
         <div class="row" style={styleSheet.centerStyle}>
+        <text style={{fontSize: 30}}>All</text>
             <div style={styleSheet.dropStyle}>
               <label htmlFor="year">Year</label>
               <select
@@ -135,7 +152,7 @@ export class DownloadPDF extends Component {
                     this.state.selectedAllYear !== ""
                   ) {
                     this.setState({ allSelected: true });
-                    this.downloadSelectedPDFs();
+                    this.downloadAllPDFs();
                   } else {
                     this.setState({ allSelected: false });
                   }
@@ -160,8 +177,8 @@ export class DownloadPDF extends Component {
 
 const styleSheet = {
     dropStyle: {
-      margin: 10,
-      width: '50%',
+      //margin: 10,
+      padding: 50,
       fontWeight: "bold",
       display: "grid",
       verticalAlign: "top"
@@ -171,7 +188,7 @@ const styleSheet = {
       alignItems: 'center',
       textAlign: "center",
       display: "inline-block",
-      width: '50%',
+      width: '40%',
       verticalAlign: "top"
     },
     contentStyle: {
