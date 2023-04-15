@@ -3,6 +3,7 @@ using System;
 using System.IO; 
 using System.Net; 
 using System.Net.Http; 
+using NAUCountry.ECOMap;
 
 
 namespace NAUCountryA.Controllers
@@ -12,7 +13,7 @@ namespace NAUCountryA.Controllers
     public class EbookController : ControllerBase
     {
         [HttpGet("{state}/{crop}/{year}")]
-        public IActionResult DownloadPdf(string state, string crop, int year)
+        public IActionResult OpenPdf(string state, string crop, int year)
         {
             try
             {
