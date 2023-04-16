@@ -2,7 +2,6 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using NAUCountry.ECOMap;
 using NAUCountry.ECOMap.Models;
-using static Startup;
 
 namespace NAUCountryA.Controllers
 {

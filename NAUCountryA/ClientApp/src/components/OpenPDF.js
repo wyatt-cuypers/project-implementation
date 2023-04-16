@@ -37,7 +37,7 @@ export class OpenPDF extends Component {
   // }
 
   getCommodities() {
-    this.setState({ loading: true });
+    //this.setState({ loading: true });
     const response = fetch(`/api/Commodity/${this.state.selectedState}/${this.state.selectedYear}`).then(
     response => response.json())
     .then(data => {
