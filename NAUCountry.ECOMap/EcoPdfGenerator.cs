@@ -152,7 +152,7 @@ namespace NAUCountry.ECOMap
                     values.Add(current.Year, price);
                 }
             }
-            return (values[2023].ExpectedIndexValue - values[2022].ExpectedIndexValue) / values[2023].ExpectedIndexValue;
+            return (values[2023].ExpectedIndexValue - values[2022].ExpectedIndexValue) / values[2022].ExpectedIndexValue;
         }
 
         
