@@ -9,12 +9,13 @@ namespace NAUCountry.ECOMap
     {
         public static void GeneratePDF(ECODataService service, State state, Commodity commodity, int year)
         {
-            Document document = new Document();
-            Page page1 = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
-            document.Pages.Add(page1);
-            string labelText1 = $"{state.StateName} {commodity.CommodityName} {year}";
-            Label label1 = new Label(labelText1, 0, 0, 504, 100, Font.TimesBold, 20, TextAlign.Center);
-            page1.Elements.Add(label1);
+            try {
+                Document document = new Document();
+                Page page1 = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
+                document.Pages.Add(page1);
+                string labelText1 = $"{state.StateName} {commodity.CommodityName} {year}";
+                Label label1 = new Label(labelText1, 0, 0, 504, 100, Font.TimesBold, 20, TextAlign.Center);
+                page1.Elements.Add(label1);
 
 
             List<PageGroup> pages = new List<PageGroup>();
@@ -39,26 +40,31 @@ namespace NAUCountry.ECOMap
                 }
             }
 
-            foreach (PageGroup pg in pages)
-            {
-                Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
-                document.Pages.Add(page);
-                string labelText = $"{pg.Practice.PracticeName} {pg.Type.TypeName}";
-                Label label = new Label(labelText, 0, 0, 504, 100, Font.TimesBold, 18, TextAlign.Center);
-                page.Elements.Add(label);
-                /*TextArea textArea = new TextArea("", 0, 50, 550, 800, ceTe.DynamicPDF.Font.TimesRoman, 12, TextAlign.Left);
-				foreach (Price price in pg.Prices)
-				{
-					textArea.Text = textArea.Text + price.Offer.County.CountyName + ": " + price.ExpectedIndexValue + ";\n";
-				}
+                foreach (PageGroup pg in pages)
+                {
+                    Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
+                    document.Pages.Add(page);
+                    string labelText = $"{pg.Practice.PracticeName} {pg.Type.TypeName}";
+                    Label label = new Label(labelText, 0, 0, 504, 100, Font.TimesBold, 18, TextAlign.Center);
+                    page.Elements.Add(label);
+                    /*TextArea textArea = new TextArea("", 0, 50, 550, 800, ceTe.DynamicPDF.Font.TimesRoman, 12, TextAlign.Left);
+                    foreach (Price price in pg.Prices)
+                    {
+                        textArea.Text = textArea.Text + price.Offer.County.CountyName + ": " + price.ExpectedIndexValue + ";\n";
+                    }
 
-				page.Elements.Add(textArea);*/
-                page.Elements.Add(new Image(@"C:\data\test.png", 50, 100));
-                ContentArea legend = GetLegend();
-                page.Elements.Add(legend);
+                    page.Elements.Add(textArea);*/
+                    //page.Elements.Add(new Image(@"C:\data\test.png", 50, 100));
+                    ContentArea legend = GetLegend();
+                    page.Elements.Add(legend);
 
+                }
+                document.Draw(GetPath("PDFOutput/" + state.StateName + "_" + commodity.CommodityName + "_" + year + "_PDF.pdf"));
+
+            } catch(Exception ex) {
+                Console.WriteLine(ex);
             }
-            document.Draw(GetPath("PDFOutput/" + state.StateName + "_" + commodity.CommodityName + "_" + year + "_PDF.pdf"));
+            
         }
         public static ContentArea GetLegend()
         {
@@ -96,6 +102,43 @@ namespace NAUCountry.ECOMap
             Regex appPathMatcher = new Regex(@"(?<!fil)[A-Za-z]:\\+[\S\s]*?(?=\\+bin)");
             var appRoot = appPathMatcher.Match(exePath).Value;
             return System.IO.Path.Combine(appRoot, filePath);
+        }
+
+        public static void GeneratePDFGroup(ECODataService service, string stateName, int year)
+        {
+            HashSet<Commodity> commodities = new HashSet<Commodity>();
+            State state = null;
+            Parallel.ForEach(service.StateEntries, stateIter =>
+            {
+                if(stateIter.Value.StateName.Equals(stateName)) {
+                    state = new State(stateIter.Value.StateCode, stateIter.Value.StateName, stateIter.Value.StateAbbreviation, stateIter.Value.RecordType.RecordTypeCode, stateIter.Value.RecordType);
+                }
+            });
+            
+            foreach (Price price in service.PriceEntries.Values)
+            {
+                if (price.Offer.County.State.Equals(state) && price.Offer.Year == year && !commodities.Contains(price.Offer.Type.Commodity))
+                {
+                    commodities.Add(price.Offer.Type.Commodity);
+                }
+            }
+            
+            Parallel.ForEach(commodities, commodity =>
+            {
+                Console.WriteLine(commodity.CommodityName, "It made it this far!");
+                GeneratePDF(service, state, commodity, year);
+            });
+            
+
+        }
+
+        public static void GenerateAllPDFs(ECODataService service, int year)
+        {
+            Parallel.ForEach(service.StateEntries.Values, state =>
+            {
+                GeneratePDFGroup(service, state.StateName, year);
+                Console.WriteLine(state.StateName);
+            });
         }
     }
 }

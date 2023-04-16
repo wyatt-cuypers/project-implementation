@@ -7,54 +7,50 @@ export class DownloadPDF extends Component {
     super(props);
     this.state = {
       selectedState: "",
-      selectedCommodity: "",
-      selectedYear: "",
-      commoditiesList: [],
+      selectedAllYear: "",
+      selectedGroupYear: "",
       loading: true,
-      pdfNotFound: false,
+      allGroupSelected: true,
       allSelected: true,
     };
   }
 
-  componentDidMount() {
-    this.getCommodities();
-  }
-
-  async getCommodities() {
-    const response = await fetch("/api/Commodity");
-    const data = await response.json();
-    this.setState({ commoditiesList: data, loading: false });
-  }
-
-  getPDF() {
-    fetch(
-      `/api/Ebook/${this.state.selectedState}/${this.state.selectedCommodity}/${this.state.selectedYear}`
-    )
-      .then((response) => {
+  downloadSelectedPDFs() {
+    fetch(`/api/DownloadPdf/${this.state.selectedState}/${this.state.selectedGroupYear}`, {
+        method: "POST"})
+    .then((response) => {
         // Check if the response was successful
         if (!response.ok) {
-          this.setState({ pdfNotFound: true });
+            console.log(response)
           throw new Error("Network response was not ok");
         }
-        // Return the response as a blob (binary data)
-        this.setState({ pdfNotFound: false });
-        return response.blob();
-      })
-      .then((data) => {
-        // Create a URL for the blob data
-        const pdfUrl = URL.createObjectURL(data);
-        // Open the PDF file in a new window
-        window.open(pdfUrl);
       })
       .catch((error) => {
-        console.error("There was a problem downloading the PDF file:", error);
+        console.error("There was a problem generating the PDF files:", error);
       });
   }
+
+  downloadAllPDFs() {
+    fetch(`/api/DownloadPdf/${this.state.selectedAllYear}`, {
+        method: "POST"})
+    .then((response) => {
+        // Check if the response was successful
+        if (!response.ok) {
+            console.log(response)
+          throw new Error("Network response was not ok");
+        }
+      })
+      .catch((error) => {
+        console.error("There was a problem generating the PDF files:", error);
+      });
+  }
+
   render() {
     return (
       <div style={styleSheet.contentStyle}>
         <div class="row" style={styleSheet.centerStyle}>
-          <div class="col-md-3">
+          <text style={{fontSize: 30}}>By State</text>
+          {/* <div class="col-md-3"> */}
             <div style={styleSheet.dropStyle}>
               <label htmlFor="state">
                 State
@@ -77,40 +73,14 @@ export class DownloadPDF extends Component {
                 ))}
               </select>
             </div>
-            {this.state.loading ? (
-              <p>
-                <em>Loading...</em>
-              </p>
-            ) : (
-              <div style={styleSheet.dropStyle}>
-                <label htmlFor="crop">Commodity</label>
-                <select
-                  id="crops"
-                  value={this.state.selectedCommodity}
-                  style={{ textAlign: "center" }}
-                  onChange={(e) => {
-                    this.setState({ selectedCommodity: e.target.value });
-                  }}
-                  name="selectedType"
-                >
-                  <option value="">Please choose a crop</option>
-                  {this.state.commoditiesList.sort().map((crop, index) => (
-                    <option key={index} value={crop}>
-                      {crop}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-
             <div style={styleSheet.dropStyle}>
               <label htmlFor="year">Year</label>
               <select
                 id="years"
-                value={this.state.selectedYear}
+                value={this.state.selectedGroupYear}
                 style={{ textAlign: "center" }}
                 onChange={(e) => {
-                  this.setState({ selectedYear: e.target.value });
+                  this.setState({ selectedGroupYear: e.target.value });
                 }}
                 name="selectedYear"
               >
@@ -124,34 +94,74 @@ export class DownloadPDF extends Component {
             </div>
             <div style={styleSheet.centerStyle}>
               <button
-                style={{ marginTop: 10 }}
+                style={styleSheet.buttonStyle}
                 type="button"
                 onClick={(e) => {
-                  console.log(this.state.selectedState, this.state.selectedCommodity, this.state.selectedYear)
+                  //console.log(this.state.selectedState, this.state.selectedCommodity, this.state.selectedYear)
                   if (
                     this.state.selectedState !== "" &&
-                    this.state.selectedCommodity !== "" &&
-                    this.state.selectedYear !== ""
+                    this.state.selectedAllYear !== ""
                   ) {
-                    this.setState({ allSelected: true });
-                    this.getPDF();
+                    this.setState({ allGroupSelected: true });
+                    this.downloadSelectedPDFs();
                   } else {
-                    this.setState({ allSelected: false, pdfNotFound: false });
+                    this.setState({ allGroupSelected: false });
                   }
                 }}
                 className="btn btn-danger"
               >
-                <b>Download</b>
+                <b>Download Selected PDFs</b>
               </button>
-            </div>
+            {/* </div> */}
           </div>
-          {this.state.pdfNotFound ? (
+          {!this.state.allGroupSelected ? (
             <div style={styleSheet.notFoundStyle}>
-              <p>SELECTED PDF NOT FOUND</p>
+              <p>Please select all options before submitting</p>
             </div>
           ) : (
             <></>
           )}
+        </div>
+        <div class="row" style={styleSheet.centerStyle}>
+        <text style={{fontSize: 30}}>All</text>
+            <div style={styleSheet.dropStyle}>
+              <label htmlFor="year">Year</label>
+              <select
+                id="years"
+                value={this.state.selectedAllYear}
+                style={{ textAlign: "center" }}
+                onChange={(e) => {
+                  this.setState({ selectedAllYear: e.target.value });
+                }}
+                name="selectedYear"
+              >
+                <option value="">Please choose a year</option>
+                {yearsList.map((year, index) => (
+                  <option key={index} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div style={styleSheet.centerStyle}>
+              <button
+                style={styleSheet.buttonStyle}
+                type="button"
+                onClick={(e) => {
+                  if (
+                    this.state.selectedAllYear !== ""
+                  ) {
+                    this.setState({ allSelected: true });
+                    this.downloadAllPDFs();
+                  } else {
+                    this.setState({ allSelected: false });
+                  }
+                }}
+                className="btn btn-danger"
+              >
+                <b>Generate All PDFs</b>
+              </button>
+          </div>
           {!this.state.allSelected ? (
             <div style={styleSheet.notFoundStyle}>
               <p>Please select all options before submitting</p>
@@ -166,22 +176,35 @@ export class DownloadPDF extends Component {
 }
 
 const styleSheet = {
-  dropStyle: {
-    margin: 10,
-    fontWeight: "bold",
-    display: "grid",
-  },
-  centerStyle: {
-    justifyContent: "center",
-    textAlign: "center",
-  },
-  contentStyle: {
-    margin: "2%",
-  },
-  notFoundStyle: {
-    color: "red",
-    fontWeight: "bold",
-    fontSize: 25,
-    margin: 25,
-  },
-};
+    dropStyle: {
+      //margin: 10,
+      padding: 50,
+      fontWeight: "bold",
+      display: "grid",
+      verticalAlign: "top"
+    },
+    centerStyle: {
+      justifyContent: "center",
+      alignItems: 'center',
+      textAlign: "center",
+      display: "inline-block",
+      width: '40%',
+      verticalAlign: "top"
+    },
+    contentStyle: {
+      display: 'flex',
+      justifyContent: "center"
+    },
+    notFoundStyle: {
+      color: "red",
+      fontWeight: "bold",
+      fontSize: 25,
+      margin: 25,
+    },
+    buttonStyle: {
+      marginTop: 10,
+      padding: 10,
+    },
+  };
+  
+  

@@ -125,7 +125,7 @@ namespace NAUCountry.ECOMap.Models
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return this.CommodityCode.GetHashCode();
         }
 
         public override string ToString()
