@@ -117,7 +117,7 @@ namespace NAUCountry.ECOMap
             
             foreach (Price price in service.PriceEntries.Values)
             {
-                if (price.Offer.County.State.Equals(state) && price.Offer.Year == year && !commodities.Contains(price.Offer.Type.Commodity))
+                if (price.Offer.County.State.StateName.Equals(state) && price.Offer.Year == year && !commodities.Contains(price.Offer.Type.Commodity))
                 {
                     commodities.Add(price.Offer.Type.Commodity);
                 }
@@ -125,7 +125,6 @@ namespace NAUCountry.ECOMap
             
             Parallel.ForEach(commodities, commodity =>
             {
-                Console.WriteLine(commodity.CommodityName, "It made it this far!");
                 GeneratePDF(service, state, commodity, year);
             });
             
