@@ -35,7 +35,7 @@ namespace NAUCountry.ECOMap
                             break;
                         }
                     }
-                    pg.AddPrice(price);
+                    pg.Prices.Add(price);
                     pages.Add(pg);
                 }
             }
@@ -140,5 +140,21 @@ namespace NAUCountry.ECOMap
                 Console.WriteLine(state.StateName);
             });
         }
+
+        public static double GetPercentDifference(ECODataService service, County county, Practice practice, NAUType type)
+        {
+            IDictionary<int,Price> values = new Dictionary<int,Price>();
+            foreach (Price price in service.PriceEntries.Values)
+            {
+                Offer current = price.Offer;
+                if (current.County == county && current.Practice == practice && current.Type == type)
+                {
+                    values.Add(current.Year, price);
+                }
+            }
+            return (values[2023].ExpectedIndexValue - values[2022].ExpectedIndexValue) / values[2023].ExpectedIndexValue;
+        }
+
+        
     }
 }

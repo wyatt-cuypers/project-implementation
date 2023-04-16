@@ -6,14 +6,7 @@ namespace NAUCountry.ECOMap.Models
         {
             Practice = practice;
             Type = type;
-            // Consider (Since duplicates aren't allowed and order doesn't matter, choose a set to result less lines of code)
             Prices = new HashSet<Price>();
-            // Rather Than
-            // Prices = new List<Price>();
-        }
-        public void AddPrice(Price price)
-        {
-            Prices.Add(price);
         }
         public Practice Practice
         {
