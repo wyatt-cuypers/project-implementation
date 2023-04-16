@@ -4,18 +4,6 @@ namespace NAUCountry.ECOMap.Models
 {
     public class Practice : IEquatable<Practice>
     {
-        // Assigned to Wyatt Cuypers
-        public Practice(int practiceCode, string practiceName, string practiceAbbreviation, int commodityCode,
-            DateTime releasedDate, string recordTypeCode, Commodity commodity, RecordType recordType)
-        {
-            PracticeCode = practiceCode;
-            PracticeName = practiceName;
-            PracticeAbbreviation = practiceAbbreviation;
-            Commodity = commodity; // Service.CommodityEntries[commodityCode];
-            ReleasedDate = releasedDate;
-            RecordType = recordType; // Service.RecordTypeEntries[recordTypeCode];
-        }
-
         public Practice(ECODataService service, string line)
         {
             ECODataService = service;

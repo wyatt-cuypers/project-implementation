@@ -34,7 +34,7 @@ namespace NAUCountry.ECOMap
                             break;
                         }
                     }
-                    pg.addPrice(price);
+                    pg.AddPrice(price);
                     pages.Add(pg);
                 }
             }
@@ -96,19 +96,6 @@ namespace NAUCountry.ECOMap
             Regex appPathMatcher = new Regex(@"(?<!fil)[A-Za-z]:\\+[\S\s]*?(?=\\+bin)");
             var appRoot = appPathMatcher.Match(exePath).Value;
             return System.IO.Path.Combine(appRoot, filePath);
-        }
-
-        public IEnumerable<County> GetStateCounties(ECODataService service, State state)
-        {
-            ICollection<County> counties = new List<County>();
-            foreach (County county in service.CountyEntries.Values)
-            {
-                if (county.State == state)
-                {
-                    counties.Add(county);
-                }
-            }
-            return counties;
         }
     }
 }

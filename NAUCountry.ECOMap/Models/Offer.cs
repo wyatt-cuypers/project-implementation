@@ -4,17 +4,6 @@ namespace NAUCountry.ECOMap.Models
 {
     public class Offer : IEquatable<Offer>
     {
-        // Assigned to Miranda Ryan
-        public Offer(int offerID, int practiceCode, int countyCode, int typeCode, int irrigationPracticeCode, int year, Practice practice, County county, NAUType type)
-        {
-            OfferID = offerID;
-            Practice = practice;// Service.PracticeEntries[practiceCode];
-            County = county;// Service.CountyEntries[countyCode];
-            Type = type; // Service.TypeEntries[typeCode];
-            IrrigationPracticeCode = irrigationPracticeCode;
-            Year = year;
-        }
-
         public Offer(ECODataService service, string line)
         {
             ECODataService = service;

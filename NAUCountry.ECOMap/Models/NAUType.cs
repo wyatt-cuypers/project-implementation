@@ -4,18 +4,6 @@ namespace NAUCountry.ECOMap.Models
 {
     public class NAUType : IEquatable<NAUType>
     {
-        // Assigned to Katelyn Runsvold
-        public NAUType(int typeCode, string typeName, string typeAbbreviation,
-            int commodityCode, DateTime releasedDate, string recordTypeCode, Commodity commodity, RecordType recordType)
-        {
-            TypeCode = typeCode;
-            TypeName = typeName;
-            TypeAbbreviation = typeAbbreviation;
-            Commodity = commodity;// Service.CommodityEntries[commodityCode];
-            ReleasedDate = releasedDate;
-            RecordType = recordType; // Service.RecordTypeEntries[recordTypeCode];
-        }
-
         public NAUType(ECODataService service, string line)
         {
             ECODataService = service;

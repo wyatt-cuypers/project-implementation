@@ -5,15 +5,6 @@ namespace NAUCountry.ECOMap.Models
 {
     public class County : IEquatable<County>
     {
-        // Assigned to Wyatt Cuypers
-        public County(int countyCode, int stateCode, string countyName, string recordTypeCode, State state, RecordType recordType)
-        {
-            CountyCode = countyCode;
-            State = state; // Service.StateEntries[stateCode];
-            CountyName = countyName;
-            RecordType = recordType; // Service.RecordTypeEntries[recordTypeCode];
-        }
-
         public County(ECODataService service, string line)
         {
             ECODataService = service;

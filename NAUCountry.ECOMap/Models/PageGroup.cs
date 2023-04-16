@@ -11,7 +11,7 @@ namespace NAUCountry.ECOMap.Models
             // Rather Than
             // Prices = new List<Price>();
         }
-        public void addPrice(Price price)
+        public void AddPrice(Price price)
         {
             Prices.Add(price);
         }

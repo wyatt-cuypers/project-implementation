@@ -4,13 +4,6 @@ namespace NAUCountry.ECOMap.Models
 {
     public class Price : IEquatable<Price>
     {
-        // Assigned to Katelyn Runsvold
-        public Price(int offerID, double expectedIndexValue, Offer offer)
-        {
-            Offer = offer; // Service.OfferEntries[offerID];
-            ExpectedIndexValue = expectedIndexValue;
-        }
-
         public Price(ECODataService service, string line)
         {
 			string[] values = line.Split(',');
