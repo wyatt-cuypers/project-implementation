@@ -59,7 +59,7 @@ namespace ECOMap
                     page.Elements.Add(legend);
 
                 }
-                document.Draw(GetPath("PDFOutput/" + state.StateName + "_" + commodity.CommodityName + "_" + year + "_PDF.pdf"));
+                document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf");
 
             } catch(Exception ex) {
                 Console.WriteLine(ex);
@@ -93,15 +93,8 @@ namespace ECOMap
             document.Pages.Add(page);
             ContentArea legend = GetLegend();
             page.Elements.Add(legend);
-            document.Draw(GetPath("PDFOutput/TestLegend.pdf"));
+            document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\TestLegend.pdf");
 
-        }
-        public static string GetPath(string filePath)
-        {
-            var exePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            Regex appPathMatcher = new Regex(@"(?<!fil)[A-Za-z]:\\+[\S\s]*?(?=\\+bin)");
-            var appRoot = appPathMatcher.Match(exePath).Value;
-            return System.IO.Path.Combine(appRoot, filePath);
         }
 
         public static void GeneratePDFGroup(ECODataService service, string stateName, int year)
@@ -162,7 +155,7 @@ namespace ECOMap
                 }
             }
             double percentChange = (values[year].ExpectedIndexValue - values[year - 1].ExpectedIndexValue) / values[year - 1].ExpectedIndexValue;
-            return new ESRIRequestParams(county, state, percentChange);
+            return new ESRIRequestParams(county, percentChange);
         }
 
         

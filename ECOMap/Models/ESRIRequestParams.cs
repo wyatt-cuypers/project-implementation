@@ -1,20 +1,38 @@
 using Newtonsoft.Json.Linq;
-using ceTe.DynamicPDF.PageElements;
 namespace ECOMap.Models
 {
     public class ESRIRequestParams
     {
         private readonly County county;
-        private readonly State state;
         private readonly double percentChange;
-        public ESRIRequestParams (County county, State state, double percentChange)
+        public ESRIRequestParams (County county, double percentChange)
         {
             this.county = county;
-            this.state = state;
             this.percentChange = percentChange;
         }
 
-        public byte[] SymbolColor
+        public JObject UniqueValueInfo
+        {
+            get
+            {
+                JObject obj = new JObject();
+                JObject sybmol = new JObject();
+                sybmol.Add("type", "esriSFS");
+                sybmol.Add("color", SymbolColor);
+                JObject outline = new JObject();
+                outline.Add("type", "esriSLS");
+                outline.Add("color", new byte[]{0,0,0,255});
+                outline.Add("width", 0.75);
+                outline.Add("style", "esriSLSSolid");
+                sybmol.Add("outline", outline);
+                sybmol.Add("style", "esriSLSSolid");
+                obj.Add("symbol", sybmol);
+                obj.Add("value", $"{county.State.StateCode}{county.CountyCode}");
+                return obj;
+            }
+        }
+
+        private byte[] SymbolColor
         {
             get
             {
@@ -25,22 +43,6 @@ namespace ECOMap.Models
                     bytes[i / 2] = Convert.ToByte(hexValue.Substring(i, 2), 16);
                 }
                 return bytes;
-            }
-        }
-
-        public string DefinitionExpression
-        {
-            get
-            {
-                return $"CNT_STATE_FIPS = '{state.StateCode}'";
-            }
-        }
-
-        public string Value
-        {
-            get
-            {
-                return $"{state.StateCode}{county.CountyCode}";
             }
         }
 
