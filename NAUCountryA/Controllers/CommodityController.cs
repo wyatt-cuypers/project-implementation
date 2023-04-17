@@ -13,7 +13,7 @@ namespace NAUCountryA.Controllers
 
         public CommodityController()
         {
-            LoadingProcessor loader = new LoadingProcessor(CsvUtility.InitialPathLocation);
+            LoadingProcessor loader = new LoadingProcessor(ECOGeneralService.InitialPathLocation);
             _service = loader.LoadCommodities().GetAwaiter().GetResult();
         }
 

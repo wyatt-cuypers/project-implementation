@@ -17,7 +17,7 @@ namespace NAUCountryA.Controllers
 
         public DownloadPdfController()
         {
-            LoadingProcessor loader = new LoadingProcessor(CsvUtility.InitialPathLocation);
+            LoadingProcessor loader = new LoadingProcessor(ECOGeneralService.InitialPathLocation);
             _service = loader.LoadAll().GetAwaiter().GetResult();
         }
 

@@ -141,18 +141,29 @@ namespace NAUCountry.ECOMap
             });
         }
 
-        public static double GetPercentDifference(ECODataService service, County county, Practice practice, NAUType type)
+        public static ESRIRequestParams GetESRIRequstParams(ECODataService service, Commodity commodity, County county, Practice practice, State state, int year)
         {
             IDictionary<int,Price> values = new Dictionary<int,Price>();
             foreach (Price price in service.PriceEntries.Values)
             {
-                Offer current = price.Offer;
-                if (current.County == county && current.Practice == practice && current.Type == type)
+                Commodity currentCommodity = price.Offer.Practice.Commodity;
+                County currentCounty = price.Offer.County;
+                Practice currentPractice = price.Offer.Practice;
+                State currentState = price.Offer.County.State;
+                if (currentCommodity == commodity && currentCounty == county && currentPractice == practice && currentState == state)
                 {
-                    values.Add(current.Year, price);
+                    if (price.Offer.Year == year - 1)
+                    {
+                        values.Add(year - 1, price);
+                    }
+                    else if (price.Offer.Year == year)
+                    {
+                        values.Add(year, price);
+                    }
                 }
             }
-            return (values[2023].ExpectedIndexValue - values[2022].ExpectedIndexValue) / values[2022].ExpectedIndexValue;
+            double percentChange = (values[year].ExpectedIndexValue - values[year - 1].ExpectedIndexValue) / values[year - 1].ExpectedIndexValue;
+            return new ESRIRequestParams(county, state, percentChange);
         }
 
         

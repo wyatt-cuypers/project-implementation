@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NAUCountryA
+namespace NAUCountry.ECOMap
 {
     public class ESRIClient
     {
@@ -19,7 +19,7 @@ namespace NAUCountryA
             return  new FormUrlEncodedContent(new[]
             {
 	            new KeyValuePair<string, string>("Web_Map_as_JSON", webMapJson.ToString(Formatting.None)),
-	            new KeyValuePair<string, string>("Format", "SVG"),
+	            new KeyValuePair<string, string>("Format", "PNG"),
 	            new KeyValuePair<string, string>("Layout_Template", "MAP_ONLY"),
 	            new KeyValuePair<string, string>("f", "pjson")
             });
@@ -54,7 +54,7 @@ namespace NAUCountryA
 	        using (HttpResponseMessage result = await client.GetAsync(url))
 	        {
 		        byte[] fileBytes = await result.Content.ReadAsByteArrayAsync();
-		        BinaryWriter writer = new BinaryWriter(File.OpenWrite(Guid.NewGuid() + ".svg"));
+		        BinaryWriter writer = new BinaryWriter(File.OpenWrite(Guid.NewGuid() + ".png"));
 			    writer.Write(fileBytes);
 	        }
         }

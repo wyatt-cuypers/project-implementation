@@ -3,7 +3,7 @@
 	internal static class CachedData
 	{
 		private static ECODataService _service = null;
-		private static LoadingProcessor _processor = new LoadingProcessor(CsvUtility.InitialPathLocation);
+		private static LoadingProcessor _processor = new LoadingProcessor(ECOGeneralService.InitialPathLocation);
 
 		internal static async Task<ECODataService> GetECODataService()
 		{

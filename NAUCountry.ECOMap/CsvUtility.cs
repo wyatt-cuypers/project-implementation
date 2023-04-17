@@ -4,18 +4,10 @@ namespace NAUCountry.ECOMap
 {
 	public class CsvUtility
 	{
-		public static string InitialPathLocation
-		{
-			get
-			{
-				return GetInitialPathLocation(System.IO.Path.GetFullPath("."));
-			}
-		}
-
 		public static ICollection<string> ToCollection(string csvFileName)
 		{
 			ICollection<string> lines = new List<string>();
-			string filePath = Path.Combine(InitialPathLocation, "NAUCountryA", "Resources", csvFileName + ".csv");
+			string filePath = Path.Combine(ECOGeneralService.InitialPathLocation, "NAUCountryA", "Resources", csvFileName + ".csv");
 			TextFieldParser csvParcer = new TextFieldParser(filePath);
 			csvParcer.TextFieldType = FieldType.Delimited;
 			while (!csvParcer.EndOfData)
@@ -24,16 +16,6 @@ namespace NAUCountry.ECOMap
 			}
 			csvParcer.Close();
 			return lines;
-		}
-
-		private static string GetInitialPathLocation(string currentLocation)
-		{
-			DirectoryInfo temp = Directory.GetParent(currentLocation);
-			if (temp.Name.Equals("project-implementation"))
-			{
-				return temp.FullName;
-			}
-			return GetInitialPathLocation(temp.FullName);
 		}
 
 		public static object ExpressValue(string value)
