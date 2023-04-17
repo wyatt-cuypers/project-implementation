@@ -9,7 +9,7 @@ namespace NAUCountryATest
         public void TestInitialPathLocation()
         {
             string expectedPath = "c:\\Users\\zakme\\OneDrive - North Dakota University System\\Documents\\project-implementation";
-            Assert.That(ECOGeneralService.InitialPathLocation, Is.EqualTo(expectedPath));
+            Assert.That(EcoGeneralService.InitialPathLocation, Is.EqualTo(expectedPath));
         }
 
         [Test]

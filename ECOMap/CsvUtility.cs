@@ -7,7 +7,7 @@ namespace ECOMap
 		public static ICollection<string> ToCollection(string csvFileName)
 		{
 			ICollection<string> lines = new List<string>();
-			string filePath = Path.Combine(ECOGeneralService.InitialPathLocation, "Resources", csvFileName + ".csv");
+			string filePath = Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", csvFileName + ".csv");
 			TextFieldParser csvParcer = new TextFieldParser(filePath);
 			csvParcer.TextFieldType = FieldType.Delimited;
 			while (!csvParcer.EndOfData)

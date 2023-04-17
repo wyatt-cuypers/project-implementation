@@ -4,7 +4,7 @@ namespace ECOMapTest
 	internal static class CachedData
 	{
 		private static ECODataService _service = null;
-		private static LoadingProcessor _processor = new LoadingProcessor(ECOGeneralService.InitialPathLocation);
+		private static LoadingProcessor _processor = new LoadingProcessor(EcoGeneralService.InitialPathLocation);
 
 		internal static async Task<ECODataService> GetECODataService()
 		{

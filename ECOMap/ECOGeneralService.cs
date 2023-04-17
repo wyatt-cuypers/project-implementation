@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ECOMap
 {
-    public class ECOGeneralService
+    public class EcoGeneralService
     {
         public static string InitialPathLocation
 		{
