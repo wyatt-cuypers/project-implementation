@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { statesList } from "../statesList.js";
 import { yearsList } from "../yearsList.js";
+const today = new Date();
 
 export class OpenPDF extends Component {
   constructor(props) {
@@ -8,7 +9,7 @@ export class OpenPDF extends Component {
     this.state = {
       selectedState: "",
       selectedCommodity: "",
-      selectedYear: "",
+      selectedYear: today.getUTCFullYear(),
       commoditiesList: [],
       loading: true,
       pdfNotFound: false,
@@ -16,14 +17,38 @@ export class OpenPDF extends Component {
     };
   }
 
-  componentDidMount() {
-    this.getCommodities();
+  componentDidUpdate(prevState) {
+    if(prevState.selectedState !== this.state.selectedState || prevState.selectedYear !== this.state.selectedYear) {
+      if(this.state.selectedState !== "" && this.state.selectedYear !== "") {
+        
+        this.getCommodities();
+      }
+    }
   }
 
-  async getCommodities() {
-    const response = await fetch("/api/Commodity");
-    const data = await response.json();
-    this.setState({ commoditiesList: data, loading: false });
+  // componentDidMount() {
+  //   this.getCommodities();
+  // }
+
+  // async getCommodities() {
+  //   const response = await fetch("/api/Commodity");
+  //   const data = await response.json();
+  //   this.setState({ commoditiesList: data, loading: false });
+  // }
+
+  getCommodities() {
+    //this.setState({ loading: true });
+    const response = fetch(`/api/Commodity/${this.state.selectedState}/${this.state.selectedYear}`).then(
+    response => response.json())
+    .then(data => {
+      console.log(data);
+      this.setState({ commoditiesList: data, loading: false });
+    })
+    .catch(err => {
+      console.log(err);
+    })
+    
+    //this.setState({ commoditiesList: data, loading: false });
   }
 
   getPDF() {
@@ -102,7 +127,6 @@ export class OpenPDF extends Component {
                 </select>
               </div>
             )}
-
             <div style={styleSheet.dropStyle}>
               <label htmlFor="year">Year</label>
               <select

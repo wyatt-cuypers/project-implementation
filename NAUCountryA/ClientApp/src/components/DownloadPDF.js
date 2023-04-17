@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import { statesList } from "../statesList.js";
 import { yearsList } from "../yearsList.js";
+const today = new Date();
 
 export class DownloadPDF extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedState: "",
-      selectedAllYear: "",
-      selectedGroupYear: "",
+      selectedAllYear: today.getUTCFullYear(),
+      selectedGroupYear: today.getUTCFullYear(),
       loading: true,
       allGroupSelected: true,
       allSelected: true,
@@ -100,7 +101,7 @@ export class DownloadPDF extends Component {
                   //console.log(this.state.selectedState, this.state.selectedCommodity, this.state.selectedYear)
                   if (
                     this.state.selectedState !== "" &&
-                    this.state.selectedAllYear !== ""
+                    this.state.selectedGroupYear !== ""
                   ) {
                     this.setState({ allGroupSelected: true });
                     this.downloadSelectedPDFs();
