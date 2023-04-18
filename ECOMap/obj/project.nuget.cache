@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "dgSpecHash": "/bM0Dkjjq10juM9OTPcZg+zzuITrEKnsloAWLUEEL+T/MOMwPvSiRqJ79yRf2+FG8L+tAYliFFZNu1ijtGfJaw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\zakme\\OneDrive - North Dakota University System\\Documents\\project-implementation\\ECOMap\\ECOMap.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\zakme\\.nuget\\packages\\cete.dynamicpdf.coresuite.net\\12.2.0\\cete.dynamicpdf.coresuite.net.12.2.0.nupkg.sha512",
+    "C:\\Users\\zakme\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
+    "C:\\Users\\zakme\\.nuget\\packages\\system.security.cryptography.cng\\4.7.0\\system.security.cryptography.cng.4.7.0.nupkg.sha512",
+    "C:\\Users\\zakme\\.nuget\\packages\\system.security.cryptography.pkcs\\4.7.0\\system.security.cryptography.pkcs.4.7.0.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1603",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "ECOMap depends on Newtonsoft.Json (>= 12.0.5) but Newtonsoft.Json 12.0.5 was not found. An approximate best match of Newtonsoft.Json 13.0.1 was resolved.",
+      "libraryId": "Newtonsoft.Json",
+      "targetGraphs": [
+        "net6.0"
+      ]
+    }
+  ]
+}
