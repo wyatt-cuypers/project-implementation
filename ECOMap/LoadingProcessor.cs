@@ -115,7 +115,7 @@ namespace ECOMap
 
 				ICollection<string> lines = new List<string>();
 
-				string filePath = Path.Combine(InitialPathLocation, "NAUCountryA", "Resources", csvFileName + ".csv");
+				string filePath = $"{EcoGeneralService.InitialPathLocation}\\Resources\\{csvFileName}.csv";
 				Console.WriteLine($"Loading {filePath}");
 
 				TextFieldParser csvParcer = new TextFieldParser(filePath);
