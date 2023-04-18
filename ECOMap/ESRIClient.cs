@@ -75,7 +75,5 @@ namespace ECOMap
             }
             renderer.Add("uniqueValueInfos", uniqueValueInfos);
         }
-
-
     }
 }
