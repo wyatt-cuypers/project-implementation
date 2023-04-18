@@ -20,6 +20,7 @@ export class DownloadPDF extends Component {
     fetch(`/api/DownloadPdf/${this.state.selectedState}/${this.state.selectedGroupYear}`, {
         method: "POST"})
     .then((response) => {
+      console.log('this should execute');
         // Check if the response was successful
         if (!response.ok) {
             console.log(response)

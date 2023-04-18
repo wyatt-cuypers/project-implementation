@@ -25,13 +25,6 @@ namespace NAUCountryA.Controllers
         {
             try
             {
-                // Delete all files for specified state and year
-                string[] fileArray = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), "PDFOutput"));
-                foreach (string str in fileArray) {
-                    if(str.Contains(state) && str.Contains(year.ToString())) {
-                        System.IO.File.Delete(str);
-                    }
-                }
                 ECOMap.EcoPdfGenerator.GeneratePDFGroup(_service, state, year);
                 return Ok("PDF generation completed successfully.");;
             }
@@ -46,11 +39,6 @@ namespace NAUCountryA.Controllers
         {
             try
             {
-                // Delete all files for specified state and year
-                string[] fileArray = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), "PDFOutput"));
-                foreach (string str in fileArray) {
-                    System.IO.File.Delete(str);
-                }
                 ECOMap.EcoPdfGenerator.GenerateAllPDFs(_service, year);
                 return Ok("PDF generation completed successfully.");;
             }

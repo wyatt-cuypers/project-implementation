@@ -1,3 +1,4 @@
+using ECOMap;
 using Microsoft.AspNetCore.Mvc;
 using System; 
 using System.IO; 
@@ -17,7 +18,8 @@ namespace NAUCountryA.Controllers
             try
             {
                 // Check if the file exists
-                string filePath = Path.Combine(Directory.GetCurrentDirectory(), "PDFOutput", $"{state}_{crop}_{year}_PDF.pdf");
+                string filePath = Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", $"{state}_{crop}_{year}_PDF.pdf");
+                //EcoGeneralService.InitialPathLocation, "Resources", "Output", $"{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf"
                 if (!System.IO.File.Exists(filePath))
                 {
                     // Return 404 Not Found response if file doesn't exist

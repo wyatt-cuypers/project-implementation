@@ -21,18 +21,18 @@ namespace ECOMap
             private set;
         }
 
-        public Image GetImage(float x, float y)
-        {
-            using (HttpClient client = new HttpClient())
-	        using (HttpResponseMessage result = client.GetAsync(UrlConent.ToString()).Result)
-	        {
-		        byte[] fileBytes = result.Content.ReadAsByteArrayAsync().Result;
-                string filePath = $"{EcoGeneralService.InitialPathLocation}\\Resouces\\Output\\Images\\{Guid.NewGuid()}.png";
-		        BinaryWriter writer = new BinaryWriter(File.OpenWrite(filePath));
-			    writer.Write(fileBytes);
-                return new Image(filePath, x, y);
-	        }
-        }
+        // public Image GetImage(float x, float y)
+        // {
+        //     using (HttpClient client = new HttpClient())
+	    //     using (HttpResponseMessage result = client.GetAsync(UrlConent.ToString()).Result)
+	    //     {
+		//         byte[] fileBytes = result.Content.ReadAsByteArrayAsync().Result;
+        //         string filePath = $"{EcoGeneralService.InitialPathLocation}\\Resouces\\Output\\Images\\{Guid.NewGuid()}.png";
+		//         BinaryWriter writer = new BinaryWriter(File.OpenWrite(filePath));
+		// 	    writer.Write(fileBytes);
+        //         return new Image(filePath, x, y);
+	    //     }
+        // }
 
         private JObject ESRIRequest
         {

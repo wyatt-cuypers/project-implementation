@@ -12,19 +12,20 @@ namespace ECOMap
         {
             try 
             {
-                Document document = new Document();
+                ceTe.DynamicPDF.Document document = new ceTe.DynamicPDF.Document();
                 Page page1 = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
                 document.Pages.Add(page1);
                 string labelText1 = $"{state.StateName} {commodity.CommodityName} {year}";
                 Label label1 = new Label(labelText1, 0, 0, 504, 100, Font.TimesBold, 20, TextAlign.Center);
                 page1.Elements.Add(label1);
 
-
+                Console.WriteLine("right here 1");
                 List<PageGroup> pages = new List<PageGroup>();
                 foreach (Price price in service.PriceEntries.Values)
                 {
                     if (price.Offer.County.State.Equals(state) && price.Offer.Type.Commodity.Equals(commodity) && price.Offer.Year == year)
                     {
+                        Console.WriteLine("right here 2");
                         NAUType type = price.Offer.Type;
                         Practice practice = price.Offer.Practice;
                         PageGroup pg = new PageGroup(practice, type);
@@ -43,22 +44,25 @@ namespace ECOMap
                 }
                 foreach (PageGroup pg in pages)
                 {
+                    Console.WriteLine("right here 3");
                     Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
                     document.Pages.Add(page);
                     string labelText = $"{pg.Practice.PracticeName} {pg.Type.TypeName}";
                     Label label = new Label(labelText, 0, 0, 504, 100, Font.TimesBold, 18, TextAlign.Center);
                     page.Elements.Add(label);
                     ESRIClient client = new ESRIClient(state);
-                    foreach (Price price in pg.Prices)
-                    {
-                        client.RequestParamsList.Add(GetESRIRequstParams(service, commodity, price.Offer.County, price.Offer.Practice, state, year));
-                    }
-                    page.Elements.Add(client.GetImage(50,100));
+                    // foreach (Price price in pg.Prices)
+                    // {
+                    //     client.RequestParamsList.Add(GetESRIRequstParams(service, commodity, price.Offer.County, price.Offer.Practice, state, year));
+                    // }
+                    //page.Elements.Add(client.GetImage(50,100));
                     ContentArea legend = GetLegend();
                     page.Elements.Add(legend);
 
                 }
-                document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf");
+                Console.WriteLine("right here 4");
+                //document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf");
+                document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", $"{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf"));
             } 
             catch(Exception ex) 
             {
@@ -88,17 +92,19 @@ namespace ECOMap
         }
         public static void TestLegend()
         {
-            Document document = new Document();
+            ceTe.DynamicPDF.Document document = new ceTe.DynamicPDF.Document();
             Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
             document.Pages.Add(page);
             ContentArea legend = GetLegend();
             page.Elements.Add(legend);
-            document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\TestLegend.pdf");
+            //document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\TestLegend.pdf");
+            document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", "TestLegend.pdf"));
 
         }
 
         public static void GeneratePDFGroup(ECODataService service, string stateName, int year)
         {
+            Console.WriteLine("Data Service log 1");
             HashSet<Commodity> commodities = new HashSet<Commodity>();
             State state = null;
             Parallel.ForEach(service.StateEntries, stateIter =>
@@ -107,11 +113,11 @@ namespace ECOMap
                     state = new State(stateIter.Value.StateCode, stateIter.Value.StateName, stateIter.Value.StateAbbreviation, stateIter.Value.RecordType.RecordTypeCode, stateIter.Value.RecordType);
                 }
             });
-            
             foreach (Price price in service.PriceEntries.Values)
             {
-                if (price.Offer.County.State.StateName.Equals(state) && price.Offer.Year == year && !commodities.Contains(price.Offer.Type.Commodity))
+                if (price.Offer.County.State.StateName.Equals(stateName) && price.Offer.Year == year && !commodities.Contains(price.Offer.Type.Commodity))
                 {
+                    Console.WriteLine("inside for loop");
                     commodities.Add(price.Offer.Type.Commodity);
                 }
             }
