@@ -1,6 +1,6 @@
-import { Counter } from "./components/Counter";
-import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
+import { OpenPDF } from "./components/OpenPDF";
+import { DownloadPDF } from "./components/DownloadPDF";
 
 const AppRoutes = [
   {
@@ -8,12 +8,12 @@ const AppRoutes = [
     element: <Home />
   },
   {
-    path: '/counter',
-    element: <Counter />
+    path: '/pdf-selector',
+    element: <OpenPDF />
   },
   {
-    path: '/fetch-data',
-    element: <FetchData />
+    path: '/pdf-generator',
+    element: <DownloadPDF />
   }
 ];
 

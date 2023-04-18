@@ -1,19 +1,28 @@
-using System.Data;
-using System.Runtime.InteropServices;
-using Microsoft.VisualBasic.FileIO;
-using NAUCountryA;
-using NAUCountryA.Models;
-using NAUCountryA.Tables;
-using Npgsql;
-//CreatePDF.Run();
-Service.ConstructUser();
+using System;
 
-string sqlCommand = $"SELECT * FROM public.\"State\" WHERE \"STATE_CODE\" = 01;";
-System.Data.DataTable table = Service.GetDataTable(sqlCommand);
-Service.GeneratePDF(new State(table.Rows[0]));
+// LoadingProcessor loader = new LoadingProcessor(CsvUtility.InitialPathLocation);
+// ECODataService service = await loader.LoadAll();
+// string stateName = "Minnesota";
+// State hereState = null;
+// int year = 2023;
+// Parallel.ForEach(service.StateEntries, state =>
+// {
+//     if(state.Value.StateName.Equals(stateName)) {
+//         hereState = new State(state.Value.StateCode, state.Value.StateName, state.Value.StateAbbreviation, state.Value.RecordType.RecordTypeCode, state.Value.RecordType);
+//     }
+// });
+// NAUCountry.ECOMap.EcoPdfGenerator.GeneratePDFGroup(service, hereState, year);
+//if(state != null) {
+    //Console.WriteLine(state.StateName);
+//}
+/*Price testPrice = service.PriceEntries.First().Value;
+//EcoPdfGenerator.GeneratePDF(service, testPrice.Offer.County.State, testPrice.Offer.Practice.Commodity, 2023);
+
+EcoPdfGenerator.GenerateAllPDFs(service, 2023);
+Console.WriteLine("PDFs Generated.");*/
 
 
-/*var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
@@ -40,4 +49,3 @@ app.MapControllerRoute(
 app.MapFallbackToFile("index.html"); ;
 
 app.Run();
-*/
