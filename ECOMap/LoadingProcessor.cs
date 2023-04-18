@@ -58,37 +58,6 @@ namespace ECOMap
 			return service;
 		}
 
-		public async Task<ECODataService> LoadPriceAndRecordType()
-		{
-			var a23Commodity = LoadLinesFromCsv("A23_Commodity");
-			var a23County = LoadLinesFromCsv("A23_County");
-			var a23Practice = LoadLinesFromCsv("A23_Practice");
-			var a23State = LoadLinesFromCsv("A23_STATE");
-			var a23type = LoadLinesFromCsv("A23_Type");
-			var a22Price = LoadLinesFromCsv("A22_PRICE");
-			var a23Price = LoadLinesFromCsv("A23_Price");
-
-			ECODataService service = new ECODataService();
-			service.RecordTypeEntries = new RecordTypeTable(new List<ICollection<string>>
-			{
-				await a23Commodity,
-				await a23County,
-				await a23Practice,
-				await a23State,
-				await a23type
-			});
-			service.StateEntries = new StateTable(service, await a23State);
-			service.PriceEntries = new PriceTable(service, new List<ICollection<string>>
-			{
-				await a22Price,
-				await a23Price 
-			});
-
-			Console.WriteLine("All price and offer data loaded");
-
-			return service;
-		}
-
 		public async Task<ECODataService> LoadCommodities()
 		{
 			var a23Commodity = LoadLinesFromCsv("A23_Commodity");

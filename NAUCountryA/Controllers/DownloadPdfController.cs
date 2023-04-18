@@ -3,8 +3,7 @@ using System;
 using System.IO; 
 using System.Net; 
 using System.Net.Http; 
-using NAUCountry.ECOMap;
-using NAUCountry.ECOMap.Models;
+using ECOMap;
 
 
 namespace NAUCountryA.Controllers
@@ -17,7 +16,7 @@ namespace NAUCountryA.Controllers
 
         public DownloadPdfController()
         {
-            LoadingProcessor loader = new LoadingProcessor(ECOGeneralService.InitialPathLocation);
+            LoadingProcessor loader = new LoadingProcessor(ECOMap.EcoGeneralService.InitialPathLocation);
             _service = loader.LoadAll().GetAwaiter().GetResult();
         }
 
@@ -33,7 +32,7 @@ namespace NAUCountryA.Controllers
                         System.IO.File.Delete(str);
                     }
                 }
-                NAUCountry.ECOMap.EcoPdfGenerator.GeneratePDFGroup(_service, state, year);
+                ECOMap.EcoPdfGenerator.GeneratePDFGroup(_service, state, year);
                 return Ok("PDF generation completed successfully.");;
             }
             catch (Exception ex)
@@ -52,7 +51,7 @@ namespace NAUCountryA.Controllers
                 foreach (string str in fileArray) {
                     System.IO.File.Delete(str);
                 }
-                NAUCountry.ECOMap.EcoPdfGenerator.GenerateAllPDFs(_service, year);
+                ECOMap.EcoPdfGenerator.GenerateAllPDFs(_service, year);
                 return Ok("PDF generation completed successfully.");;
             }
             catch (Exception ex)
