@@ -1,7 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
-using NAUCountry.ECOMap;
-using NAUCountry.ECOMap.Models;
+using ECOMap;
+using ECOMap;
 
 namespace NAUCountryA.Controllers
 {
@@ -12,7 +12,7 @@ namespace NAUCountryA.Controllers
         private readonly ECODataService _service;
         public CommodityController()
         {
-            LoadingProcessor loader = new LoadingProcessor(ECOGeneralService.InitialPathLocation);
+            LoadingProcessor loader = new LoadingProcessor(ECOMap.EcoGeneralService.InitialPathLocation);
             _service = loader.LoadCommodities().GetAwaiter().GetResult();
         }
 

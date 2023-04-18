@@ -2,6 +2,8 @@ using ECOMap.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ceTe.DynamicPDF.PageElements;
+using static System.Net.Mime.MediaTypeNames;
+
 namespace ECOMap
 {
     public class ESRIClient
