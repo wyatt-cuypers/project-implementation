@@ -17,39 +17,39 @@ export class OpenPDF extends Component {
     };
   }
 
-  componentDidUpdate(prevState) {
-    if(prevState.selectedState !== this.state.selectedState || prevState.selectedYear !== this.state.selectedYear) {
-      if(this.state.selectedState !== "" && this.state.selectedYear !== "") {
+  // componentDidUpdate(prevState) {
+  //   if(prevState.selectedState !== this.state.selectedState || prevState.selectedYear !== this.state.selectedYear) {
+  //     if(this.state.selectedState !== "" && this.state.selectedYear !== "") {
         
-        this.getCommodities();
-      }
-    }
+  //       this.getCommodities();
+  //     }
+  //   }
+  // }
+
+  componentDidMount() {
+    this.getCommodities();
   }
 
-  // componentDidMount() {
-  //   this.getCommodities();
-  // }
+  async getCommodities() {
+    const response = await fetch("/api/Commodity");
+    const data = await response.json();
+    this.setState({ commoditiesList: data, loading: false });
+  }
 
-  // async getCommodities() {
-  //   const response = await fetch("/api/Commodity");
-  //   const data = await response.json();
-  //   this.setState({ commoditiesList: data, loading: false });
-  // }
-
-  getCommodities() {
-    //this.setState({ loading: true });
-    const response = fetch(`/api/Commodity/${this.state.selectedState}/${this.state.selectedYear}`).then(
-    response => response.json())
-    .then(data => {
-      console.log(data);
-      this.setState({ commoditiesList: data, loading: false });
-    })
-    .catch(err => {
-      console.log(err);
-    })
+  // getCommodities() {
+  //   //this.setState({ loading: true });
+  //   const response = fetch(`/api/Commodity/${this.state.selectedState}/${this.state.selectedYear}`).then(
+  //   response => response.json())
+  //   .then(data => {
+  //     console.log(data);
+  //     this.setState({ commoditiesList: data, loading: false });
+  //   })
+  //   .catch(err => {
+  //     console.log(err);
+  //   })
     
-    //this.setState({ commoditiesList: data, loading: false });
-  }
+  //   //this.setState({ commoditiesList: data, loading: false });
+  // }
 
   getPDF() {
     fetch(
