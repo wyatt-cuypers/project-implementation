@@ -42,7 +42,7 @@ namespace ECOMap
                 string json = File.ReadAllText(filePath);
                 JObject obj = JObject.Parse(json);
                 UpdateUniqueValueInfos((JObject)(obj["operationalLayers"]?[0]?["layerDefinition"]?["drawingInfo"]?["renderer"]));
-                obj["operationalLayers"][0]["layerDefinition"]["definitionExpression"] = $"CNT_STATE_FIPS = '{state.FormatStateCode()}'";
+                obj["operationalLayers"][0]["layerDefinition"]["definitionExpression"] = $"CNT_STATE_ = '{state.FormatStateCode()}'";
                 return obj;
             }
         }

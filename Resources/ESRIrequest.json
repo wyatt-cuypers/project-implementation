@@ -921,7 +921,7 @@
 					},
 					"showLabels": false
 				},
-				"definitionExpression": "CNT_STATE_FIPS = '01'"
+				"definitionExpression": "CNT_STATE_ = '01'"
 			}
 		}
 	],
