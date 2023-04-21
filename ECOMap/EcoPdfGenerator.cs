@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using ceTe.DynamicPDF;
+﻿using ceTe.DynamicPDF;
 using ceTe.DynamicPDF.PageElements;
 using ECOMap.Models;
 
@@ -11,7 +10,7 @@ namespace ECOMap
         {
             try 
             {
-                ceTe.DynamicPDF.Document document = new ceTe.DynamicPDF.Document();
+                Document document = new Document();
                 Page page1 = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
                 document.Pages.Add(page1);
                 string labelText1 = $"{state.StateName} {commodity.CommodityName} {year}";
@@ -50,11 +49,11 @@ namespace ECOMap
                     Label label = new Label(labelText, 0, 0, 504, 100, Font.TimesBold, 18, TextAlign.Center);
                     page.Elements.Add(label);
                     ESRIClient client = new ESRIClient(state);
-                    // foreach (Price price in pg.Prices)
-                    // {
-                    //     client.RequestParamsList.Add(GetESRIRequstParams(service, commodity, price.Offer.County, price.Offer.Practice, state, year));
-                    // }
-                    //page.Elements.Add(client.GetImage(50,100));
+                    foreach (Price price in pg.Prices)
+                    {
+                        client.RequestParamsList.Add(GetESRIRequstParams(service, commodity, price.Offer.County, price.Offer.Practice, state, year));
+                    }
+                    page.Elements.Add(client.GetImage(50,100));
                     ContentArea legend = GetLegend();
                     page.Elements.Add(legend);
 
