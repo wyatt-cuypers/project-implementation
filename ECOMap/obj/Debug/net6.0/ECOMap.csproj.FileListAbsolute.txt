@@ -1,0 +1,12 @@
+C:\Users\zakme\OneDrive - North Dakota University System\Documents\project-implementation\ECOMap\bin\Debug\net6.0\ECOMap.deps.json
+C:\Users\zakme\OneDrive - North Dakota University System\Documents\project-implementation\ECOMap\bin\Debug\net6.0\ECOMap.dll
+C:\Users\zakme\OneDrive - North Dakota University System\Documents\project-implementation\ECOMap\bin\Debug\net6.0\ECOMap.pdb
+C:\Users\zakme\OneDrive - North Dakota University System\Documents\project-implementation\ECOMap\obj\Debug\net6.0\ECOMap.csproj.AssemblyReference.cache
+C:\Users\zakme\OneDrive - North Dakota University System\Documents\project-implementation\ECOMap\obj\Debug\net6.0\ECOMap.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\zakme\OneDrive - North Dakota University System\Documents\project-implementation\ECOMap\obj\Debug\net6.0\ECOMap.AssemblyInfoInputs.cache
+C:\Users\zakme\OneDrive - North Dakota University System\Documents\project-implementation\ECOMap\obj\Debug\net6.0\ECOMap.AssemblyInfo.cs
+C:\Users\zakme\OneDrive - North Dakota University System\Documents\project-implementation\ECOMap\obj\Debug\net6.0\ECOMap.csproj.CoreCompileInputs.cache
+C:\Users\zakme\OneDrive - North Dakota University System\Documents\project-implementation\ECOMap\obj\Debug\net6.0\ECOMap.dll
+C:\Users\zakme\OneDrive - North Dakota University System\Documents\project-implementation\ECOMap\obj\Debug\net6.0\refint\ECOMap.dll
+C:\Users\zakme\OneDrive - North Dakota University System\Documents\project-implementation\ECOMap\obj\Debug\net6.0\ECOMap.pdb
+C:\Users\zakme\OneDrive - North Dakota University System\Documents\project-implementation\ECOMap\obj\Debug\net6.0\ref\ECOMap.dll
