@@ -17,13 +17,11 @@ namespace ECOMap
                 Label label1 = new Label(labelText1, 0, 0, 504, 100, Font.TimesBold, 20, TextAlign.Center);
                 page1.Elements.Add(label1);
 
-                Console.WriteLine("right here 1");
                 List<PageGroup> pages = new List<PageGroup>();
                 foreach (Price price in service.PriceEntries.Values)
                 {
                     if (price.Offer.County.State.Equals(state) && price.Offer.Type.Commodity.Equals(commodity) && price.Offer.Year == year)
                     {
-                        Console.WriteLine("right here 2");
                         NAUType type = price.Offer.Type;
                         Practice practice = price.Offer.Practice;
                         PageGroup pg = new PageGroup(practice, type);
@@ -42,7 +40,6 @@ namespace ECOMap
                 }
                 foreach (PageGroup pg in pages)
                 {
-                    Console.WriteLine("right here 3");
                     Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
                     document.Pages.Add(page);
                     string labelText = $"{pg.Practice.PracticeName} {pg.Type.TypeName}";
@@ -58,7 +55,6 @@ namespace ECOMap
                     page.Elements.Add(legend);
 
                 }
-                Console.WriteLine("right here 4");
                 document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf");
                 document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", $"{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf"));
             } 
@@ -102,7 +98,6 @@ namespace ECOMap
 
         public static void GeneratePDFGroup(ECODataService service, string stateName, int year)
         {
-            Console.WriteLine("Data Service log 1");
             HashSet<Commodity> commodities = new HashSet<Commodity>();
             State state = null;
             Parallel.ForEach(service.StateEntries, stateIter =>
@@ -115,7 +110,6 @@ namespace ECOMap
             {
                 if (price.Offer.County.State.StateName.Equals(stateName) && price.Offer.Year == year && !commodities.Contains(price.Offer.Type.Commodity))
                 {
-                    Console.WriteLine("inside for loop");
                     commodities.Add(price.Offer.Type.Commodity);
                 }
             }
@@ -148,17 +142,29 @@ namespace ECOMap
                 State currentState = price.Offer.County.State;
                 if (currentCommodity == commodity && currentCounty == county && currentPractice == practice && currentState == state)
                 {
-                    if (price.Offer.Year == year - 1)
+                    if (price.Offer.Year == year - 1 && !values.ContainsKey(year - 1))
                     {
+                        Console.WriteLine("Found 2022");
                         values.Add(year - 1, price);
+                        Console.WriteLine($"Considering: {price}");
                     }
-                    else if (price.Offer.Year == year)
+                    else if (price.Offer.Year == year && !values.ContainsKey(year))
                     {
+                        Console.WriteLine("Found 2023");
                         values.Add(year, price);
+                        Console.WriteLine($"Considering: {price}");
                     }
                 }
             }
-            double percentChange = (values[year].ExpectedIndexValue - values[year - 1].ExpectedIndexValue) / values[year - 1].ExpectedIndexValue;
+            double percentChange;
+            try
+            {
+                percentChange = (values[year].ExpectedIndexValue - values[year - 1].ExpectedIndexValue) / values[year - 1].ExpectedIndexValue;
+            }
+            catch(KeyNotFoundException)
+            {
+                percentChange = 0;
+            }
             return new ESRIRequestParams(county, percentChange);
         }
 
