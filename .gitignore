@@ -1,10 +1,6 @@
 /*.vs
-/ECOMapTest/bin
-/ECOMapTest/obj
-/NAUCountryA/bin
-/NAUCountryA/obj
-/ECOMap/bin
-/ECOMap/obj
+**/bin/
+**/obj/
 /*.vscode
 /Resources/Output/Images/*
-/Resources/Output/*
+/Resources/Output/PDFs/*
