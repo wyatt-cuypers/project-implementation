@@ -3,12 +3,12 @@ import { OpenPDF } from "./components/OpenPDF";
 import { DownloadPDF } from "./components/DownloadPDF";
 
 const AppRoutes = [
+  // {
+  //   index: true,
+  //   element: <Home />
+  // },
   {
     index: true,
-    element: <Home />
-  },
-  {
-    path: '/pdf-selector',
     element: <OpenPDF />
   },
   {

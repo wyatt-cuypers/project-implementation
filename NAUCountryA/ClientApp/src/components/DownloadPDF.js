@@ -10,7 +10,7 @@ export class DownloadPDF extends Component {
       selectedState: "",
       selectedAllYear: today.getUTCFullYear(),
       selectedGroupYear: today.getUTCFullYear(),
-      loading: true,
+      loading: false,
       allGroupSelected: true,
       allSelected: true,
     };
@@ -26,6 +26,7 @@ export class DownloadPDF extends Component {
             console.log(response)
           throw new Error("Network response was not ok");
         }
+        this.setState({loading: false})
       })
       .catch((error) => {
         console.error("There was a problem generating the PDF files:", error);
@@ -41,6 +42,7 @@ export class DownloadPDF extends Component {
             console.log(response)
           throw new Error("Network response was not ok");
         }
+        this.setState({loading: false})
       })
       .catch((error) => {
         console.error("There was a problem generating the PDF files:", error);
@@ -51,6 +53,7 @@ export class DownloadPDF extends Component {
     return (
       <div style={styleSheet.contentStyle}>
         <div class="row" style={styleSheet.centerStyle}>
+        <div><text>{this.state.loading ? "Loading..." : ""} </text></div>
           <text style={{fontSize: 30}}>By State</text>
           {/* <div class="col-md-3"> */}
             <div style={styleSheet.dropStyle}>
@@ -104,7 +107,7 @@ export class DownloadPDF extends Component {
                     this.state.selectedState !== "" &&
                     this.state.selectedGroupYear !== ""
                   ) {
-                    this.setState({ allGroupSelected: true });
+                    this.setState({ allGroupSelected: true, loading: true });
                     this.downloadSelectedPDFs();
                   } else {
                     this.setState({ allGroupSelected: false });
@@ -114,10 +117,17 @@ export class DownloadPDF extends Component {
               >
                 <b>Download Selected PDFs</b>
               </button>
+              {/* {!this.state.loading ? (
+                <div style={styleSheet.notFoundStyle}>
+                  <p>Loading...</p>
+                </div>
+              ) : (
+                <></>
+              )} */}
             {/* </div> */}
           </div>
           {!this.state.allGroupSelected ? (
-            <div style={styleSheet.notFoundStyle}>
+            <div>
               <p>Please select all options before submitting</p>
             </div>
           ) : (
@@ -125,6 +135,7 @@ export class DownloadPDF extends Component {
           )}
         </div>
         <div class="row" style={styleSheet.centerStyle}>
+        <div><text>{this.state.loading ? "Loading..." : ""} </text></div>
         <text style={{fontSize: 30}}>All</text>
             <div style={styleSheet.dropStyle}>
               <label htmlFor="year">Year</label>
@@ -153,7 +164,7 @@ export class DownloadPDF extends Component {
                   if (
                     this.state.selectedAllYear !== ""
                   ) {
-                    this.setState({ allSelected: true });
+                    this.setState({ allSelected: true, loading: true });
                     this.downloadAllPDFs();
                   } else {
                     this.setState({ allSelected: false });
@@ -163,6 +174,13 @@ export class DownloadPDF extends Component {
               >
                 <b>Generate All PDFs</b>
               </button>
+              {/* {!this.state.loading ? (
+                <div>
+                  <p>Loading...</p>
+                </div>
+              ) : (
+                <></>
+              )} */}
           </div>
           {!this.state.allSelected ? (
             <div style={styleSheet.notFoundStyle}>
@@ -172,6 +190,7 @@ export class DownloadPDF extends Component {
             <></>
           )}
         </div>
+        
       </div>
     );
   }

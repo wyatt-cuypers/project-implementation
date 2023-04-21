@@ -194,6 +194,7 @@ const styleSheet = {
     margin: 10,
     fontWeight: "bold",
     display: "grid",
+    
   },
   centerStyle: {
     justifyContent: "center",
@@ -201,6 +202,7 @@ const styleSheet = {
   },
   contentStyle: {
     margin: "2%",
+    textAlign: "center"
   },
   notFoundStyle: {
     color: "red",
