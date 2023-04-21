@@ -1,6 +1,0 @@
-C:\Users\zakme\OneDrive - North Dakota University System\Documents\project-implementation\ECOMapTest\bin\Debug\net6.0\CoverletSourceRootsMapping
-C:\Users\zakme\OneDrive - North Dakota University System\Documents\project-implementation\ECOMapTest\obj\Debug\net6.0\ECOMapTest.csproj.AssemblyReference.cache
-C:\Users\zakme\OneDrive - North Dakota University System\Documents\project-implementation\ECOMapTest\obj\Debug\net6.0\ECOMapTest.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\zakme\OneDrive - North Dakota University System\Documents\project-implementation\ECOMapTest\obj\Debug\net6.0\ECOMapTest.AssemblyInfoInputs.cache
-C:\Users\zakme\OneDrive - North Dakota University System\Documents\project-implementation\ECOMapTest\obj\Debug\net6.0\ECOMapTest.AssemblyInfo.cs
-C:\Users\zakme\OneDrive - North Dakota University System\Documents\project-implementation\ECOMapTest\obj\Debug\net6.0\ECOMapTest.csproj.CoreCompileInputs.cache

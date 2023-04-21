@@ -26,7 +26,7 @@ namespace ECOMap
 	        using (HttpResponseMessage result = client.GetAsync(UrlConent.ToString()).Result)
 	        {
 		        byte[] fileBytes = result.Content.ReadAsByteArrayAsync().Result;
-                string filePath = $"{EcoGeneralService.InitialPathLocation}\\Resouces\\Output\\Images\\{Guid.NewGuid()}.png";
+                string filePath = $"{EcoGeneralService.InitialPathLocation}\\Resouces\\Output\\Images\\{Guid.NewGuid()}.jpg";
 		        BinaryWriter writer = new BinaryWriter(File.OpenWrite(filePath));
 			    writer.Write(fileBytes);
                 return new Image(filePath, x, y);
@@ -54,7 +54,7 @@ namespace ECOMap
                 FormUrlEncodedContent encodedContent = new FormUrlEncodedContent(new[]
                 {
                     new KeyValuePair<string, string>("Web_Map_as_JSON", ESRIRequest.ToString(Formatting.None)),
-                    new KeyValuePair<string, string>("Format", "PNG"),
+                    new KeyValuePair<string, string>("Format", "JPG"),
                     new KeyValuePair<string, string>("Layout_Template", "MAP_ONLY"),
                     new KeyValuePair<string, string>("f", "pjson")
                 });
