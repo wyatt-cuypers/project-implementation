@@ -7,6 +7,7 @@ namespace ECOMap.Models
             Practice = practice;
             Type = type;
             Prices = new HashSet<Price>();
+            PreviousPrices = new HashSet<Price>();
         }
         public Practice Practice
         {
@@ -24,7 +25,11 @@ namespace ECOMap.Models
             get;
             private set;
         }
-
+        public ICollection<Price> PreviousPrices
+        {
+            get;
+            private set;
+        }
         public override int GetHashCode()
         {
             return base.GetHashCode();

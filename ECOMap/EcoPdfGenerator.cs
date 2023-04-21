@@ -8,7 +8,7 @@ namespace ECOMap
     {
         public static void GeneratePDF(ECODataService service, State state, Commodity commodity, int year)
         {
-            try 
+            try
             {
                 Document document = new Document();
                 Page page1 = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
@@ -20,7 +20,7 @@ namespace ECOMap
                 List<PageGroup> pages = new List<PageGroup>();
                 foreach (Price price in service.PriceEntries.Values)
                 {
-                    if (price.Offer.County.State.Equals(state) && price.Offer.Type.Commodity.Equals(commodity) && price.Offer.Year == year)
+                    if (price.Offer.County.State.Equals(state) && price.Offer.Type.Commodity.Equals(commodity))
                     {
                         NAUType type = price.Offer.Type;
                         Practice practice = price.Offer.Practice;
@@ -34,8 +34,17 @@ namespace ECOMap
                                 break;
                             }
                         }
-                        pg.Prices.Add(price);
-                        pages.Add(pg);
+                        if (price.Offer.Year == year)
+                        {
+                            pg.Prices.Add(price);
+                            pages.Add(pg);
+                        }
+                        else if (price.Offer.Year == year - 1)
+                        {
+                            pg.PreviousPrices.Add(price);
+                            pages.Add(pg);
+                        }
+
                     }
                 }
                 foreach (PageGroup pg in pages)
@@ -48,21 +57,21 @@ namespace ECOMap
                     ESRIClient client = new ESRIClient(state);
                     foreach (Price price in pg.Prices)
                     {
-                        client.RequestParamsList.Add(GetESRIRequstParams(service, commodity, price.Offer.County, price.Offer.Practice, state, year));
+                        client.RequestParamsList.Add(GetESRIRequstParams(price, pg));
                     }
-                    page.Elements.Add(client.GetImage(50,100));
+                    page.Elements.Add(client.GetImage(50, 100));
                     ContentArea legend = GetLegend();
                     page.Elements.Add(legend);
 
                 }
                 document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf");
-                document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", $"{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf"));
-            } 
-            catch(Exception ex) 
+                //document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", $"{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf"));
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
-            
+
         }
         public static ContentArea GetLegend()
         {
@@ -102,7 +111,8 @@ namespace ECOMap
             State state = null;
             Parallel.ForEach(service.StateEntries, stateIter =>
             {
-                if(stateIter.Value.StateName.Equals(stateName)) {
+                if (stateIter.Value.StateName.Equals(stateName))
+                {
                     state = new State(stateIter.Value.StateCode, stateIter.Value.StateName, stateIter.Value.StateAbbreviation, stateIter.Value.RecordType.RecordTypeCode, stateIter.Value.RecordType);
                 }
             });
@@ -113,12 +123,12 @@ namespace ECOMap
                     commodities.Add(price.Offer.Type.Commodity);
                 }
             }
-            
+
             Parallel.ForEach(commodities, commodity =>
             {
                 GeneratePDF(service, state, commodity, year);
             });
-            
+
 
         }
 
@@ -131,43 +141,22 @@ namespace ECOMap
             });
         }
 
-        public static ESRIRequestParams GetESRIRequstParams(ECODataService service, Commodity commodity, County county, Practice practice, State state, int year)
+        public static ESRIRequestParams GetESRIRequstParams(Price price, PageGroup pg)
         {
-            IDictionary<int,Price> values = new Dictionary<int,Price>();
-            foreach (Price price in service.PriceEntries.Values)
+            IDictionary<int, Price> values = new Dictionary<int, Price>();
+            foreach (Price price2 in pg.PreviousPrices)
             {
-                Commodity currentCommodity = price.Offer.Practice.Commodity;
-                County currentCounty = price.Offer.County;
-                Practice currentPractice = price.Offer.Practice;
-                State currentState = price.Offer.County.State;
-                if (currentCommodity == commodity && currentCounty == county && currentPractice == practice && currentState == state)
+                if (price.Offer.Practice.Commodity == price2.Offer.Practice.Commodity &&
+                price.Offer.County == price2.Offer.County &&
+                price.Offer.Practice == price2.Offer.Practice &&
+                price.Offer.County.State == price2.Offer.County.State)
                 {
-                    if (price.Offer.Year == year - 1 && !values.ContainsKey(year - 1))
-                    {
-                        Console.WriteLine("Found 2022");
-                        values.Add(year - 1, price);
-                        Console.WriteLine($"Considering: {price}");
-                    }
-                    else if (price.Offer.Year == year && !values.ContainsKey(year))
-                    {
-                        Console.WriteLine("Found 2023");
-                        values.Add(year, price);
-                        Console.WriteLine($"Considering: {price}");
-                    }
+                    return new ESRIRequestParams(price.Offer.County, (price.ExpectedIndexValue - price2.ExpectedIndexValue) / price2.ExpectedIndexValue);
                 }
             }
-            double percentChange;
-            try
-            {
-                percentChange = (values[year].ExpectedIndexValue - values[year - 1].ExpectedIndexValue) / values[year - 1].ExpectedIndexValue;
-            }
-            catch(KeyNotFoundException)
-            {
-                percentChange = 0;
-            }
-            return new ESRIRequestParams(county, percentChange);
+            return new ESRIRequestParams(price.Offer.County, 0);
         }
 
-        
+
     }
 }

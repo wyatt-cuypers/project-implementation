@@ -23,14 +23,15 @@ namespace ECOMap
         public Image GetImage(float x, float y)
         {
             using (HttpClient client = new HttpClient())
-	        using (HttpResponseMessage result = client.GetAsync(UrlConent.ToString()).Result)
-	        {
-		        byte[] fileBytes = result.Content.ReadAsByteArrayAsync().Result;
-                string filePath = $"{EcoGeneralService.InitialPathLocation}\\Resouces\\Output\\Images\\{Guid.NewGuid()}.jpg";
-		        BinaryWriter writer = new BinaryWriter(File.OpenWrite(filePath));
-			    writer.Write(fileBytes);
+            using (HttpResponseMessage result = client.GetAsync(UrlConent.ToString()).Result)
+            {
+                byte[] fileBytes = result.Content.ReadAsByteArrayAsync().Result;
+                string filePath = $"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\Images\\{Guid.NewGuid()}.jpg";
+                BinaryWriter writer = new BinaryWriter(File.OpenWrite(filePath));
+                writer.Write(fileBytes);
+                writer.Close();
                 return new Image(filePath, x, y);
-	        }
+            }
         }
 
         private JObject ESRIRequest
