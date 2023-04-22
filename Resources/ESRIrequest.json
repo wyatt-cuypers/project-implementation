@@ -945,7 +945,7 @@
 	},
 	"exportOptions": {
 		"dpi": 96,
-		"outputSize": [ 1024, 1048 ]
+		"outputSize": [ 256, 262 ]
 	},
 	"layoutOptions": {}
 }

@@ -1,6 +1,8 @@
 ﻿using ceTe.DynamicPDF;
 using ceTe.DynamicPDF.PageElements;
 using ECOMap.Models;
+using System.Windows;
+
 
 namespace ECOMap
 {
@@ -20,7 +22,7 @@ namespace ECOMap
                 List<PageGroup> pages = new List<PageGroup>();
                 foreach (Price price in service.PriceEntries.Values)
                 {
-                    if (price.Offer.County.State.Equals(state) && price.Offer.Type.Commodity.Equals(commodity))
+                    if (price.Offer.County.State.StateName.Equals(state.StateName) && price.Offer.Type.Commodity.CommodityName.Equals(commodity.CommodityName))
                     {
                         NAUType type = price.Offer.Type;
                         Practice practice = price.Offer.Practice;
@@ -59,13 +61,16 @@ namespace ECOMap
                     {
                         client.RequestParamsList.Add(GetESRIRequstParams(price, pg));
                     }
-                    page.Elements.Add(client.GetImage(50, 100));
+                    Image image = client.GetImage(0, 150);
+                    image.SetSize(400, 400);
+                    page.Elements.Add(image);
                     ContentArea legend = GetLegend();
                     page.Elements.Add(legend);
 
+                    //}
+                    document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf");
+                    //document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", $"{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf"));
                 }
-                document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf");
-                //document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", $"{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf"));
             }
             catch (Exception ex)
             {
@@ -75,21 +80,27 @@ namespace ECOMap
         }
         public static ContentArea GetLegend()
         {
+            RgbColor darkRed = new RgbColor(222, 45, 38);
+            RgbColor lightRed = new RgbColor(254, 224, 210);
+            RgbColor lightGreen = new RgbColor(161, 217, 155);
+            RgbColor medGreen = new RgbColor(40, 144, 58);
+            RgbColor darkGreen = new RgbColor(5, 79, 41);
+
             ContentArea legend = new ContentArea(400, 300, 200, 200);
             legend.Add(new Label("Percent Change", 0, 0, 200, 20, Font.TimesBold, 14, TextAlign.Left));
-            legend.Add(new Rectangle(0, 25, 20, 20, RgbColor.Gray, RgbColor.Red, 2, LineStyle.Solid));
+            legend.Add(new Rectangle(0, 25, 20, 20, RgbColor.Gray, darkRed, 2, LineStyle.Solid));
             legend.Add(new Label("< -4%", 30, 25, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
             legend.Add(new Rectangle(0, 45, 20, 20, RgbColor.Gray, RgbColor.Coral, 2, LineStyle.Solid));
             legend.Add(new Label("-4% to -2%", 30, 45, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
-            legend.Add(new Rectangle(0, 65, 20, 20, RgbColor.Gray, RgbColor.LightPink, 2, LineStyle.Solid));
+            legend.Add(new Rectangle(0, 65, 20, 20, RgbColor.Gray, lightRed, 2, LineStyle.Solid));
             legend.Add(new Label("-2% to 0%", 30, 65, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
-            legend.Add(new Rectangle(0, 85, 20, 20, RgbColor.Gray, RgbColor.AntiqueWhite, 2, LineStyle.Solid));
+            legend.Add(new Rectangle(0, 85, 20, 20, RgbColor.Gray, RgbColor.White, 2, LineStyle.Solid));
             legend.Add(new Label("No Change", 30, 85, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
-            legend.Add(new Rectangle(0, 105, 20, 20, RgbColor.Gray, RgbColor.DarkSeaGreen, 2, LineStyle.Solid));
+            legend.Add(new Rectangle(0, 105, 20, 20, RgbColor.Gray, lightGreen, 2, LineStyle.Solid));
             legend.Add(new Label("0% to 2%", 30, 105, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
-            legend.Add(new Rectangle(0, 125, 20, 20, RgbColor.Gray, RgbColor.SeaGreen, 2, LineStyle.Solid));
+            legend.Add(new Rectangle(0, 125, 20, 20, RgbColor.Gray, medGreen, 2, LineStyle.Solid));
             legend.Add(new Label("2% to 4%", 30, 125, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
-            legend.Add(new Rectangle(0, 145, 20, 20, RgbColor.Gray, RgbColor.DarkGreen, 2, LineStyle.Solid));
+            legend.Add(new Rectangle(0, 145, 20, 20, RgbColor.Gray, darkGreen, 2, LineStyle.Solid));
             legend.Add(new Label("> 4%", 30, 145, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
             return legend;
         }
