@@ -22,7 +22,7 @@ namespace ECOMap.Models
                 JObject outline = new JObject();
                 outline.Add("type", "esriSLS");
                 JArray black = new JArray();
-                black.Add(0);
+                black.Add(50);
                 black.Add(0);
                 black.Add(0);
                 black.Add(255);
@@ -30,7 +30,7 @@ namespace ECOMap.Models
                 outline.Add("width", 0.75);
                 outline.Add("style", "esriSLSSolid");
                 sybmol.Add("outline", outline);
-                sybmol.Add("style", "esriSLSSolid");
+                sybmol.Add("style", "esriSFSSolid");
                 obj.Add("symbol", sybmol);
                 obj.Add("value", $"{EcoGeneralService.RemoveQuotationsFromCurrentFormat(county.State.FormatStateCode())}{EcoGeneralService.RemoveQuotationsFromCurrentFormat(county.FormatCountyCode())}");
                 return obj;
@@ -76,6 +76,7 @@ namespace ECOMap.Models
 
             get
             {
+                Console.WriteLine(percentChange);
                 JArray darkRed = new JArray();
                 JArray medRed = new JArray();
                 JArray lightRed = new JArray();
