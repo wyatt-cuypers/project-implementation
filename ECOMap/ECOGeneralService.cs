@@ -23,5 +23,11 @@ namespace ECOMap
 			}
 			return GetInitialPathLocation(temp.FullName);
 		}
+
+		public static string RemoveQuotationsFromCurrentFormat(string format)
+		{
+			int length = format.Length - 2;
+			return format.Substring(1, length);
+		}
     }
 }

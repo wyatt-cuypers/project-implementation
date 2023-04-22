@@ -10,7 +10,7 @@ namespace ECOMap
         private readonly State state;
         public ESRIClient(State state)
         {
-            RequestParamsList = new List<ESRIRequestParams>();
+            RequestParamsList = new HashSet<ESRIRequestParams>();
             this.state = state;
         }
 
@@ -47,6 +47,7 @@ namespace ECOMap
                 UpdateUniqueValueInfos((JObject)(obj["operationalLayers"]?[0]?["layerDefinition"]?["drawingInfo"]?["renderer"]));
                 obj["operationalLayers"][0]["layerDefinition"]["definitionExpression"] = $"CNT_STATE_ = '{state.FormatStateCode()}'";
                 obj["mapOptions"]["extent"] = Extent;
+                Console.WriteLine(obj);
                 return obj;
             }
         }
@@ -56,12 +57,10 @@ namespace ECOMap
             get
             {
                 HttpClient client = new HttpClient();
-                string codeFormat = state.FormatStateCode().Substring(1, state.FormatStateCode().Length - 2);
+                string codeFormat = EcoGeneralService.RemoveQuotationsFromCurrentFormat(state.FormatStateCode());
                 string queryUrl = $"https://services3.arcgis.com/hDXM0jVzBTOKdR4i/arcgis/rest/services/NAUMap/FeatureServer/1/query?where=CNT_STATE_+%3D+%27{codeFormat}%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&relationParam=&returnGeodetic=false&outFields=&returnGeometry=true&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&defaultSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=true&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token= ";
-                Console.WriteLine(queryUrl);
                 HttpResponseMessage response = client.GetAsync(queryUrl).Result;
                 string content = response.Content.ReadAsStringAsync().Result;
-                Console.WriteLine(content);
                 return JObject.Parse(content);
             }
         }

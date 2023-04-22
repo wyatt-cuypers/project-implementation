@@ -66,10 +66,7 @@ namespace ECOMap
                     page.Elements.Add(image);
                     ContentArea legend = GetLegend();
                     page.Elements.Add(legend);
-
-                    //}
                     document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf");
-                    //document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", $"{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf"));
                 }
             }
             catch (Exception ex)
@@ -112,8 +109,6 @@ namespace ECOMap
             ContentArea legend = GetLegend();
             page.Elements.Add(legend);
             document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\TestLegend.pdf");
-            //document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", "TestLegend.pdf"));
-
         }
 
         public static void GeneratePDFGroup(ECODataService service, string stateName, int year)
@@ -166,7 +161,5 @@ namespace ECOMap
             }
             return new ESRIRequestParams(price.Offer.County, 0);
         }
-
-
     }
 }
