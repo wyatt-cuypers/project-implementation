@@ -149,7 +149,7 @@ namespace ECOMap
             });
         }
 
-        public static ESRIRequestParams GetESRIRequstParams(Price price, PageGroup pg)
+        private static ESRIRequestParams GetESRIRequstParams(Price price, PageGroup pg)
         {
             foreach (Price price2 in pg.PreviousPrices)
             {
@@ -158,6 +158,11 @@ namespace ECOMap
                 price.Offer.Practice == price2.Offer.Practice &&
                 price.Offer.County.State == price2.Offer.County.State)
                 {
+                    double result = (price.ExpectedIndexValue - price2.ExpectedIndexValue) / price2.ExpectedIndexValue;
+                    if (result == double.NaN)
+                    {
+                        return new ESRIRequestParams(price.Offer.County, 0);
+                    }
                     return new ESRIRequestParams(price.Offer.County, (price.ExpectedIndexValue - price2.ExpectedIndexValue) / price2.ExpectedIndexValue);
                 }
             }

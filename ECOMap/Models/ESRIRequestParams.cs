@@ -36,19 +36,6 @@ namespace ECOMap.Models
                 return obj;
             }
         }
-        /*private byte[] SymbolColor
-        {
-            get
-            {
-                string hexValue = ColorHexRepresentation.TrimStart('#');
-                byte[] bytes = new byte[hexValue.Length / 2];
-                for (int i = 0; i < hexValue.Length; i += 2)
-                {
-                    bytes[i / 2] = Convert.ToByte(hexValue.Substring(i, 2), 16);
-                }
-                return bytes;
-            }
-        }*/
 
         public override bool Equals(object obj)
         {
@@ -67,13 +54,6 @@ namespace ECOMap.Models
 
         private JArray ColorHexRepresentation
         {
-            /*RgbColor darkRed = new RgbColor(222, 45, 38);
-            RgbColor medRed = new RgbColor(255, 165, 120);
-            RgbColor lightRed = new RgbColor(254, 224, 210);
-            RgbColor lightGreen = new RgbColor(161, 217, 155);
-            RgbColor medGreen = new RgbColor(40, 144, 58);
-            RgbColor darkGreen = new RgbColor(5, 79, 41);*/
-
             get
             {
                 JArray darkRed = new JArray();
