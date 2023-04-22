@@ -67,10 +67,8 @@ namespace ECOMap
                     ContentArea legend = GetLegend();
                     page.Elements.Add(legend);
 
-                    //}
-                    document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf");
-                    //document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", $"{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf"));
                 }
+                document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf");
             }
             catch (Exception ex)
             {
@@ -81,6 +79,7 @@ namespace ECOMap
         public static ContentArea GetLegend()
         {
             RgbColor darkRed = new RgbColor(222, 45, 38);
+            RgbColor medRed = new RgbColor(255, 165, 120);
             RgbColor lightRed = new RgbColor(254, 224, 210);
             RgbColor lightGreen = new RgbColor(161, 217, 155);
             RgbColor medGreen = new RgbColor(40, 144, 58);
@@ -90,7 +89,7 @@ namespace ECOMap
             legend.Add(new Label("Percent Change", 0, 0, 200, 20, Font.TimesBold, 14, TextAlign.Left));
             legend.Add(new Rectangle(0, 25, 20, 20, RgbColor.Gray, darkRed, 2, LineStyle.Solid));
             legend.Add(new Label("< -4%", 30, 25, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
-            legend.Add(new Rectangle(0, 45, 20, 20, RgbColor.Gray, RgbColor.Coral, 2, LineStyle.Solid));
+            legend.Add(new Rectangle(0, 45, 20, 20, RgbColor.Gray, medRed, 2, LineStyle.Solid));
             legend.Add(new Label("-4% to -2%", 30, 45, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
             legend.Add(new Rectangle(0, 65, 20, 20, RgbColor.Gray, lightRed, 2, LineStyle.Solid));
             legend.Add(new Label("-2% to 0%", 30, 65, 200, 20, Font.TimesRoman, 12, TextAlign.Left));
