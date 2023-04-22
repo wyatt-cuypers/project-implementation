@@ -154,7 +154,6 @@ namespace ECOMap
 
         public static ESRIRequestParams GetESRIRequstParams(Price price, PageGroup pg)
         {
-            IDictionary<int, Price> values = new Dictionary<int, Price>();
             foreach (Price price2 in pg.PreviousPrices)
             {
                 if (price.Offer.Practice.Commodity == price2.Offer.Practice.Commodity &&
