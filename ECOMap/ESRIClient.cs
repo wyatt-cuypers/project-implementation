@@ -48,8 +48,7 @@ namespace ECOMap
                 String stateCode = EcoGeneralService.RemoveQuotationsFromCurrentFormat(state.FormatStateCode());
                 UpdateUniqueValueInfos((JObject)(obj["operationalLayers"]?[0]?["layerDefinition"]?["drawingInfo"]?["renderer"]));
                 obj["operationalLayers"][0]["layerDefinition"]["definitionExpression"] = $"CNT_STATE_ = '{stateCode}'";
-                obj["mapOptions"]["extent"].Remove();
-                obj["mapOptions"]["extent"] = Extent;
+                obj["mapOptions"]["extent"] = Extent["extent"];
                 Console.WriteLine(obj);
                 return obj;
             }
