@@ -44,8 +44,10 @@ namespace ECOMap
                 {
                     obj = (JObject)JToken.ReadFrom(reader);
                 }
+
+                String stateCode = EcoGeneralService.RemoveQuotationsFromCurrentFormat(state.FormatStateCode());
                 UpdateUniqueValueInfos((JObject)(obj["operationalLayers"]?[0]?["layerDefinition"]?["drawingInfo"]?["renderer"]));
-                obj["operationalLayers"][0]["layerDefinition"]["definitionExpression"] = $"CNT_STATE_ = '{state.FormatStateCode()}'";
+                obj["operationalLayers"][0]["layerDefinition"]["definitionExpression"] = $"CNT_STATE_ = '{stateCode}'";
                 obj["mapOptions"]["extent"] = Extent;
                 Console.WriteLine(obj);
                 return obj;

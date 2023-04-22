@@ -5,7 +5,7 @@ namespace ECOMap.Models
     {
         private readonly County county;
         private readonly double percentChange;
-        public ESRIRequestParams (County county, double percentChange)
+        public ESRIRequestParams(County county, double percentChange)
         {
             this.county = county;
             this.percentChange = percentChange;
@@ -21,7 +21,7 @@ namespace ECOMap.Models
                 sybmol.Add("color", ColorRepresentation);
                 JObject outline = new JObject();
                 outline.Add("type", "esriSLS");
-                outline.Add("color", "[0,0,0,255]");
+                outline.Add("color", "#000000");
                 outline.Add("width", 0.75);
                 outline.Add("style", "esriSLSSolid");
                 sybmol.Add("outline", outline);
@@ -53,29 +53,29 @@ namespace ECOMap.Models
             {
                 if (percentChange < -.04)
                 {
-                    return "[222, 45, 38, 255]";
+                    return "#DE2D26";
                 }
                 else if (percentChange <= -.02)
                 {
-                    return "[255, 165, 120, 255]";
+                    return "#FFA578";
                 }
                 else if (percentChange < 0)
                 {
-                    return "[254, 224, 210, 255]";
+                    return "#FEE0D2";
                 }
                 else if (percentChange == 0)
                 {
-                    return "[255, 255, 255, 255]";
+                    return "#FFFFFF";
                 }
                 else if (percentChange <= 0.02)
                 {
-                    return "[161, 217, 155, 255]";
+                    return "#A1D99B";
                 }
                 else if (percentChange <= 0.04)
                 {
-                    return "[40, 144, 58, 255]";
+                    return "#28903A";
                 }
-                return "[5, 79, 41, 255]";
+                return "#054F29";
             }
         }
     }
