@@ -1,9 +1,9 @@
 using ECOMap;
 using Microsoft.AspNetCore.Mvc;
-using System; 
-using System.IO; 
-using System.Net; 
-using System.Net.Http; 
+using System;
+using System.IO;
+using System.Net;
+using System.Net.Http;
 
 
 namespace NAUCountryA.Controllers
@@ -18,7 +18,7 @@ namespace NAUCountryA.Controllers
             try
             {
                 // Check if the file exists
-                string filePath = Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", $"{state}_{crop}_{year}_PDF.pdf");
+                string filePath = Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", "PDFs", $"{state}_{crop}_{year}_PDF.pdf");
                 //EcoGeneralService.InitialPathLocation, "Resources", "Output", $"{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf"
                 if (!System.IO.File.Exists(filePath))
                 {
