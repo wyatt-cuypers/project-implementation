@@ -111,8 +111,8 @@ namespace ECOMap
             document.Pages.Add(page);
             ContentArea legend = GetLegend();
             page.Elements.Add(legend);
-            //document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\TestLegend.pdf");
-            document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", "TestLegend.pdf"));
+            document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\TestLegend.pdf");
+            //document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", "TestLegend.pdf"));
 
         }
 

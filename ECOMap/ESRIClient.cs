@@ -37,22 +37,32 @@ namespace ECOMap
         {
             get
             {
+                JObject obj;
                 string filePath = $"{EcoGeneralService.InitialPathLocation}\\Resources\\ESRIRequest.json";
-                string json = File.ReadAllText(filePath);
-                JObject obj = JObject.Parse(json);
+                using (StreamReader file = File.OpenText(filePath))
+                using (JsonTextReader reader = new JsonTextReader(file))
+                {
+                    obj = (JObject)JToken.ReadFrom(reader);
+                }
                 UpdateUniqueValueInfos((JObject)(obj["operationalLayers"]?[0]?["layerDefinition"]?["drawingInfo"]?["renderer"]));
                 obj["operationalLayers"][0]["layerDefinition"]["definitionExpression"] = $"CNT_STATE_ = '{state.FormatStateCode()}'";
+                obj["mapOptions"]["extent"] = Extent;
                 return obj;
             }
         }
 
-        JObject LoadJson()
+        private JObject Extent
         {
-            string filePath = $"{EcoGeneralService.InitialPathLocation}\\Resources\\ESRIRequest.json";
-            using (StreamReader file = File.OpenText(filePath))
-            using (JsonTextReader reader = new JsonTextReader(file))
+            get
             {
-                return (JObject)JToken.ReadFrom(reader);
+                HttpClient client = new HttpClient();
+                string codeFormat = state.FormatStateCode().Substring(1, state.FormatStateCode().Length - 2);
+                string queryUrl = $"https://services3.arcgis.com/hDXM0jVzBTOKdR4i/arcgis/rest/services/NAUMap/FeatureServer/1/query?where=CNT_STATE_+%3D+%27{codeFormat}%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&relationParam=&returnGeodetic=false&outFields=&returnGeometry=true&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&defaultSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=true&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token= ";
+                Console.WriteLine(queryUrl);
+                HttpResponseMessage response = client.GetAsync(queryUrl).Result;
+                string content = response.Content.ReadAsStringAsync().Result;
+                Console.WriteLine(content);
+                return JObject.Parse(content);
             }
         }
         private JToken UrlConent
@@ -60,10 +70,9 @@ namespace ECOMap
             get
             {
                 HttpClient client = new HttpClient();
-                var webMapJson = LoadJson();
                 FormUrlEncodedContent encodedContent = new FormUrlEncodedContent(new[]
                 {
-                    new KeyValuePair<string, string>("Web_Map_as_JSON", webMapJson.ToString(Formatting.None)),
+                    new KeyValuePair<string, string>("Web_Map_as_JSON", ESRIRequest.ToString(Formatting.None)),
                     new KeyValuePair<string, string>("Format", "JPG"),
                     new KeyValuePair<string, string>("Layout_Template", "MAP_ONLY"),
                     new KeyValuePair<string, string>("f", "pjson")
