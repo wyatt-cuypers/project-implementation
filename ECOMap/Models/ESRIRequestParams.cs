@@ -22,7 +22,7 @@ namespace ECOMap.Models
                 JObject outline = new JObject();
                 outline.Add("type", "esriSLS");
                 JArray black = new JArray();
-                black.Add(50);
+                black.Add(0);
                 black.Add(0);
                 black.Add(0);
                 black.Add(255);
@@ -113,11 +113,22 @@ namespace ECOMap.Models
                     medGreen.Add(255);
                     return medGreen;
                 }
-                darkGreen.Add(5);
-                darkGreen.Add(79);
-                darkGreen.Add(41);
-                darkGreen.Add(255);
-                return darkGreen;
+                else if (percentChange > 0.04)
+                {
+                    darkGreen.Add(5);
+                    darkGreen.Add(79);
+                    darkGreen.Add(41);
+                    darkGreen.Add(255);
+                    return darkGreen;
+                }
+                else
+                {
+                    white.Add(255);
+                    white.Add(255);
+                    white.Add(255);
+                    white.Add(255);
+                    return white;
+                }
             }
         }
     }

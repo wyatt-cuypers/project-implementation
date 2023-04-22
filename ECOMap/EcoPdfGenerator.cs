@@ -49,8 +49,10 @@ namespace ECOMap
 
                     }
                 }
+
                 foreach (PageGroup pg in pages)
                 {
+                    //PageGroup pgTest = pages.First();
                     Page page = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
                     document.Pages.Add(page);
                     string labelText = $"{pg.Practice.PracticeName} {pg.Type.TypeName}";
@@ -61,7 +63,7 @@ namespace ECOMap
                     {
                         client.RequestParamsList.Add(GetESRIRequstParams(price, pg));
                     }
-                    Image image = client.GetImage(0, 150);
+                    Image image = client.GetImage(0, 160);
                     image.SetSize(400, 400);
                     page.Elements.Add(image);
                     ContentArea legend = GetLegend();
