@@ -921,7 +921,7 @@
 					},
 					"showLabels": false
 				},
-				"definitionExpression": "CNT_STATE_FIPS = '01'"
+				"definitionExpression": "CNT_STATE_ = '01'"
 			}
 		}
 	],
@@ -945,7 +945,7 @@
 	},
 	"exportOptions": {
 		"dpi": 96,
-		"outputSize": [ 1024, 1048 ]
+		"outputSize": [ 256, 262]
 	},
 	"layoutOptions": {}
 }
