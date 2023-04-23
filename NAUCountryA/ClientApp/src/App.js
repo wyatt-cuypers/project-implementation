@@ -11,7 +11,7 @@ export default class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div className="App" style={{minHeight: '100%'}}>
         <Header></Header>
         {/* <DownloadPDF /> */}
         <Layout>

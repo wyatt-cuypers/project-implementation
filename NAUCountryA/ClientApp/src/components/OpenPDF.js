@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { statesList } from "../statesList.js";
 import { yearsList } from "../yearsList.js";
+import './OpenPDF.css';
 const today = new Date();
 
 export class OpenPDF extends Component {
@@ -148,8 +149,9 @@ export class OpenPDF extends Component {
             </div>
             <div style={styleSheet.centerStyle}>
               <button
-                style={{ marginTop: 10 }}
                 type="button"
+                //class="downloadButton"
+                style={{marginTop: 10}}
                 onClick={(e) => {
                   console.log(this.state.selectedState, this.state.selectedCommodity, this.state.selectedYear)
                   if (
@@ -163,7 +165,7 @@ export class OpenPDF extends Component {
                     this.setState({ allSelected: false, pdfNotFound: false });
                   }
                 }}
-                className="btn btn-danger"
+                className="btn"
               >
                 <b>Download</b>
               </button>
@@ -202,7 +204,7 @@ const styleSheet = {
   },
   contentStyle: {
     margin: "2%",
-    textAlign: "center"
+    textAlign: "center",
   },
   notFoundStyle: {
     color: "red",

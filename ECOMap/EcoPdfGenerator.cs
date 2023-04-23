@@ -59,7 +59,7 @@ namespace ECOMap
 
                 }
                 Console.WriteLine("right here 4");
-                document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf");
+                //document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf");
                 document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", $"{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf"));
             } 
             catch(Exception ex) 
@@ -148,6 +148,7 @@ namespace ECOMap
                 State currentState = price.Offer.County.State;
                 if (currentCommodity == commodity && currentCounty == county && currentPractice == practice && currentState == state)
                 {
+                    Console.WriteLine(commodity);
                     if (price.Offer.Year == year - 1)
                     {
                         values.Add(year - 1, price);

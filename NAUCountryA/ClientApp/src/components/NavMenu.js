@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import './NavMenu.css';
 
 export class NavMenu extends Component {
-  static displayName = NavMenu.name;
+  //static displayName = NavMenu.name;
 
   constructor (props) {
     super(props);
@@ -23,25 +23,39 @@ export class NavMenu extends Component {
 
   render() {
     return (
-      <header>
-        <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>
-          <NavbarBrand tag={Link} to="/">NAUCountryA</NavbarBrand>
-          <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-          <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
-            <ul className="navbar-nav flex-grow">
-              {/* <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
-              </NavItem> */}
-              <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/">Open PDF</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/pdf-generator">Generate PDFs</NavLink>
-              </NavItem>
-            </ul>
-          </Collapse>
-        </Navbar>
-      </header>
+        <nav style={styles.nav}>
+          <ul style={styles.ul}>
+            <li style={styles.li}><a style={styles.navItem} href="/" class="nav-item">Open PDF</a></li>
+            <li style={styles.li}><a style={styles.navItem} href="/pdf-generator" class="nav-item">Generate PDFs</a></li>
+          </ul>
+        </nav>
     );
+  }
+}
+
+const styles = {
+  nav: {
+    backgroundColor: '#00b1f2',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  ul: {
+    display: 'flex',
+    listStyleType: 'none',
+    margin: 0,
+    padding: 0,
+    width: '100%',
+  },
+  li: {
+    width: '50%',
+  },
+  navItem: {
+    color: '#fff',
+    display: 'block',
+    padding: '1em',
+    textAlign: 'center',
+    textDecoration: 'none',
+    transition: 'backgroundColor 0.2s ease-in-out',
+    fontWeight: 'bold'
   }
 }

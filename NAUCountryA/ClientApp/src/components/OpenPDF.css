@@ -1,0 +1,15 @@
+.btn {
+    background-color: #00b1f2; 
+    border-width: 0;
+    width: 95%; 
+    color: white;
+}
+.btn:hover {
+    background-color: #214373;
+    color: white;
+}
+.btn:active {
+    background-color: white;
+    color: black;
+}
+  
