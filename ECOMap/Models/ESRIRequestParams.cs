@@ -5,10 +5,12 @@ namespace ECOMap.Models
     {
         private readonly County county;
         private readonly double percentChange;
-        public ESRIRequestParams(County county, double percentChange)
+        private readonly double expectedIndexValue;
+        public ESRIRequestParams(County county, double percentChange, double expectedIndexValue)
         {
             this.county = county;
             this.percentChange = percentChange;
+            this.expectedIndexValue = expectedIndexValue;
         }
 
         public JObject UniqueValueInfo

@@ -73,8 +73,8 @@ namespace ECOMap
                 Console.WriteLine("right here 4");
                 //document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf");
                 document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", $"{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf"));
-            } 
-            catch(Exception ex) 
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
@@ -165,12 +165,12 @@ namespace ECOMap
                     double result = (price.ExpectedIndexValue - price2.ExpectedIndexValue) / price2.ExpectedIndexValue;
                     if (result == double.NaN)
                     {
-                        return new ESRIRequestParams(price.Offer.County, 0);
+                        return new ESRIRequestParams(price.Offer.County, 0, price.ExpectedIndexValue);
                     }
-                    return new ESRIRequestParams(price.Offer.County, (price.ExpectedIndexValue - price2.ExpectedIndexValue) / price2.ExpectedIndexValue);
+                    return new ESRIRequestParams(price.Offer.County, (price.ExpectedIndexValue - price2.ExpectedIndexValue) / price2.ExpectedIndexValue, price.ExpectedIndexValue);
                 }
             }
-            return new ESRIRequestParams(price.Offer.County, 0);
+            return new ESRIRequestParams(price.Offer.County, 0, price.ExpectedIndexValue);
         }
     }
 }
