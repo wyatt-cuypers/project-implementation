@@ -83,7 +83,7 @@ namespace ECOMap
                         table.Columns.Add(80);
                         table.Columns.Add(150);
 
-                        Row2 headerRow = table.Rows.Add(30, Font.TimesBold, 16, RgbColor.White, RgbColor.DarkGray);
+                        Row2 headerRow = table.Rows.Add(30, Font.TimesBold, 16, RgbColor.White, new RgbColor(0, 175, 239));
                         headerRow.CellDefault.Align = TextAlign.Center;
                         headerRow.CellDefault.VAlign = VAlign.Center;
                         headerRow.Cells.Add("County");
@@ -105,11 +105,11 @@ namespace ECOMap
                             }
                             if (rp.currentExpectedIndexValue != 0)
                             {
-                                Row2 row = table.Rows.Add(15, Font.TimesRoman, 12, RgbColor.Black, RgbColor.LightGrey);
+                                Row2 row = table.Rows.Add(15, Font.TimesRoman, 12, RgbColor.Black, RgbColor.White);
                                 row.Cells.Add(rp.county.CountyName);
                                 row.Cells.Add(rp.currentExpectedIndexValue.ToString());
                                 row.Cells.Add(rp.lastExpectedIndexValue.ToString());
-                                row.Cells.Add(rp.percentChange.ToString("F3"));
+                                row.Cells.Add(rp.percentChange.ToString("P1"));
                             }
                             count2++;
                         }
