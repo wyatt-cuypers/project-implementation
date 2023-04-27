@@ -6,7 +6,7 @@ namespace ECOMap.Models
         {
             Practice = practice;
             Type = type;
-            Prices = new HashSet<Price>();
+            Prices = new SortedSet<Price>(new ByCountyName());
             PreviousPrices = new HashSet<Price>();
         }
         public Practice Practice
@@ -55,6 +55,14 @@ namespace ECOMap.Models
         public override string ToString()
         {
             return $"{Practice.ToString()}\n{Type.ToString()}";
+        }
+
+        public class ByCountyName : IComparer<Price>
+        {
+            public int Compare(Price p1, Price p2)
+            {
+                return string.Compare(p1.Offer.County.CountyName, p2.Offer.County.CountyName, StringComparison.CurrentCulture);
+            }
         }
     }
 }

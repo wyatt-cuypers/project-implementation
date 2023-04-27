@@ -6,7 +6,7 @@ namespace ECOMap.Models
     {
         public Price(ECODataService service, string line)
         {
-			string[] values = line.Split(',');
+            string[] values = line.Split(',');
             int offerId = (int)CsvUtility.ExpressValue(values[0]);
             Valid = service.OfferEntries.ContainsKey(offerId);
             if (Valid)
@@ -20,7 +20,7 @@ namespace ECOMap.Models
             }
         }
 
-		public Offer Offer
+        public Offer Offer
         {
             get;
             private set;
@@ -62,7 +62,7 @@ namespace ECOMap.Models
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return Offer.OfferID.GetHashCode();
         }
 
         public override string ToString()

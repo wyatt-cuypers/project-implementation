@@ -68,11 +68,59 @@ namespace ECOMap
                     page.Elements.Add(image);
                     ContentArea legend = GetLegend();
                     page.Elements.Add(legend);
-                    document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf");
+                    int numPages = (int)Math.Ceiling((decimal)(client.RequestParamsList.Count / 34));
+                    int count = 0;
+                    while (count <= numPages)
+                    {
+                        Page page2 = new Page(PageSize.Letter, PageOrientation.Portrait, 54.0f);
+                        document.Pages.Add(page2);
+                        Table2 table = new Table2(10, 10, 800, 1200);
+                        table.CellDefault.Border.Color = RgbColor.Black;
+                        table.CellSpacing = 0f;
+
+                        table.Columns.Add(150);
+                        table.Columns.Add(80);
+                        table.Columns.Add(80);
+                        table.Columns.Add(150);
+
+                        Row2 headerRow = table.Rows.Add(30, Font.TimesBold, 16, RgbColor.White, RgbColor.DarkGray);
+                        headerRow.CellDefault.Align = TextAlign.Center;
+                        headerRow.CellDefault.VAlign = VAlign.Center;
+                        headerRow.Cells.Add("County");
+                        headerRow.Cells.Add(year.ToString() + " Price");
+                        headerRow.Cells.Add((year - 1).ToString() + " Price");
+                        headerRow.Cells.Add("Percent Change");
+
+                        int count2 = 0;
+                        foreach (ESRIRequestParams rp in client.RequestParamsList)
+                        {
+                            if (count2 >= (34 * (count + 1)))
+                            {
+                                break;
+                            }
+                            if (count2 < (34 * count))
+                            {
+                                count2++;
+                                continue;
+                            }
+                            if (rp.currentExpectedIndexValue != 0)
+                            {
+                                Row2 row = table.Rows.Add(15, Font.TimesRoman, 12, RgbColor.Black, RgbColor.LightGrey);
+                                row.Cells.Add(rp.county.CountyName);
+                                row.Cells.Add(rp.currentExpectedIndexValue.ToString());
+                                row.Cells.Add(rp.lastExpectedIndexValue.ToString());
+                                row.Cells.Add(rp.percentChange.ToString("F3"));
+                            }
+                            count2++;
+                        }
+                        count++;
+                        page2.Elements.Add(table);
+                    }
+
                 }
-                Console.WriteLine("right here 4");
+
                 //document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf");
-                document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", $"{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf"));
+                document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", "PDFs", $"{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf"));
             }
             catch (Exception ex)
             {
@@ -165,12 +213,12 @@ namespace ECOMap
                     double result = (price.ExpectedIndexValue - price2.ExpectedIndexValue) / price2.ExpectedIndexValue;
                     if (result == double.NaN)
                     {
-                        return new ESRIRequestParams(price.Offer.County, 0, price.ExpectedIndexValue);
+                        return new ESRIRequestParams(price.Offer.County, 0, price.ExpectedIndexValue, price2.ExpectedIndexValue);
                     }
-                    return new ESRIRequestParams(price.Offer.County, (price.ExpectedIndexValue - price2.ExpectedIndexValue) / price2.ExpectedIndexValue, price.ExpectedIndexValue);
+                    return new ESRIRequestParams(price.Offer.County, (price.ExpectedIndexValue - price2.ExpectedIndexValue) / price2.ExpectedIndexValue, price.ExpectedIndexValue, price2.ExpectedIndexValue);
                 }
             }
-            return new ESRIRequestParams(price.Offer.County, 0, price.ExpectedIndexValue);
+            return new ESRIRequestParams(price.Offer.County, 0, price.ExpectedIndexValue, 0);
         }
     }
 }

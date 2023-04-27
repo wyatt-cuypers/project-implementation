@@ -3,14 +3,16 @@ namespace ECOMap.Models
 {
     public class ESRIRequestParams
     {
-        private readonly County county;
-        private readonly double percentChange;
-        private readonly double expectedIndexValue;
-        public ESRIRequestParams(County county, double percentChange, double expectedIndexValue)
+        public readonly County county;
+        public readonly double percentChange;
+        public readonly double currentExpectedIndexValue;
+        public readonly double lastExpectedIndexValue;
+        public ESRIRequestParams(County county, double percentChange, double currentExpectedIndexValue, double lastExpectedIndexValue)
         {
             this.county = county;
             this.percentChange = percentChange;
-            this.expectedIndexValue = expectedIndexValue;
+            this.currentExpectedIndexValue = currentExpectedIndexValue;
+            this.lastExpectedIndexValue = lastExpectedIndexValue;
         }
 
         public JObject UniqueValueInfo
