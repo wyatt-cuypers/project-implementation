@@ -14,9 +14,9 @@ namespace ECOMap.Models
         public RecordType (string line)
         {
             string[] values = line.Split(',');
-            RecordTypeCode = (string)CsvUtility.ExpressValue(values[0]);
-            RecordCategoryCode = (int)CsvUtility.ExpressValue(values[1]);
-            ReinsuranceYear = (int)CsvUtility.ExpressValue(values[2]);
+            RecordTypeCode = CsvUtility.ParseAsString(values[0]);
+            RecordCategoryCode = CsvUtility.ParseAsInt(values[1]);
+            ReinsuranceYear = CsvUtility.ParseAsInt(values[2]);
         }
 
         public string RecordTypeCode

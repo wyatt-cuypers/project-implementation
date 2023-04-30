@@ -68,11 +68,11 @@ namespace ECOMap
                     page.Elements.Add(image);
                     ContentArea legend = GetLegend();
                     page.Elements.Add(legend);
-                    document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf");
+                    document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", "PDFs", $"{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf"));
                 }
                 Console.WriteLine("right here 4");
                 //document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf");
-                document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", $"{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf"));
+                document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", "PDFs", $"{state.StateName}_{commodity.CommodityName}_{year}_PDF.pdf"));
             } 
             catch(Exception ex) 
             {
@@ -114,7 +114,8 @@ namespace ECOMap
             document.Pages.Add(page);
             ContentArea legend = GetLegend();
             page.Elements.Add(legend);
-            document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\TestLegend.pdf");
+            //document.Draw($"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\PDFs\\TestLegend.pdf");
+            document.Draw(System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", "PDFs", "TestLegend.pdf"));
         }
 
         public static void GeneratePDFGroup(ECODataService service, string stateName, int year)

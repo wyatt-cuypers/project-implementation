@@ -17,13 +17,13 @@ namespace ECOMap.Models
         public State(ECODataService service, string line)
         {
             string[] values = line.Split(',');
-            string recordTypeCode = (string)CsvUtility.ExpressValue(values[0]);
+            string recordTypeCode = CsvUtility.ParseAsString(values[0]);
             Valid = service.RecordTypeEntries.ContainsKey(recordTypeCode);
             if (Valid)
             {
-                StateCode = (int)CsvUtility.ExpressValue(values[3]);
-                StateName = (string)CsvUtility.ExpressValue(values[4]);
-                StateAbbreviation = (string)CsvUtility.ExpressValue(values[5]);
+                StateCode = CsvUtility.ParseAsInt(values[3]);
+                StateName = CsvUtility.ParseAsString(values[4]);
+                StateAbbreviation = CsvUtility.ParseAsString(values[5]);
                 RecordType = service.RecordTypeEntries[recordTypeCode];
             }
             else

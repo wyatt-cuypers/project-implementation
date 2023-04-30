@@ -10,14 +10,14 @@ namespace ECOMap.Models
             ECODataService = service;
 
 			string[] values = line.Split(',');
-            int stateCode = (int)CsvUtility.ExpressValue(values[3]);
-            string recordTypeCode = (string)CsvUtility.ExpressValue(values[0]);
+            int stateCode = CsvUtility.ParseAsInt(values[3]);
+            string recordTypeCode = CsvUtility.ParseAsString(values[0]);
             Valid = ValidCounty(stateCode, recordTypeCode);
             if (Valid)
             {
-                CountyCode = (int)CsvUtility.ExpressValue(values[4]);
+                CountyCode = CsvUtility.ParseAsInt(values[4]);
                 State = service.StateEntries[stateCode];
-                CountyName = (string)CsvUtility.ExpressValue(values[5]);
+                CountyName = CsvUtility.ParseAsString(values[5]);
                 RecordType = service.RecordTypeEntries[recordTypeCode];
             }
         }

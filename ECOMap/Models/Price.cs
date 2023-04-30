@@ -7,12 +7,12 @@ namespace ECOMap.Models
         public Price(ECODataService service, string line)
         {
 			string[] values = line.Split(',');
-            int offerId = (int)CsvUtility.ExpressValue(values[0]);
+            int offerId = CsvUtility.ParseAsInt(values[0]);
             Valid = service.OfferEntries.ContainsKey(offerId);
             if (Valid)
             {
                 Offer = service.OfferEntries[offerId];
-                ExpectedIndexValue = (double)CsvUtility.ExpressValue(values[1]);
+                ExpectedIndexValue = CsvUtility.ParseAsDouble(values[1]);
             }
             else
             {

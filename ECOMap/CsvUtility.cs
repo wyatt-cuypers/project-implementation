@@ -18,27 +18,59 @@ namespace ECOMap
 			return lines;
 		}
 
-		public static object ExpressValue(string value)
-		{
-			if ("\"\"".Equals(value))
-			{
-				return 0.0;
+		private static string TrimQuotes(string value) {
+			value = value.Trim();
+			if(value.StartsWith("\"") && value.EndsWith("\"")) {
+				return value.Substring(1, value.Length - 2);
 			}
-			string temp = value.Substring(1, value.Length - 2);
-			if (IsInt(temp))
-			{
-				return Convert.ToInt32(temp);
-			}
-			else if (IsDouble(temp))
-			{
-				return Convert.ToDouble(temp);
-			}
-			else if (IsDate(temp))
-			{
-				return ToDateTime(temp);
-			}
-			return temp;
+			return value;
 		}
+
+		public static double ParseAsDouble(string value) {
+			var numberAsString = TrimQuotes(value);
+			if(IsDouble(numberAsString)) {
+				return Convert.ToDouble(numberAsString);
+			}
+			return 0.0;
+		}
+
+		public static int ParseAsInt(string value) {
+			var numberAsString = TrimQuotes(value);
+			if(IsInt(numberAsString)) {
+				return Convert.ToInt32(numberAsString);
+			}
+			return 0;
+		}
+
+		public static DateTime ParseAsDateTime(string value) {
+			return ToDateTime(TrimQuotes(value));
+		}
+
+		public static string ParseAsString(string value) {
+			return TrimQuotes(value);
+		}
+
+		// public static object ExpressValue(string value)
+		// {
+		// 	if ("\"\"".Equals(value))
+		// 	{
+		// 		return 0.0;
+		// 	}
+		// 	string temp = value.Substring(1, value.Length - 2);
+		// 	if (IsInt(temp))
+		// 	{
+		// 		return Convert.ToInt32(temp);
+		// 	}
+		// 	else if (IsDouble(temp))
+		// 	{
+		// 		return Convert.ToDouble(temp);
+		// 	}
+		// 	else if (IsDate(temp))
+		// 	{
+		// 		return ToDateTime(temp);
+		// 	}
+		// 	return temp;
+		// }
 
 		public static DateTime ToDateTime(string value)
 		{

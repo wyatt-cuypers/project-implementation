@@ -18,16 +18,16 @@ namespace ECOMap.Models
         public Commodity(ECODataService service, string line)
         {
             string[] values = line.Split(',');
-            string recordTypeCode = (string)CsvUtility.ExpressValue(values[0]);
+            string recordTypeCode = (string)CsvUtility.ParseAsString(values[0]);
             Valid = service.RecordTypeEntries.ContainsKey(recordTypeCode);
             if (Valid)
             {
-                CommodityCode = (int)CsvUtility.ExpressValue(values[4]);
-                CommodityName = (string)CsvUtility.ExpressValue(values[5]);
-                CommodityAbbreviation = (string)CsvUtility.ExpressValue(values[6]);
-                AnnualPlantingCode = ((string)CsvUtility.ExpressValue(values[7]))[0];
-                CommodityYear = (int)CsvUtility.ExpressValue(values[3]);
-                ReleasedDate = (DateTime)CsvUtility.ExpressValue(values[9]);
+                CommodityCode = CsvUtility.ParseAsInt(values[4]);
+                CommodityName = CsvUtility.ParseAsString(values[5]);
+                CommodityAbbreviation = CsvUtility.ParseAsString(values[6]);
+                AnnualPlantingCode = (CsvUtility.ParseAsString(values[7]))[0];
+                CommodityYear = CsvUtility.ParseAsInt(values[3]);
+                ReleasedDate = CsvUtility.ParseAsDateTime(values[9]);
                 RecordType = service.RecordTypeEntries[recordTypeCode];
             }
             else

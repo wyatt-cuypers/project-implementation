@@ -18,39 +18,26 @@ export class OpenPDF extends Component {
     };
   }
 
-  // componentDidUpdate(prevState) {
-  //   if(prevState.selectedState !== this.state.selectedState || prevState.selectedYear !== this.state.selectedYear) {
-  //     if(this.state.selectedState !== "" && this.state.selectedYear !== "") {
-        
-  //       this.getCommodities();
-  //     }
-  //   }
-  // }
-
-  componentDidMount() {
-    this.getCommodities();
+  componentDidUpdate(prevProps, prevState) {
+    if(prevState.selectedState !== this.state.selectedState || prevState.selectedYear !== this.state.selectedYear) {
+      //console.log('this should fire now')
+      if(this.state.selectedState !== "" && this.state.selectedYear !== "") {
+        this.getCommodities();
+      }
+    }
   }
 
-  async getCommodities() {
-    const response = await fetch("/api/Commodity");
-    const data = await response.json();
-    this.setState({ commoditiesList: data, loading: false });
+  getCommodities() {
+    fetch(`/api/Commodity/${this.state.selectedState}/${this.state.selectedYear}`).then(
+    response => response.json())
+    .then(data => {
+      console.log(data);
+      this.setState({ commoditiesList: data, loading: false });
+    })
+    .catch(err => {
+      console.log(err);
+    })
   }
-
-  // getCommodities() {
-  //   //this.setState({ loading: true });
-  //   const response = fetch(`/api/Commodity/${this.state.selectedState}/${this.state.selectedYear}`).then(
-  //   response => response.json())
-  //   .then(data => {
-  //     console.log(data);
-  //     this.setState({ commoditiesList: data, loading: false });
-  //   })
-  //   .catch(err => {
-  //     console.log(err);
-  //   })
-    
-  //   //this.setState({ commoditiesList: data, loading: false });
-  // }
 
   getPDF() {
     fetch(
@@ -105,7 +92,7 @@ export class OpenPDF extends Component {
             </div>
             {this.state.loading ? (
               <p>
-                <em>Loading...</em>
+                <em>Select State And Year To See Commodities</em>
               </p>
             ) : (
               <div style={styleSheet.dropStyle}>
@@ -136,6 +123,9 @@ export class OpenPDF extends Component {
                 style={{ textAlign: "center" }}
                 onChange={(e) => {
                   this.setState({ selectedYear: e.target.value });
+                  // if(this.state.selectedState !== "") {
+                  //   this.getCommodities();
+                  // }
                 }}
                 name="selectedYear"
               >

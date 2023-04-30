@@ -25,7 +25,8 @@ namespace ECOMap
             HttpClient client = new HttpClient();
             HttpResponseMessage result = client.GetAsync(UrlConent.ToString()).Result;
             byte[] fileBytes = result.Content.ReadAsByteArrayAsync().Result;
-            string filePath = $"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\Images\\{Guid.NewGuid()}.jpg";
+            //string filePath = $"{EcoGeneralService.InitialPathLocation}\\Resources\\Output\\Images\\{Guid.NewGuid()}.jpg";
+            string filePath = System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "Output", "Images", $"{Guid.NewGuid()}.jpg");
             BinaryWriter writer = new BinaryWriter(File.OpenWrite(filePath));
             writer.Write(fileBytes);
             Console.WriteLine("Image done");
@@ -38,7 +39,8 @@ namespace ECOMap
             get
             {
                 JObject obj;
-                string filePath = $"{EcoGeneralService.InitialPathLocation}\\Resources\\ESRIRequest.json";
+                //string filePath = $"{EcoGeneralService.InitialPathLocation}\\Resources\\ESRIRequest.json";
+                string filePath = System.IO.Path.Combine(EcoGeneralService.InitialPathLocation, "Resources", "ESRIRequest.json");
                 using (StreamReader file = File.OpenText(filePath))
                 using (JsonTextReader reader = new JsonTextReader(file))
                 {

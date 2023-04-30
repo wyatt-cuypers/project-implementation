@@ -14,10 +14,11 @@ namespace NAUCountryA.Controllers
     {
         private readonly ECODataService _service;
 
-        public DownloadPdfController()
+        public DownloadPdfController(ECODataService service)
         {
-            LoadingProcessor loader = new LoadingProcessor(ECOMap.EcoGeneralService.InitialPathLocation);
-            _service = loader.LoadAll().GetAwaiter().GetResult();
+            _service = service;
+            // LoadingProcessor loader = new LoadingProcessor(ECOMap.EcoGeneralService.InitialPathLocation);
+            // _service = loader.LoadAll().GetAwaiter().GetResult();
         }
 
         [HttpPost("{state}/{year}")]
@@ -26,7 +27,7 @@ namespace NAUCountryA.Controllers
             try
             {
                 ECOMap.EcoPdfGenerator.GeneratePDFGroup(_service, state, year);
-                return Ok("PDF generation completed successfully.");;
+                return Ok("PDF generation completed successfully.");
             }
             catch (Exception ex)
             {
@@ -40,7 +41,7 @@ namespace NAUCountryA.Controllers
             try
             {
                 ECOMap.EcoPdfGenerator.GenerateAllPDFs(_service, year);
-                return Ok("PDF generation completed successfully.");;
+                return Ok("PDF generation completed successfully.");
             }
             catch (Exception ex)
             {

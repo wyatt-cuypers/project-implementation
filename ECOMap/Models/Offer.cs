@@ -9,17 +9,17 @@ namespace ECOMap.Models
             ECODataService = service;
 
 			string[] values = line.Split(',');
-            int practiceCode = (int)CsvUtility.ExpressValue(values[4]);
-            int countyCode = (int)CsvUtility.ExpressValue(values[2]);
-            int typeCode = (int)CsvUtility.ExpressValue(values[3]);
+            int practiceCode = CsvUtility.ParseAsInt(values[4]);
+            int countyCode = CsvUtility.ParseAsInt(values[2]);
+            int typeCode = CsvUtility.ParseAsInt(values[3]);
             Valid = ValidOffer(practiceCode, countyCode, typeCode);
             if (Valid)
             {
-                OfferID = (int)CsvUtility.ExpressValue(values[0]);
-                Practice = service.PracticeEntries[(int)CsvUtility.ExpressValue(values[4])];
-                County = service.CountyEntries[(int)CsvUtility.ExpressValue(values[2])];
-                Type = service.TypeEntries[(int)CsvUtility.ExpressValue(values[3])];
-                IrrigationPracticeCode = (int)CsvUtility.ExpressValue(values[5]);
+                OfferID = (int)CsvUtility.ParseAsInt(values[0]);
+                Practice = service.PracticeEntries[CsvUtility.ParseAsInt(values[4])];
+                County = service.CountyEntries[CsvUtility.ParseAsInt(values[2])];
+                Type = service.TypeEntries[CsvUtility.ParseAsInt(values[3])];
+                IrrigationPracticeCode = CsvUtility.ParseAsInt(values[5]);
                 Year = Convert.ToInt32(values[6]);
             }
         }
