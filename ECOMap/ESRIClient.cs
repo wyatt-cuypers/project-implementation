@@ -51,9 +51,55 @@ namespace ECOMap
                 UpdateUniqueValueInfos((JObject)(obj["operationalLayers"]?[0]?["layerDefinition"]?["drawingInfo"]?["renderer"]));
                 obj["operationalLayers"][0]["layerDefinition"]["definitionExpression"] = $"CNT_STATE_ = '{stateCode}'";
                 obj["mapOptions"]["extent"] = Extent["extent"];
+                obj["exportOptions"]["outputSize"] = GetOutputSize(state);
                 Console.WriteLine(obj);
                 return obj;
             }
+        }
+        public JArray GetOutputSize(State state)
+        {
+            JArray sizes = new JArray();
+            if (state.StateName.Equals("Alaska") ||
+            state.StateName.Equals("Texas"))
+            {
+                sizes.Add(682);
+                sizes.Add(698);
+            }
+            else if (state.StateName.Equals("Montana") ||
+            state.StateName.Equals("California"))
+            {
+                sizes.Add(512);
+                sizes.Add(524);
+
+            }
+            else if (state.StateName.Equals("Washington") ||
+            state.StateName.Equals("Colorado") ||
+            state.StateName.Equals("Wyoming") ||
+            state.StateName.Equals("Nebraska") ||
+            state.StateName.Equals("North Dakota") ||
+            state.StateName.Equals("South Dakota") ||
+            state.StateName.Equals("Kansas") ||
+            state.StateName.Equals("Oklahoma") ||
+            state.StateName.Equals("Tennessee") ||
+            state.StateName.Equals("North Carolina") ||
+            state.StateName.Equals("Florida") ||
+            state.StateName.Equals("Michigan") ||
+            state.StateName.Equals("Kentucky") ||
+            state.StateName.Equals("Virginia") ||
+            state.StateName.Equals("New York")
+            )
+            {
+                sizes.Add(341);
+                sizes.Add(349);
+
+            }
+            else
+            {
+                sizes.Add(256);
+                sizes.Add(262);
+            }
+
+            return sizes;
         }
 
         private JObject Extent
