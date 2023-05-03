@@ -65,13 +65,6 @@ namespace ECOMap
                 sizes.Add(682);
                 sizes.Add(698);
             }
-            else if (state.StateName.Equals("Montana") ||
-            state.StateName.Equals("California"))
-            {
-                sizes.Add(512);
-                sizes.Add(524);
-
-            }
             else if (state.StateName.Equals("Alabama"))
             {
                 sizes.Add(264);
@@ -93,11 +86,11 @@ namespace ECOMap
             }
             else if (state.StateName.Equals("Arizona") ||
             state.StateName.Equals("New Mexico")  ||
-            state.StateName.Equals("Illinois")  ||
+            state.StateName.Equals("Illinois") ||
             state.StateName.Equals("Wisconsin"))
             {
-                sizes.Add(341);
-                sizes.Add(349);
+                sizes.Add(321);
+                sizes.Add(329);
 
             }
             else if (state.StateName.Equals("Washington") ||
@@ -106,8 +99,7 @@ namespace ECOMap
             state.StateName.Equals("Nebraska") ||
             state.StateName.Equals("North Dakota") ||
             state.StateName.Equals("Kansas") ||
-            state.StateName.Equals("Oklahoma") ||
-            state.StateName.Equals("Tennessee") ||
+            state.StateName.Equals("Oklahoma") ||            
             state.StateName.Equals("North Carolina") ||
             state.StateName.Equals("Michigan") ||
             state.StateName.Equals("Kentucky") ||

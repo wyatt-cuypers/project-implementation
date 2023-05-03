@@ -17,7 +17,7 @@ namespace ECOMap
         private static string GetInitialPathLocation(string currentLocation)
 		{
 			DirectoryInfo temp = Directory.GetParent(currentLocation);
-			if (temp.Name.Equals("project-implementation"))
+			if (temp.Name.Equals("NAU"))
 			{
 				return temp.FullName;
 			}

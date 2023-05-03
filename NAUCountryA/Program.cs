@@ -7,6 +7,12 @@ using Microsoft.Extensions.Hosting;
 LoadingProcessor loader = new LoadingProcessor(EcoGeneralService.InitialPathLocation);
 ECODataService service = loader.LoadAll().GetAwaiter().GetResult();
 
+//EcoPdfGenerator.GeneratePDFGroup(service, "Arizona", 2023);
+//EcoPdfGenerator.GeneratePDFGroup(service, "Alabama", 2023);
+//EcoPdfGenerator.GeneratePDFGroup(service, "New Mexico", 2023);
+//EcoPdfGenerator.GeneratePDFGroup(service, "Wisonsin", 2023);
+//EcoPdfGenerator.GeneratePDFGroup(service, "Illinois", 2023);
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
