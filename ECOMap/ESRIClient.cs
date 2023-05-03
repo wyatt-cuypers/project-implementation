@@ -72,20 +72,46 @@ namespace ECOMap
                 sizes.Add(524);
 
             }
+            else if (state.StateName.Equals("Alabama"))
+            {
+                sizes.Add(264);
+                sizes.Add(270);
+
+            }
+            else if (state.StateName.Equals("South Dakota") ||
+            state.StateName.Equals("Florida"))
+            {
+                sizes.Add(381);
+                sizes.Add(389);
+
+            }
+            else if (state.StateName.Equals("Virginia"))
+            {
+                sizes.Add(421);
+                sizes.Add(429);
+
+            }
+            else if (state.StateName.Equals("Arizona") ||
+            state.StateName.Equals("New Mexico")  ||
+            state.StateName.Equals("Illinois")  ||
+            state.StateName.Equals("Wisconsin"))
+            {
+                sizes.Add(341);
+                sizes.Add(349);
+
+            }
             else if (state.StateName.Equals("Washington") ||
             state.StateName.Equals("Colorado") ||
             state.StateName.Equals("Wyoming") ||
             state.StateName.Equals("Nebraska") ||
             state.StateName.Equals("North Dakota") ||
-            state.StateName.Equals("South Dakota") ||
             state.StateName.Equals("Kansas") ||
             state.StateName.Equals("Oklahoma") ||
             state.StateName.Equals("Tennessee") ||
             state.StateName.Equals("North Carolina") ||
-            state.StateName.Equals("Florida") ||
             state.StateName.Equals("Michigan") ||
             state.StateName.Equals("Kentucky") ||
-            state.StateName.Equals("Virginia") ||
+            state.StateName.Equals("Missouri") ||
             state.StateName.Equals("New York")
             )
             {
